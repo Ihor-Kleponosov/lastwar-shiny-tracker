@@ -4,5 +4,10 @@
   },
   "language": { "label": "Sprache", "openMenu": "Sprache ausw\u00e4hlen" },
   "calendar": { "title": "Kalender" },
-  "settings": { "open": "Einstellungen \u00f6ffnen" }
+  "settings": { "open": "Einstellungen \u00f6ffnen" },
+  "servers": {
+    "title": "Aktive Server",
+    "active_one": "{{count}} aktiver Server",
+    "active_other": "{{count}} aktive Server"
+  }
 }

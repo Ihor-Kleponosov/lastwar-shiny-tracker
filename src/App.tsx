@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Calendar } from '@/components/calendar/Calendar'
 import { Header } from '@/components/layout/Header'
+import { ServerList } from '@/components/servers/ServerList'
 
 export default function App() {
   const [selectedDate, setSelectedDate] = useState(() => new Date())
@@ -10,6 +11,7 @@ export default function App() {
       <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-4 sm:gap-5">
         <Header />
         <Calendar selectedDate={selectedDate} onSelectDate={setSelectedDate} />
+        <ServerList selectedDate={selectedDate} />
       </div>
     </main>
   )
