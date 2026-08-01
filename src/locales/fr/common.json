@@ -3,5 +3,6 @@
     "logoAlt": "Logo du suivi des brillants Last War"
   },
   "language": { "label": "Langue", "openMenu": "Choisir la langue" },
+  "calendar": { "title": "Calendrier" },
   "settings": { "open": "Ouvrir les param\u00e8tres" }
 }
