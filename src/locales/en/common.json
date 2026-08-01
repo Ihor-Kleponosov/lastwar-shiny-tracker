@@ -3,5 +3,6 @@
     "logoAlt": "Last War Shiny Tracker logo"
   },
   "language": { "label": "Language", "openMenu": "Choose language" },
+  "calendar": { "title": "Calendar" },
   "settings": { "open": "Open settings" }
 }

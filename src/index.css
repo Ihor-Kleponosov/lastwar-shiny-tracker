@@ -11,6 +11,9 @@
   --color-border: #263244;
   --color-text-primary: #f8fafc;
   --color-text-secondary: #94a3b8;
+  --color-text-muted: #64748b;
+  --color-accent: #f59e0b;
+  --color-accent-contrast: #111827;
   --color-focus: #38bdf8;
 
   font-family: var(--font-sans);
@@ -21,6 +24,60 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+}
+
+.calendar.rdp-root {
+  --rdp-accent-color: var(--color-accent);
+  --rdp-day_button-border-radius: 0.75rem;
+  --rdp-day_button-height: 2.75rem;
+  --rdp-day_button-width: 2.75rem;
+  --rdp-day-height: 2.75rem;
+  --rdp-day-width: 2.75rem;
+  --rdp-nav_button-height: 2.75rem;
+  --rdp-nav_button-width: 2.75rem;
+  --rdp-today-color: var(--color-accent);
+
+  color: var(--color-text-primary);
+}
+
+.calendar .rdp-month_caption {
+  font-size: 1rem;
+}
+
+.calendar .rdp-weekday {
+  color: var(--color-text-secondary);
+  opacity: 1;
+}
+
+.calendar .rdp-day_button:hover {
+  background: var(--color-surface-elevated);
+}
+
+.calendar .rdp-day_button:focus-visible,
+.calendar .rdp-button_next:focus-visible,
+.calendar .rdp-button_previous:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.calendar .rdp-selected .rdp-day_button,
+.calendar .rdp-selected .rdp-day_button:hover {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-accent-contrast);
+}
+
+.calendar .rdp-today:not(.rdp-selected) .rdp-day_button {
+  border-color: var(--color-accent);
+}
+
+.calendar .rdp-outside {
+  color: var(--color-text-muted);
+  opacity: 1;
+}
+
+.calendar .rdp-chevron {
+  fill: currentColor;
 }
 
 @media (prefers-reduced-motion: reduce) {
