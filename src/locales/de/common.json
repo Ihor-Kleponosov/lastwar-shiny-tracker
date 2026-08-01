@@ -1,4 +1,7 @@
 {
-  "app": { "title": "Last War Glanz-Tracker", "loading": "Wird geladen…" },
-  "common": { "cancel": "Abbrechen", "save": "Speichern" }
+  "app": {
+    "logoAlt": "Logo des Last War Glanz-Trackers"
+  },
+  "language": { "label": "Sprache", "openMenu": "Sprache ausw\u00e4hlen" },
+  "settings": { "open": "Einstellungen \u00f6ffnen" }
 }
