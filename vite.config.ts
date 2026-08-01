@@ -17,6 +17,9 @@ export default defineConfig(({ mode }) => {
       VitePWA({
         registerType: 'autoUpdate',
         includeAssets: ['favicon.png', 'pwa-192x192.png', 'pwa-512x512.png'],
+        workbox: {
+          globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,avif}'],
+        },
         manifest: {
           name: 'Last War Shiny Tracker',
           short_name: 'Shiny Tracker',
