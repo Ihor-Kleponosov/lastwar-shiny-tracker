@@ -1,5 +1,6 @@
 import { Settings } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import shinyTrackerLogo from '@/assets/shiny-tracker-logo.png'
 import { IconButton } from '@/components/ui/IconButton'
 import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher'
 
@@ -11,7 +12,7 @@ export function Header() {
       <div className="grid grid-cols-[100px_minmax(0,1fr)_88px] items-center">
         <img
           className="size-[100px] rounded-xl"
-          src="/shiny-tracker-logo.png"
+          src={shinyTrackerLogo}
           width="100"
           height="100"
           alt={t('app.logoAlt')}
