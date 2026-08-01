@@ -1,4 +1,7 @@
 {
-  "app": { "title": "Last War Shiny Tracker", "loading": "Loading…" },
-  "common": { "cancel": "Cancel", "save": "Save" }
+  "app": {
+    "logoAlt": "Last War Shiny Tracker logo"
+  },
+  "language": { "label": "Language", "openMenu": "Choose language" },
+  "settings": { "open": "Open settings" }
 }

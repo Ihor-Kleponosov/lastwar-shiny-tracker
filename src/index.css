@@ -5,6 +5,14 @@
 }
 
 :root {
+  --color-background: #0b1120;
+  --color-surface: #111827;
+  --color-surface-elevated: #182234;
+  --color-border: #263244;
+  --color-text-primary: #f8fafc;
+  --color-text-secondary: #94a3b8;
+  --color-focus: #38bdf8;
+
   font-family: var(--font-sans);
   color-scheme: dark;
 }
@@ -13,4 +21,15 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

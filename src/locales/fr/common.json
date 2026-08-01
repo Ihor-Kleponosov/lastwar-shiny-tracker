@@ -1,4 +1,7 @@
 {
-  "app": { "title": "Suivi des brillants Last War", "loading": "Chargement…" },
-  "common": { "cancel": "Annuler", "save": "Enregistrer" }
+  "app": {
+    "logoAlt": "Logo du suivi des brillants Last War"
+  },
+  "language": { "label": "Langue", "openMenu": "Choisir la langue" },
+  "settings": { "open": "Ouvrir les param\u00e8tres" }
 }

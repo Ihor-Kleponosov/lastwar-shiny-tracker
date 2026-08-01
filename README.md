@@ -12,7 +12,7 @@ An installable tracker for shiny tasks in Last War. The repository currently con
 
 ## Tech Stack
 
-React 19, TypeScript, Vite, Tailwind CSS, React DayPicker, date-fns, Lucide React, i18next, and vite-plugin-pwa. ESLint, Prettier, Husky, and lint-staged enforce quality; Vitest and React Testing Library provide tests.
+React 19, TypeScript, Vite, Tailwind CSS, class-names, React DayPicker, date-fns, Lucide React, i18next, and vite-plugin-pwa. ESLint, Prettier, Husky, and lint-staged enforce quality; Vitest and React Testing Library provide tests.
 
 ## Structure
 
