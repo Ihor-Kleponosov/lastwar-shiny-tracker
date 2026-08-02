@@ -40,10 +40,6 @@ body {
   color: var(--color-text-primary);
 }
 
-.calendar .rdp-month_caption {
-  font-size: 1rem;
-}
-
 .calendar .rdp-weekday {
   color: var(--color-text-secondary);
   opacity: 1;
@@ -54,8 +50,7 @@ body {
 }
 
 .calendar .rdp-day_button:focus-visible,
-.calendar .rdp-button_next:focus-visible,
-.calendar .rdp-button_previous:focus-visible {
+.calendar .rdp-day_button:focus-visible {
   outline: 2px solid var(--color-focus);
   outline-offset: 2px;
 }

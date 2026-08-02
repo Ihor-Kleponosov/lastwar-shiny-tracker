@@ -1,12 +1,18 @@
+import { addMonths, format, startOfMonth } from 'date-fns'
 import { de, enUS, fr, uk } from 'date-fns/locale'
-import { startOfMonth } from 'date-fns'
+import { CalendarCheck, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { DayPicker, type OnSelectHandler } from 'react-day-picker'
 import 'react-day-picker/style.css'
 import { useTranslation } from 'react-i18next'
 import type { LanguageCode } from '@/i18n/languages'
+import { IconButton } from '@/components/ui/IconButton'
 
 const calendarLocales = { en: enUS, fr, de, uk } as const
+
+function HiddenMonthCaption() {
+  return <></>
+}
 
 type CalendarProps = {
   selectedDate: Date
@@ -22,6 +28,7 @@ function getCalendarLocale(language: string) {
 export function Calendar({ selectedDate, onSelectDate }: CalendarProps) {
   const { i18n, t } = useTranslation('common')
   const [month, setMonth] = useState(() => startOfMonth(selectedDate))
+  const locale = getCalendarLocale(i18n.resolvedLanguage ?? i18n.language)
 
   useEffect(() => {
     setMonth(startOfMonth(selectedDate))
@@ -29,6 +36,13 @@ export function Calendar({ selectedDate, onSelectDate }: CalendarProps) {
 
   const handleSelect: OnSelectHandler<Date | undefined> = (date) => {
     if (date) onSelectDate(date)
+  }
+
+  const handleToday = () => {
+    const today = new Date()
+
+    onSelectDate(today)
+    setMonth(startOfMonth(today))
   }
 
   return (
@@ -39,6 +53,28 @@ export function Calendar({ selectedDate, onSelectDate }: CalendarProps) {
       <h2 id="calendar-heading" className="sr-only">
         {t('calendar.title')}
       </h2>
+      <div className="mb-2 flex items-center justify-between gap-2">
+        <div className="flex items-center gap-1">
+          <IconButton aria-label={t('calendar.today')} onClick={handleToday}>
+            <CalendarCheck aria-hidden="true" size={20} />
+          </IconButton>
+          <IconButton
+            aria-label={t('calendar.previousMonth')}
+            onClick={() => setMonth((currentMonth) => addMonths(currentMonth, -1))}
+          >
+            <ChevronLeft aria-hidden="true" size={20} />
+          </IconButton>
+          <IconButton
+            aria-label={t('calendar.nextMonth')}
+            onClick={() => setMonth((currentMonth) => addMonths(currentMonth, 1))}
+          >
+            <ChevronRight aria-hidden="true" size={20} />
+          </IconButton>
+        </div>
+        <p className="text-base font-medium" aria-live="polite">
+          {format(month, 'LLLL yyyy', { locale })}
+        </p>
+      </div>
       <DayPicker
         className="calendar mx-auto w-fit"
         mode="single"
@@ -46,10 +82,12 @@ export function Calendar({ selectedDate, onSelectDate }: CalendarProps) {
         onMonthChange={setMonth}
         selected={selectedDate}
         onSelect={handleSelect}
-        locale={getCalendarLocale(i18n.resolvedLanguage ?? i18n.language)}
+        locale={locale}
         weekStartsOn={1}
         showOutsideDays
-        navLayout="around"
+        fixedWeeks
+        hideNavigation
+        components={{ MonthCaption: HiddenMonthCaption }}
       />
     </section>
   )

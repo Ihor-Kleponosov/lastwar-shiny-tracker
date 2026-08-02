@@ -3,7 +3,12 @@
     "logoAlt": "Last War Shiny Tracker logo"
   },
   "language": { "label": "Language", "openMenu": "Choose language" },
-  "calendar": { "title": "Calendar" },
+  "calendar": {
+    "title": "Calendar",
+    "today": "Today",
+    "previousMonth": "Previous month",
+    "nextMonth": "Next month"
+  },
   "settings": { "open": "Open settings" },
   "servers": {
     "title": "Active servers",

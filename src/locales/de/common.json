@@ -3,7 +3,12 @@
     "logoAlt": "Logo des Last War Glanz-Trackers"
   },
   "language": { "label": "Sprache", "openMenu": "Sprache ausw\u00e4hlen" },
-  "calendar": { "title": "Kalender" },
+  "calendar": {
+    "title": "Kalender",
+    "today": "Heute",
+    "previousMonth": "Vorheriger Monat",
+    "nextMonth": "Nächster Monat"
+  },
   "settings": { "open": "Einstellungen \u00f6ffnen" },
   "servers": {
     "title": "Aktive Server",
