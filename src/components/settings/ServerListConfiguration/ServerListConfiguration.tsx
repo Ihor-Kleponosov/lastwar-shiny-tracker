@@ -46,7 +46,7 @@ export function ServerListConfiguration({
         </p>
       ) : null}
       <ul
-        className="mt-4 grid grid-cols-[repeat(auto-fit,minmax(88px,1fr))] gap-2"
+        className="mt-4 grid grid-cols-[repeat(auto-fill,minmax(88px,1fr))] gap-2"
         aria-label={t('settings.serverList.title')}
       >
         {filteredServerIds.map((serverId) => (

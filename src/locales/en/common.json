@@ -6,6 +6,9 @@
   "calendar": {
     "title": "Calendar",
     "today": "Today",
+    "selectedDate": "Selected date: {{date}}",
+    "show": "Show calendar",
+    "hide": "Hide calendar",
     "previousMonth": "Previous month",
     "nextMonth": "Next month"
   },
@@ -23,13 +26,12 @@
       "deselectDisplayed": "Deselect displayed",
       "noResults": "No servers found.",
       "title": "Server list",
-      "description": "Choose the servers you want to show in the calendar. Disable those you do not have links for or do not need. Click a server to change its state."
+      "description": "Select the servers to display in the calendar. You can disable servers you do not use or do not have links for. Click a server to change its state. These preferences are stored in your browser and are not synced to other devices."
     }
   },
   "servers": {
-    "title": "Active servers",
     "empty": "No enabled servers for this date.",
-    "active_one": "{{count}} active server",
-    "active_other": "{{count}} active servers"
+    "count_one": "{{count}} server",
+    "count_other": "{{count}} servers"
   }
 }

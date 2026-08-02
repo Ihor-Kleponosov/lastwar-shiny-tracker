@@ -6,6 +6,9 @@
   "calendar": {
     "title": "Calendrier",
     "today": "Aujourd’hui",
+    "selectedDate": "Date sélectionnée : {{date}}",
+    "show": "Afficher le calendrier",
+    "hide": "Masquer le calendrier",
     "previousMonth": "Mois précédent",
     "nextMonth": "Mois suivant"
   },
@@ -23,13 +26,12 @@
       "deselectDisplayed": "Désélectionner les affichés",
       "noResults": "Aucun serveur trouvé.",
       "title": "Liste des serveurs",
-      "description": "Choisissez les serveurs à afficher dans le calendrier. Désactivez ceux pour lesquels vous n’avez pas de liens ou dont vous n’avez pas besoin. Cliquez sur un serveur pour modifier son état."
+      "description": "Sélectionnez les serveurs à afficher dans le calendrier. Vous pouvez désactiver ceux que vous n’utilisez pas ou pour lesquels vous n’avez pas de liens. Cliquez sur un serveur pour modifier son état. Ces préférences sont stockées dans votre navigateur et ne sont pas synchronisées avec d’autres appareils."
     }
   },
   "servers": {
-    "title": "Serveurs actifs",
     "empty": "Aucun serveur activé pour cette date.",
-    "active_one": "{{count}} serveur actif",
-    "active_other": "{{count}} serveurs actifs"
+    "count_one": "{{count}} serveur",
+    "count_other": "{{count}} serveurs"
   }
 }

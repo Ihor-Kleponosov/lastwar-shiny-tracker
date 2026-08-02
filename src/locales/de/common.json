@@ -6,6 +6,9 @@
   "calendar": {
     "title": "Kalender",
     "today": "Heute",
+    "selectedDate": "Ausgewähltes Datum: {{date}}",
+    "show": "Kalender anzeigen",
+    "hide": "Kalender ausblenden",
     "previousMonth": "Vorheriger Monat",
     "nextMonth": "Nächster Monat"
   },
@@ -23,13 +26,12 @@
       "deselectDisplayed": "Angezeigte abwählen",
       "noResults": "Keine Server gefunden.",
       "title": "Serverliste",
-      "description": "Wähle die Server aus, die im Kalender angezeigt werden sollen. Deaktiviere diejenigen, für die du keine Links hast oder die du nicht benötigst. Klicke auf einen Server, um seinen Status zu ändern."
+      "description": "Wähle die Server aus, die im Kalender angezeigt werden sollen. Du kannst Server deaktivieren, die du nicht verwendest oder für die du keine Links hast. Klicke auf einen Server, um seinen Status zu ändern. Diese Einstellungen werden in deinem Browser gespeichert und nicht mit anderen Geräten synchronisiert."
     }
   },
   "servers": {
-    "title": "Aktive Server",
     "empty": "Keine aktivierten Server für dieses Datum.",
-    "active_one": "{{count}} aktiver Server",
-    "active_other": "{{count}} aktive Server"
+    "count_one": "{{count}} Server",
+    "count_other": "{{count}} Server"
   }
 }

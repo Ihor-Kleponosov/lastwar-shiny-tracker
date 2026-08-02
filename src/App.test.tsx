@@ -1,5 +1,6 @@
-import { render, screen, waitFor, within } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { addDays, format } from 'date-fns'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { shinyTasksConfiguration } from '@/config'
 import i18n from '@/i18n'
@@ -12,6 +13,37 @@ describe('App', () => {
     await i18n.changeLanguage('en')
   })
 
+  it('shows the selected date and toggles the calendar', () => {
+    const nextDate = addDays(new Date(), 1)
+
+    render(<App />)
+
+    expect(screen.getByText('Selected date: Today')).toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: 'Calendar' })).not.toBeInTheDocument()
+
+    const toggle = screen.getByRole('button', { name: 'Show calendar' })
+    expect(toggle).toHaveAttribute('aria-expanded', 'false')
+
+    fireEvent.click(toggle)
+
+    expect(screen.getByRole('button', { name: 'Hide calendar' })).toHaveAttribute(
+      'aria-expanded',
+      'true',
+    )
+    expect(screen.getByRole('heading', { name: 'Calendar' })).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: format(nextDate, 'PPPP') }))
+
+    expect(screen.getByText(`Selected date: ${format(nextDate, 'd MMM yyyy')}`)).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Hide calendar' }))
+
+    expect(screen.getByRole('button', { name: 'Show calendar' })).toHaveAttribute(
+      'aria-expanded',
+      'false',
+    )
+  })
+
   it('updates the active server list immediately when preferences change', async () => {
     const user = userEvent.setup()
     const selectedDate = new Date()
@@ -22,11 +54,11 @@ describe('App', () => {
 
     render(<App />)
 
-    const serverList = screen.getByRole('heading', { name: 'Active servers' }).closest('section')
+    const settingsButton = screen.getByRole('button', { name: 'Open settings' })
+    const serverList = settingsButton.closest('section')
     expect(serverList).not.toBeNull()
     expect(within(serverList!).getByText(String(serverId))).toBeInTheDocument()
 
-    const settingsButton = screen.getByRole('button', { name: 'Open settings' })
     await user.click(settingsButton)
     await user.click(screen.getByRole('checkbox', { name: String(serverId) }))
 

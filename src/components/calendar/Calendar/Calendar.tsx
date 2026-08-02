@@ -1,14 +1,11 @@
 import { addMonths, format, startOfMonth } from 'date-fns'
-import { de, enUS, fr, uk } from 'date-fns/locale'
 import { CalendarCheck, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { DayPicker, type OnSelectHandler } from 'react-day-picker'
 import 'react-day-picker/style.css'
 import { useTranslation } from 'react-i18next'
-import type { LanguageCode } from '@/i18n/languages'
 import { IconButton } from '@/components/ui/IconButton'
-
-const calendarLocales = { en: enUS, fr, de, uk } as const
+import { getDateLocale } from '@/utils/date'
 
 function HiddenMonthCaption() {
   return <></>
@@ -19,16 +16,10 @@ type CalendarProps = {
   onSelectDate: (date: Date) => void
 }
 
-function getCalendarLocale(language: string) {
-  const languageCode = language.split('-')[0] as LanguageCode
-
-  return calendarLocales[languageCode] ?? calendarLocales.en
-}
-
 export function Calendar({ selectedDate, onSelectDate }: CalendarProps) {
   const { i18n, t } = useTranslation('common')
   const [month, setMonth] = useState(() => startOfMonth(selectedDate))
-  const locale = getCalendarLocale(i18n.resolvedLanguage ?? i18n.language)
+  const locale = getDateLocale(i18n.resolvedLanguage ?? i18n.language)
 
   useEffect(() => {
     setMonth(startOfMonth(selectedDate))

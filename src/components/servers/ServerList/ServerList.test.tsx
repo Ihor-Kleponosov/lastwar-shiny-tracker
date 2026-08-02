@@ -20,7 +20,7 @@ describe('ServerList', () => {
       />,
     )
 
-    expect(screen.getByText('29 active servers')).toBeInTheDocument()
+    expect(screen.getByText('29 servers')).toBeInTheDocument()
     expect(screen.getAllByRole('listitem').map(({ textContent }) => textContent)).toEqual([
       '1638',
       '1643',
@@ -74,7 +74,7 @@ describe('ServerList', () => {
       />,
     )
 
-    expect(screen.getByText('15 active servers')).toBeInTheDocument()
+    expect(screen.getByText('15 servers')).toBeInTheDocument()
     expect(screen.getAllByRole('listitem').map(({ textContent }) => textContent)).toEqual([
       '1639',
       '1640',
@@ -104,7 +104,7 @@ describe('ServerList', () => {
       />,
     )
 
-    expect(screen.getByText('3 active servers')).toBeInTheDocument()
+    expect(screen.getByText('3 servers')).toBeInTheDocument()
     expect(screen.getAllByRole('listitem').map(({ textContent }) => textContent)).toEqual([
       '1638',
       '1691',
