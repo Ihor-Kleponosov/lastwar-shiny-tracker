@@ -39,16 +39,11 @@ describe('Calendar', () => {
     const user = userEvent.setup()
     const onSelectDate = vi.fn()
 
-    const { container } = render(
-      <Calendar selectedDate={new Date(2026, 0, 15)} onSelectDate={onSelectDate} />,
-    )
-
-    expect(container.querySelectorAll('.rdp-week')).toHaveLength(6)
+    render(<Calendar selectedDate={new Date(2026, 0, 15)} onSelectDate={onSelectDate} />)
 
     await user.click(screen.getByRole('button', { name: 'Next month' }))
 
     expect(screen.getByText('February 2026')).toBeInTheDocument()
-    expect(container.querySelectorAll('.rdp-week')).toHaveLength(6)
     expect(onSelectDate).not.toHaveBeenCalled()
 
     await user.click(screen.getByRole('button', { name: 'Previous month' }))

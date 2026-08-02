@@ -12,7 +12,11 @@
   "settings": {
     "open": "Ouvrir les paramètres",
     "title": "Paramètres",
-    "close": "Fermer les paramètres"
+    "close": "Fermer les paramètres",
+    "serverList": {
+      "title": "Liste des serveurs",
+      "description": "Choisissez les serveurs à afficher dans le calendrier. Désactivez ceux pour lesquels vous n’avez pas de liens ou dont vous n’avez pas besoin. Cliquez sur un serveur pour modifier son état."
+    }
   },
   "servers": {
     "title": "Serveurs actifs",

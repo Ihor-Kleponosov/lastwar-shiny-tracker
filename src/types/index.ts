@@ -8,5 +8,5 @@ export interface ShinyTasksConfiguration {
 }
 
 export interface PersistedServerPreferences {
-  readonly disabledServerIds: readonly ServerId[]
+  readonly enabledServerIds: readonly ServerId[]
 }
