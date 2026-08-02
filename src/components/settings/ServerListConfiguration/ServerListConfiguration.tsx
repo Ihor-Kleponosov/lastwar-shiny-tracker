@@ -1,12 +1,23 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useServerPreferences } from '@/hooks/useServerPreferences'
+import type { ServerId } from '@/types'
 import { ServerListConfigurationControls } from './ServerListConfigurationControls'
 import { ServerListConfigurationItem } from './ServerListConfigurationItem'
 
-export function ServerListConfiguration() {
+type ServerListConfigurationProps = {
+  enabledServerIds: ReadonlySet<ServerId>
+  onToggleServer: (serverId: ServerId) => void
+  onToggleServers: (serverIds: readonly ServerId[]) => void
+  serverIds: readonly ServerId[]
+}
+
+export function ServerListConfiguration({
+  enabledServerIds,
+  onToggleServer,
+  onToggleServers,
+  serverIds,
+}: ServerListConfigurationProps) {
   const { t } = useTranslation('common')
-  const { enabledServerIds, serverIds, toggleServer, toggleServers } = useServerPreferences()
   const [filter, setFilter] = useState('')
   const filteredServerIds = serverIds.filter((serverId) => String(serverId).includes(filter))
 
@@ -25,7 +36,7 @@ export function ServerListConfiguration() {
         enabledServerIds={enabledServerIds}
         filter={filter}
         onFilterChange={setFilter}
-        onToggleServers={toggleServers}
+        onToggleServers={onToggleServers}
         serverIds={serverIds}
         displayedServerIds={filteredServerIds}
       />
@@ -43,7 +54,7 @@ export function ServerListConfiguration() {
             key={serverId}
             serverId={serverId}
             isSelected={enabledServerIds.has(serverId)}
-            onToggle={toggleServer}
+            onToggle={onToggleServer}
           />
         ))}
       </ul>

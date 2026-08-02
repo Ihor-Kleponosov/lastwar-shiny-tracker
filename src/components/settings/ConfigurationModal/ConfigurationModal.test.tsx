@@ -3,7 +3,15 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import i18n from '@/i18n'
+import { getConfiguredServerIds } from '@/utils/serverPreferences'
 import { ConfigurationModal } from '.'
+
+const configurationModalProps = {
+  enabledServerIds: new Set(getConfiguredServerIds()),
+  serverIds: getConfiguredServerIds(),
+  onToggleServer: vi.fn(),
+  onToggleServers: vi.fn(),
+}
 
 function ConfigurationModalHarness() {
   const [isOpen, setIsOpen] = useState(true)
@@ -15,7 +23,11 @@ function ConfigurationModalHarness() {
         Open settings
       </button>
       {isOpen ? (
-        <ConfigurationModal onClose={() => setIsOpen(false)} returnFocusRef={returnFocusRef} />
+        <ConfigurationModal
+          {...configurationModalProps}
+          onClose={() => setIsOpen(false)}
+          returnFocusRef={returnFocusRef}
+        />
       ) : null}
     </>
   )
@@ -27,7 +39,13 @@ describe('ConfigurationModal', () => {
   })
 
   it('renders a labelled dialog with a close action', () => {
-    render(<ConfigurationModal onClose={vi.fn()} returnFocusRef={{ current: null }} />)
+    render(
+      <ConfigurationModal
+        {...configurationModalProps}
+        onClose={vi.fn()}
+        returnFocusRef={{ current: null }}
+      />,
+    )
 
     expect(screen.getByRole('dialog', { name: 'Settings' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Close settings' })).toBeInTheDocument()

@@ -1,16 +1,8 @@
-import { Settings } from 'lucide-react'
-import type { RefObject } from 'react'
 import { useTranslation } from 'react-i18next'
 import shinyTrackerLogo from '@/assets/shiny-tracker-logo.png'
-import { IconButton } from '@/components/ui/IconButton'
 import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher'
 
-type HeaderProps = {
-  onOpenSettings: () => void
-  settingsButtonRef: RefObject<HTMLButtonElement | null>
-}
-
-export function Header({ onOpenSettings, settingsButtonRef }: HeaderProps) {
+export function Header() {
   const { t } = useTranslation('common')
 
   return (
@@ -29,13 +21,6 @@ export function Header({ onOpenSettings, settingsButtonRef }: HeaderProps) {
         </h1>
         <div className="flex items-center justify-end">
           <LanguageSwitcher />
-          <IconButton
-            ref={settingsButtonRef}
-            aria-label={t('settings.open')}
-            onClick={onOpenSettings}
-          >
-            <Settings aria-hidden="true" size={20} />
-          </IconButton>
         </div>
       </div>
     </header>

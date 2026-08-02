@@ -4,16 +4,28 @@ import { useEffect, useId, useRef, type RefObject } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ServerListConfiguration } from '@/components/settings/ServerListConfiguration'
 import { IconButton } from '@/components/ui/IconButton'
+import type { ServerId } from '@/types'
 
 type ConfigurationModalProps = {
+  enabledServerIds: ReadonlySet<ServerId>
   onClose: () => void
+  onToggleServer: (serverId: ServerId) => void
+  onToggleServers: (serverIds: readonly ServerId[]) => void
   returnFocusRef: RefObject<HTMLButtonElement | null>
+  serverIds: readonly ServerId[]
 }
 
 const focusableSelector =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
 
-export function ConfigurationModal({ onClose, returnFocusRef }: ConfigurationModalProps) {
+export function ConfigurationModal({
+  enabledServerIds,
+  onClose,
+  onToggleServer,
+  onToggleServers,
+  returnFocusRef,
+  serverIds,
+}: ConfigurationModalProps) {
   const { t } = useTranslation('common')
   const dialogRef = useRef<HTMLDivElement>(null)
   const titleId = useId()
@@ -91,7 +103,12 @@ export function ConfigurationModal({ onClose, returnFocusRef }: ConfigurationMod
           </IconButton>
         </header>
         <div className="min-h-0 flex-1 overflow-y-auto py-6">
-          <ServerListConfiguration />
+          <ServerListConfiguration
+            enabledServerIds={enabledServerIds}
+            serverIds={serverIds}
+            onToggleServer={onToggleServer}
+            onToggleServers={onToggleServers}
+          />
         </div>
       </motion.div>
     </motion.div>
