@@ -14,6 +14,14 @@
     "title": "Paramètres",
     "close": "Fermer les paramètres",
     "serverList": {
+      "searchLabel": "Rechercher des serveurs",
+      "searchPlaceholder": "Filtrer les serveurs",
+      "clearSearch": "Effacer le filtre des serveurs",
+      "selectAll": "Tout sélectionner",
+      "deselectAll": "Tout désélectionner",
+      "selectDisplayed": "Sélectionner les affichés",
+      "deselectDisplayed": "Désélectionner les affichés",
+      "noResults": "Aucun serveur trouvé.",
       "title": "Liste des serveurs",
       "description": "Choisissez les serveurs à afficher dans le calendrier. Désactivez ceux pour lesquels vous n’avez pas de liens ou dont vous n’avez pas besoin. Cliquez sur un serveur pour modifier son état."
     }

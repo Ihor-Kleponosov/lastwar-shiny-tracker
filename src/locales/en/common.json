@@ -14,6 +14,14 @@
     "title": "Settings",
     "close": "Close settings",
     "serverList": {
+      "searchLabel": "Search servers",
+      "searchPlaceholder": "Filter servers",
+      "clearSearch": "Clear server filter",
+      "selectAll": "Select all",
+      "deselectAll": "Deselect all",
+      "selectDisplayed": "Select displayed",
+      "deselectDisplayed": "Deselect displayed",
+      "noResults": "No servers found.",
       "title": "Server list",
       "description": "Choose the servers you want to show in the calendar. Disable those you do not have links for or do not need. Click a server to change its state."
     }

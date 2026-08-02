@@ -28,5 +28,28 @@ export function useServerPreferences() {
     })
   }, [])
 
-  return { enabledServerIds, serverIds, toggleServer }
+  const toggleServers = useCallback((targetServerIds: readonly ServerId[]) => {
+    if (targetServerIds.length === 0) {
+      return
+    }
+
+    setEnabledServerIds((currentEnabledServerIds) => {
+      const nextEnabledServerIds = new Set(currentEnabledServerIds)
+      const areAllTargetServersSelected = targetServerIds.every((serverId) =>
+        currentEnabledServerIds.has(serverId),
+      )
+
+      for (const serverId of targetServerIds) {
+        if (areAllTargetServersSelected) {
+          nextEnabledServerIds.delete(serverId)
+        } else {
+          nextEnabledServerIds.add(serverId)
+        }
+      }
+
+      return nextEnabledServerIds
+    })
+  }, [])
+
+  return { enabledServerIds, serverIds, toggleServer, toggleServers }
 }
