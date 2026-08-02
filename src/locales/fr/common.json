@@ -9,7 +9,7 @@
     "previousMonth": "Mois précédent",
     "nextMonth": "Mois suivant"
   },
-  "settings": { "open": "Ouvrir les param\u00e8tres" },
+  "settings": { "open": "Ouvrir les paramètres" },
   "servers": {
     "title": "Serveurs actifs",
     "active_one": "{{count}} serveur actif",

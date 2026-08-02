@@ -140,6 +140,7 @@ When introducing new strings:
 
 - add English first
 - update every supported locale
+- write translation values using their literal characters (for example, Ukrainian Cyrillic), not Unicode escape codes such as `\u041c`
 
 ---
 

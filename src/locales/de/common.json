@@ -2,14 +2,14 @@
   "app": {
     "logoAlt": "Logo des Last War Glanz-Trackers"
   },
-  "language": { "label": "Sprache", "openMenu": "Sprache ausw\u00e4hlen" },
+  "language": { "label": "Sprache", "openMenu": "Sprache auswählen" },
   "calendar": {
     "title": "Kalender",
     "today": "Heute",
     "previousMonth": "Vorheriger Monat",
     "nextMonth": "Nächster Monat"
   },
-  "settings": { "open": "Einstellungen \u00f6ffnen" },
+  "settings": { "open": "Einstellungen öffnen" },
   "servers": {
     "title": "Aktive Server",
     "active_one": "{{count}} aktiver Server",
