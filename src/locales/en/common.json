@@ -9,7 +9,11 @@
     "previousMonth": "Previous month",
     "nextMonth": "Next month"
   },
-  "settings": { "open": "Open settings" },
+  "settings": {
+    "open": "Open settings",
+    "title": "Settings",
+    "close": "Close settings"
+  },
   "servers": {
     "title": "Active servers",
     "active_one": "{{count}} active server",

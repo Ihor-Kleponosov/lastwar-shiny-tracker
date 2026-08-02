@@ -9,7 +9,11 @@
     "previousMonth": "Vorheriger Monat",
     "nextMonth": "Nächster Monat"
   },
-  "settings": { "open": "Einstellungen öffnen" },
+  "settings": {
+    "open": "Einstellungen öffnen",
+    "title": "Einstellungen",
+    "close": "Einstellungen schließen"
+  },
   "servers": {
     "title": "Aktive Server",
     "active_one": "{{count}} aktiver Server",
