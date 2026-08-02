@@ -15,9 +15,8 @@ export function Header() {
           height="90"
           alt={t('app.logoAlt')}
         />
-        <h1 className="min-w-0 px-2 text-left text-xl font-bold leading-normal tracking-normal text-[var(--color-text-primary)] sm:text-center">
-          Last War <br className="sm:hidden" />
-          Shiny Tracker
+        <h1 className="min-w-0 px-2 text-left text-base font-bold leading-normal tracking-normal text-[var(--color-text-primary)] sm:text-center">
+          Last War Shiny Tracker
         </h1>
         <div className="flex items-center justify-end">
           <LanguageSwitcher />
