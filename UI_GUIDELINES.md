@@ -496,11 +496,11 @@ Do not use a third-party modal library.
 
 ### Desktop behavior
 
-- Centered panel.
-- Maximum width around `480–560 px`.
-- Maximum height around `85vh`.
-- Scrollable content area.
-- Rounded corners.
+- A full-screen settings modal is acceptable when it provides enough space for
+  server configuration. Its inner content container must use the same maximum
+  width and horizontal padding as the main page content.
+- A centered panel may be used instead, with a maximum width around `480–560 px`,
+  maximum height around `85vh`, a scrollable content area, and rounded corners.
 
 ### Mobile behavior
 
@@ -540,7 +540,8 @@ Modal
 - Open from settings button.
 - Close button closes.
 - Escape closes.
-- Backdrop click closes.
+- When the modal uses a visible backdrop around a panel, clicking that backdrop
+  closes the modal. This does not apply to a full-screen modal.
 - Clicking inside the panel does not close.
 - Body scroll is locked while open.
 - Focus moves into the modal when opened.
