@@ -11,7 +11,7 @@ describe('ServerList', () => {
   it('displays the active server group for the selected date in numerical order', () => {
     render(<ServerList selectedDate={new Date(2026, 6, 15)} />)
 
-    expect(screen.getByText('28 active servers')).toBeInTheDocument()
+    expect(screen.getByText('29 active servers')).toBeInTheDocument()
     expect(screen.getAllByRole('listitem').map(({ textContent }) => textContent)).toEqual([
       '1638',
       '1643',
@@ -37,6 +37,7 @@ describe('ServerList', () => {
       '1687',
       '1690',
       '1691',
+      '1692',
       '1693',
       '1696',
       '1697',

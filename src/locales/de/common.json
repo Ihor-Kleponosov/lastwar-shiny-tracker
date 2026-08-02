@@ -14,6 +14,14 @@
     "title": "Einstellungen",
     "close": "Einstellungen schließen",
     "serverList": {
+      "searchLabel": "Server suchen",
+      "searchPlaceholder": "Server filtern",
+      "clearSearch": "Serverfilter löschen",
+      "selectAll": "Alle auswählen",
+      "deselectAll": "Alle abwählen",
+      "selectDisplayed": "Angezeigte auswählen",
+      "deselectDisplayed": "Angezeigte abwählen",
+      "noResults": "Keine Server gefunden.",
       "title": "Serverliste",
       "description": "Wähle die Server aus, die im Kalender angezeigt werden sollen. Deaktiviere diejenigen, für die du keine Links hast oder die du nicht benötigst. Klicke auf einen Server, um seinen Status zu ändern."
     }
