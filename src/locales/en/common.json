@@ -12,6 +12,12 @@
     "previousMonth": "Previous month",
     "nextMonth": "Next month"
   },
+  "export": {
+    "download": "Download image",
+    "loading": "Exporting image",
+    "serversTitle": "Servers:",
+    "groupLabel": "Group {{label}}:"
+  },
   "settings": {
     "open": "Open settings",
     "title": "Settings",

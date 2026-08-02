@@ -15,6 +15,12 @@
     "previousMonth": "Попередній місяць",
     "nextMonth": "Наступний місяць"
   },
+  "export": {
+    "download": "Завантажити зображення",
+    "loading": "Експорт зображення",
+    "serversTitle": "Сервери:",
+    "groupLabel": "Група {{label}}:"
+  },
   "settings": {
     "open": "Відкрити налаштування",
     "title": "Налаштування",

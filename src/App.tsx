@@ -20,6 +20,7 @@ export default function App() {
       <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-4 sm:gap-5">
         <Header />
         <DateSummary
+          enabledServerIds={enabledServerIds}
           selectedDate={selectedDate}
           isCalendarVisible={isCalendarVisible}
           onToggleCalendar={() => setIsCalendarVisible((isVisible) => !isVisible)}
