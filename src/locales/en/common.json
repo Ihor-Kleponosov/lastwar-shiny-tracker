@@ -28,6 +28,7 @@
   },
   "servers": {
     "title": "Active servers",
+    "empty": "No enabled servers for this date.",
     "active_one": "{{count}} active server",
     "active_other": "{{count}} active servers"
   }

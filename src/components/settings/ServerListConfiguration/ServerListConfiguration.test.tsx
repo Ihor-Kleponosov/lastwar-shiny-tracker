@@ -1,11 +1,29 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it } from 'vitest'
+import { useServerPreferences } from '@/hooks/useServerPreferences'
 import i18n from '@/i18n'
 import { getConfiguredServerIds, SERVER_PREFERENCES_STORAGE_KEY } from '@/utils/serverPreferences'
 import { ServerListConfiguration } from '.'
 
 const configuredServerIds = getConfiguredServerIds()
+
+function ServerListConfigurationHarness() {
+  const { enabledServerIds, serverIds, toggleServer, toggleServers } = useServerPreferences()
+
+  return (
+    <ServerListConfiguration
+      enabledServerIds={enabledServerIds}
+      serverIds={serverIds}
+      onToggleServer={toggleServer}
+      onToggleServers={toggleServers}
+    />
+  )
+}
+
+function renderConfiguration() {
+  return render(<ServerListConfigurationHarness />)
+}
 
 function getServerCheckboxes() {
   return screen
@@ -20,7 +38,7 @@ describe('ServerListConfiguration', () => {
   })
 
   it('displays every configured server in numerical order with all servers selected by default', () => {
-    render(<ServerListConfiguration />)
+    renderConfiguration()
 
     const serverCheckboxes = getServerCheckboxes()
 
@@ -38,7 +56,7 @@ describe('ServerListConfiguration', () => {
       JSON.stringify({ enabledServerIds: [1639] }),
     )
 
-    render(<ServerListConfiguration />)
+    renderConfiguration()
 
     expect(screen.getByRole('checkbox', { name: '1638' })).not.toBeChecked()
     expect(screen.getByRole('checkbox', { name: '1640' })).not.toBeChecked()
@@ -48,7 +66,7 @@ describe('ServerListConfiguration', () => {
   it('toggles a server with pointer and keyboard interaction', async () => {
     const user = userEvent.setup()
 
-    render(<ServerListConfiguration />)
+    renderConfiguration()
 
     const serverCheckbox = screen.getByRole('checkbox', { name: '1638' })
     await user.click(serverCheckbox)
@@ -62,7 +80,7 @@ describe('ServerListConfiguration', () => {
   it('filters servers by text and restores the list when cleared', async () => {
     const user = userEvent.setup()
 
-    render(<ServerListConfiguration />)
+    renderConfiguration()
 
     const filter = screen.getByRole('searchbox', { name: 'Search servers' })
     await user.type(filter, '1638')
@@ -78,7 +96,7 @@ describe('ServerListConfiguration', () => {
   it('shows the displayed-selection control only when filtering changes the list', async () => {
     const user = userEvent.setup()
 
-    render(<ServerListConfiguration />)
+    renderConfiguration()
 
     await user.type(screen.getByRole('searchbox', { name: 'Search servers' }), '1')
 
@@ -88,7 +106,7 @@ describe('ServerListConfiguration', () => {
   it('shows no-results feedback for a filter without matching servers', async () => {
     const user = userEvent.setup()
 
-    render(<ServerListConfiguration />)
+    renderConfiguration()
 
     await user.type(screen.getByRole('searchbox', { name: 'Search servers' }), '9999')
 
@@ -104,7 +122,7 @@ describe('ServerListConfiguration', () => {
       JSON.stringify({ enabledServerIds: [1639] }),
     )
 
-    render(<ServerListConfiguration />)
+    renderConfiguration()
 
     const selectAll = screen.getByRole('button', { name: 'Select all' })
 
@@ -130,7 +148,7 @@ describe('ServerListConfiguration', () => {
       JSON.stringify({ enabledServerIds: [1638, 1639] }),
     )
 
-    render(<ServerListConfiguration />)
+    renderConfiguration()
 
     const filter = screen.getByRole('searchbox', { name: 'Search servers' })
     await user.type(filter, '1638')
