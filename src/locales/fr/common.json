@@ -3,7 +3,12 @@
     "logoAlt": "Logo du suivi des brillants Last War"
   },
   "language": { "label": "Langue", "openMenu": "Choisir la langue" },
-  "calendar": { "title": "Calendrier" },
+  "calendar": {
+    "title": "Calendrier",
+    "today": "Aujourd’hui",
+    "previousMonth": "Mois précédent",
+    "nextMonth": "Mois suivant"
+  },
   "settings": { "open": "Ouvrir les param\u00e8tres" },
   "servers": {
     "title": "Serveurs actifs",
