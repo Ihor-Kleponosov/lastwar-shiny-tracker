@@ -6,8 +6,7 @@ import { ExportView } from '@/components/export/ExportView'
 import { IconButton } from '@/components/ui/IconButton'
 import { Loader } from '@/components/ui/Loader'
 import type { ServerId } from '@/types'
-
-const exportFilename = 'last-war-shiny-tracker.png'
+import { getExportFilename } from '@/utils/exportFilename'
 
 type ImageExportProps = {
   enabledServerIds: ReadonlySet<ServerId>
@@ -48,7 +47,7 @@ export function ImageExport({ enabledServerIds, selectedDate }: ImageExportProps
       try {
         const downloadLink = document.createElement('a')
         downloadLink.href = objectUrl
-        downloadLink.download = exportFilename
+        downloadLink.download = getExportFilename(selectedDate)
         downloadLink.click()
       } finally {
         URL.revokeObjectURL(objectUrl)
