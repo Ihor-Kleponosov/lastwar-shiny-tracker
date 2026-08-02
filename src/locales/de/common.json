@@ -12,7 +12,11 @@
   "settings": {
     "open": "Einstellungen öffnen",
     "title": "Einstellungen",
-    "close": "Einstellungen schließen"
+    "close": "Einstellungen schließen",
+    "serverList": {
+      "title": "Serverliste",
+      "description": "Wähle die Server aus, die im Kalender angezeigt werden sollen. Deaktiviere diejenigen, für die du keine Links hast oder die du nicht benötigst. Klicke auf einen Server, um seinen Status zu ändern."
+    }
   },
   "servers": {
     "title": "Aktive Server",

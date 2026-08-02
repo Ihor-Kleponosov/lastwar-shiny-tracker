@@ -2,6 +2,7 @@ import { X } from 'lucide-react'
 import { motion, useReducedMotion } from 'motion/react'
 import { useEffect, useId, useRef, type RefObject } from 'react'
 import { useTranslation } from 'react-i18next'
+import { ServerListConfiguration } from '@/components/settings/ServerListConfiguration'
 import { IconButton } from '@/components/ui/IconButton'
 
 type ConfigurationModalProps = {
@@ -89,7 +90,9 @@ export function ConfigurationModal({ onClose, returnFocusRef }: ConfigurationMod
             <X aria-hidden="true" size={20} />
           </IconButton>
         </header>
-        <div className="min-h-0 flex-1 overflow-y-auto py-6" />
+        <div className="min-h-0 flex-1 overflow-y-auto py-6">
+          <ServerListConfiguration />
+        </div>
       </motion.div>
     </motion.div>
   )

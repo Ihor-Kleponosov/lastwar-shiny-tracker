@@ -12,7 +12,11 @@
   "settings": {
     "open": "Open settings",
     "title": "Settings",
-    "close": "Close settings"
+    "close": "Close settings",
+    "serverList": {
+      "title": "Server list",
+      "description": "Choose the servers you want to show in the calendar. Disable those you do not have links for or do not need. Click a server to change its state."
+    }
   },
   "servers": {
     "title": "Active servers",

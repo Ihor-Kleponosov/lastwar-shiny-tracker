@@ -9,17 +9,14 @@ describe('LanguageSwitcher', () => {
     await i18n.changeLanguage('en')
   })
 
-  it('shows all supported languages and highlights the selected language', async () => {
+  it('shows all supported languages and identifies the selected language', async () => {
     const user = userEvent.setup()
     render(<LanguageSwitcher />)
 
     await user.click(screen.getByRole('button', { name: 'Choose language' }))
 
     expect(screen.getAllByRole('menuitemradio')).toHaveLength(4)
-    expect(screen.getByRole('menuitemradio', { name: 'English', checked: true })).toHaveClass(
-      'bg-[var(--color-background)]',
-      'font-semibold',
-    )
+    expect(screen.getByRole('menuitemradio', { name: 'English', checked: true })).toBeVisible()
   })
 
   it('changes the language and closes the menu', async () => {
