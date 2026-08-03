@@ -19,25 +19,34 @@ export default function App() {
     <main className="min-h-screen bg-[var(--color-background)] px-4 py-6 text-[var(--color-text-primary)] sm:px-6">
       <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-4 sm:gap-5">
         <Header />
-        <DateSummary
-          enabledServerIds={enabledServerIds}
-          selectedDate={selectedDate}
-          isCalendarVisible={isCalendarVisible}
-          onToggleCalendar={() => setIsCalendarVisible((isVisible) => !isVisible)}
-        />
-        <AnimatePresence initial={false}>
-          {isCalendarVisible ? (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: prefersReducedMotion ? 0 : 0.2, ease: 'easeOut' }}
-              className="overflow-hidden"
-            >
-              <Calendar selectedDate={selectedDate} onSelectDate={setSelectedDate} />
-            </motion.div>
-          ) : null}
-        </AnimatePresence>
+        <div className="relative">
+          <DateSummary
+            enabledServerIds={enabledServerIds}
+            selectedDate={selectedDate}
+            isCalendarVisible={isCalendarVisible}
+            onSelectToday={() => setSelectedDate(new Date())}
+            onToggleCalendar={() => setIsCalendarVisible((isVisible) => !isVisible)}
+          />
+          <AnimatePresence initial={false}>
+            {isCalendarVisible ? (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: prefersReducedMotion ? 0 : 0.2, ease: 'easeOut' }}
+                className="absolute top-[calc(100%+1rem)] right-0 left-0 z-20 overflow-hidden"
+              >
+                <Calendar
+                  selectedDate={selectedDate}
+                  onSelectDate={(date) => {
+                    setSelectedDate(date)
+                    setIsCalendarVisible(false)
+                  }}
+                />
+              </motion.div>
+            ) : null}
+          </AnimatePresence>
+        </div>
         <ServerList
           selectedDate={selectedDate}
           enabledServerIds={enabledServerIds}

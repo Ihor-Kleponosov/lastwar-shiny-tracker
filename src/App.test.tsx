@@ -17,7 +17,7 @@ describe('App', () => {
     })
   })
 
-  it('shows the selected date and toggles the calendar', () => {
+  it('shows the selected date and closes the calendar after selecting a day', async () => {
     const nextDate = addDays(new Date(), 1)
 
     render(<App />)
@@ -35,17 +35,25 @@ describe('App', () => {
       'true',
     )
     expect(screen.getByRole('heading', { name: 'Calendar' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Calendar' }).closest('div')).toHaveClass(
+      'absolute',
+      'z-20',
+    )
 
     fireEvent.click(screen.getByRole('button', { name: format(nextDate, 'PPPP') }))
 
     expect(screen.getByText(format(nextDate, 'P'))).toBeInTheDocument()
-
-    fireEvent.click(screen.getByRole('button', { name: 'Hide calendar' }))
-
+    await waitFor(() => {
+      expect(screen.queryByRole('heading', { name: 'Calendar' })).not.toBeInTheDocument()
+    })
     expect(screen.getByRole('button', { name: 'Show calendar' })).toHaveAttribute(
       'aria-expanded',
       'false',
     )
+
+    fireEvent.click(screen.getByRole('button', { name: 'Today' }))
+
+    expect(screen.getByText(format(new Date(), 'P'))).toBeInTheDocument()
   })
 
   it('updates the active server list immediately when preferences change', async () => {

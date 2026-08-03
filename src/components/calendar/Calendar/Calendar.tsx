@@ -1,5 +1,5 @@
 import { addMonths, format, startOfMonth } from 'date-fns'
-import { CalendarCheck, ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { DayPicker, type OnSelectHandler } from 'react-day-picker'
 import 'react-day-picker/style.css'
@@ -29,13 +29,6 @@ export function Calendar({ selectedDate, onSelectDate }: CalendarProps) {
     if (date) onSelectDate(date)
   }
 
-  const handleToday = () => {
-    const today = new Date()
-
-    onSelectDate(today)
-    setMonth(startOfMonth(today))
-  }
-
   return (
     <section
       className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-[0_8px_24px_rgb(0_0_0_/_14%)] sm:p-5"
@@ -46,9 +39,6 @@ export function Calendar({ selectedDate, onSelectDate }: CalendarProps) {
       </h2>
       <div className="mb-2 flex items-center justify-between gap-2">
         <div className="flex items-center gap-1">
-          <IconButton aria-label={t('calendar.today')} onClick={handleToday}>
-            <CalendarCheck aria-hidden="true" size={20} />
-          </IconButton>
           <IconButton
             aria-label={t('calendar.previousMonth')}
             onClick={() => setMonth((currentMonth) => addMonths(currentMonth, -1))}

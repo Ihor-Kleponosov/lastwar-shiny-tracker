@@ -1,5 +1,5 @@
 import { format } from 'date-fns'
-import { CalendarDays } from 'lucide-react'
+import { CalendarCheck, CalendarDays } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { ImageExport } from '@/components/export/ImageExport'
 import { IconButton } from '@/components/ui/IconButton'
@@ -9,6 +9,7 @@ import { getDateLocale } from '@/utils/date'
 type DateSummaryProps = {
   enabledServerIds: ReadonlySet<ServerId>
   isCalendarVisible: boolean
+  onSelectToday: () => void
   onToggleCalendar: () => void
   selectedDate: Date
 }
@@ -16,6 +17,7 @@ type DateSummaryProps = {
 export function DateSummary({
   enabledServerIds,
   isCalendarVisible,
+  onSelectToday,
   onToggleCalendar,
   selectedDate,
 }: DateSummaryProps) {
@@ -30,15 +32,18 @@ export function DateSummary({
       </p>
       <div className="flex shrink-0 items-center gap-1">
         <ImageExport enabledServerIds={enabledServerIds} />
+        <IconButton aria-label={t('calendar.today')} onClick={onSelectToday}>
+          <CalendarCheck aria-hidden="true" size={20} />
+        </IconButton>
         <IconButton
           aria-label={t(isCalendarVisible ? 'calendar.hide' : 'calendar.show')}
           aria-expanded={isCalendarVisible}
           onClick={onToggleCalendar}
-          className={`border transition-all duration-150 focus-visible:ring-2 focus-visible:ring-[var(--color-focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-background)] motion-reduce:transition-none ${
+          className={
             isCalendarVisible
-              ? 'translate-y-px border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-primary)] shadow-[inset_0_2px_4px_rgb(0_0_0_/_30%),inset_0_-1px_0_rgb(255_255_255_/_4%)]'
-              : 'border-[var(--color-border)] bg-[var(--color-surface-elevated)] text-[var(--color-text-primary)] shadow-[0_2px_3px_rgb(0_0_0_/_20%)] hover:bg-[var(--color-surface)]'
-          }`}
+              ? 'translate-y-px bg-[var(--color-surface)] shadow-[inset_0_2px_4px_rgb(0_0_0_/_30%),inset_0_-1px_0_rgb(255_255_255_/_4%)]'
+              : undefined
+          }
         >
           <CalendarDays aria-hidden="true" size={20} />
         </IconButton>
