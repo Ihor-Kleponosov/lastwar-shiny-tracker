@@ -18,7 +18,7 @@ function isPersistedServerPreferences(value: unknown): value is PersistedServerP
 }
 
 function getDefaultEnabledServerIds(): Set<ServerId> {
-  return new Set(configuredServerIds)
+  return new Set()
 }
 
 export function getConfiguredServerIds(): ServerId[] {
@@ -44,7 +44,6 @@ export function getEnabledServerIds(): Set<ServerId> {
     const storedPreferences = localStorage.getItem(SERVER_PREFERENCES_STORAGE_KEY)
 
     if (storedPreferences === null) {
-      saveEnabledServerIds(defaultEnabledServerIds)
       return defaultEnabledServerIds
     }
 
@@ -62,10 +61,8 @@ export function getEnabledServerIds(): Set<ServerId> {
       return enabledServerIds
     }
 
-    saveEnabledServerIds(defaultEnabledServerIds)
     return defaultEnabledServerIds
   } catch {
-    saveEnabledServerIds(defaultEnabledServerIds)
     return defaultEnabledServerIds
   }
 }

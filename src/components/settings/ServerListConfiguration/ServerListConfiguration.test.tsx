@@ -69,7 +69,7 @@ describe('ServerListConfiguration', () => {
     await i18n.changeLanguage('en')
   })
 
-  it('displays every configured server in numerical order with all servers selected by default', () => {
+  it('displays every configured server in numerical order with none selected by default', () => {
     renderConfiguration()
 
     const serverCheckboxes = getServerCheckboxes()
@@ -77,8 +77,8 @@ describe('ServerListConfiguration', () => {
     expect(serverCheckboxes.map(({ id }) => Number(id.replace('server-', '')))).toEqual(
       configuredServerIds,
     )
-    expect(serverCheckboxes.every((checkbox) => (checkbox as HTMLInputElement).checked)).toBe(true)
-    expect(screen.getByRole('button', { name: 'Deselect all' })).toBeInTheDocument()
+    expect(serverCheckboxes.every((checkbox) => !(checkbox as HTMLInputElement).checked)).toBe(true)
+    expect(screen.getByRole('button', { name: 'Select all' })).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Deselect displayed' })).not.toBeInTheDocument()
     expect(screen.getByRole('tab', { name: 'By range' })).toHaveAttribute('aria-selected', 'true')
     expect(screen.getByRole('button', { name: 'Apply' })).toBeDisabled()
@@ -103,7 +103,7 @@ describe('ServerListConfiguration', () => {
     expect(getServerCheckboxes().map(({ id }) => Number(id.replace('server-', '')))).toEqual(
       Array.from({ length: 13 }, (_, index) => 1680 + index),
     )
-    expect(screen.getByRole('button', { name: 'Deselect displayed' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Select displayed' })).toBeInTheDocument()
   })
 
   it('resets filters when switching tabs', async () => {
@@ -163,11 +163,11 @@ describe('ServerListConfiguration', () => {
 
     const serverCheckbox = screen.getByRole('checkbox', { name: '1638' })
     await user.click(serverCheckbox)
-    expect(serverCheckbox).not.toBeChecked()
+    expect(serverCheckbox).toBeChecked()
 
     serverCheckbox.focus()
     await user.keyboard(' ')
-    expect(serverCheckbox).toBeChecked()
+    expect(serverCheckbox).not.toBeChecked()
   })
 
   it('filters servers by text and restores the list when cleared', async () => {

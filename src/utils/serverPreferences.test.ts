@@ -1,6 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
-  getConfiguredServerIds,
   getEnabledServerIds,
   saveEnabledServerIds,
   SERVER_PREFERENCES_STORAGE_KEY,
@@ -11,11 +10,9 @@ describe('server preferences', () => {
     localStorage.clear()
   })
 
-  it('creates the all-enabled default when preferences are absent', () => {
-    expect(getEnabledServerIds()).toEqual(new Set(getConfiguredServerIds()))
-    expect(localStorage.getItem(SERVER_PREFERENCES_STORAGE_KEY)).toBe(
-      JSON.stringify({ enabledServerIds: getConfiguredServerIds() }),
-    )
+  it('uses an empty default without creating preferences when preferences are absent', () => {
+    expect(getEnabledServerIds()).toEqual(new Set())
+    expect(localStorage.getItem(SERVER_PREFERENCES_STORAGE_KEY)).toBeNull()
   })
 
   it('removes stale and duplicate server IDs from saved preferences', () => {
@@ -38,13 +35,11 @@ describe('server preferences', () => {
     )
   })
 
-  it('recovers from malformed preferences with the all-enabled default', () => {
+  it('recovers from malformed preferences with an empty default', () => {
     localStorage.setItem(SERVER_PREFERENCES_STORAGE_KEY, '{invalid JSON')
 
-    expect(getEnabledServerIds()).toEqual(new Set(getConfiguredServerIds()))
-    expect(localStorage.getItem(SERVER_PREFERENCES_STORAGE_KEY)).toBe(
-      JSON.stringify({ enabledServerIds: getConfiguredServerIds() }),
-    )
+    expect(getEnabledServerIds()).toEqual(new Set())
+    expect(localStorage.getItem(SERVER_PREFERENCES_STORAGE_KEY)).toBe('{invalid JSON')
   })
 
   it('keeps preferences usable when storage is unavailable', () => {
