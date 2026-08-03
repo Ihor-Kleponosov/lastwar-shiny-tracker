@@ -15,6 +15,13 @@ describe('IconButton', () => {
     expect(button).toHaveAttribute('type', 'button')
     expect(button).toBeDisabled()
     expect(button).toHaveTextContent('Settings')
-    expect(button).toHaveClass('size-11', 'w-auto', 'px-3', 'py-2')
+    expect(button).toHaveClass(
+      'size-11',
+      'w-auto',
+      'border',
+      'bg-[var(--color-surface-elevated)]',
+      'px-3',
+      'py-2',
+    )
   })
 })
