@@ -1,7 +1,8 @@
 import { X } from 'lucide-react'
 import { motion, useReducedMotion } from 'motion/react'
-import { useEffect, useId, useRef, type RefObject } from 'react'
+import { useId, useRef, type RefObject } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useModalAccessibility } from '@/hooks/useModalAccessibility'
 import { ServerListConfiguration } from '@/components/settings/ServerListConfiguration'
 import { IconButton } from '@/components/ui/IconButton'
 import type { ServerId } from '@/types'
@@ -14,9 +15,6 @@ type ConfigurationModalProps = {
   returnFocusRef: RefObject<HTMLButtonElement | null>
   serverIds: readonly ServerId[]
 }
-
-const focusableSelector =
-  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
 
 export function ConfigurationModal({
   enabledServerIds,
@@ -35,45 +33,7 @@ export function ConfigurationModal({
     ease: [0.2, 0.8, 0.2, 1] as const,
   }
 
-  useEffect(() => {
-    const previousOverflow = document.body.style.overflow
-    const returnFocusElement = returnFocusRef.current
-    document.body.style.overflow = 'hidden'
-    dialogRef.current?.querySelector<HTMLElement>(focusableSelector)?.focus()
-
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape') {
-        event.preventDefault()
-        onClose()
-        return
-      }
-
-      if (event.key !== 'Tab') return
-
-      const focusableElements = Array.from(
-        dialogRef.current?.querySelectorAll<HTMLElement>(focusableSelector) ?? [],
-      )
-      const firstElement = focusableElements[0]
-      const lastElement = focusableElements.at(-1)
-
-      if (!firstElement || !lastElement) return
-
-      if (event.shiftKey && document.activeElement === firstElement) {
-        event.preventDefault()
-        lastElement.focus()
-      } else if (!event.shiftKey && document.activeElement === lastElement) {
-        event.preventDefault()
-        firstElement.focus()
-      }
-    }
-
-    document.addEventListener('keydown', handleKeyDown)
-    return () => {
-      document.body.style.overflow = previousOverflow
-      document.removeEventListener('keydown', handleKeyDown)
-      returnFocusElement?.focus()
-    }
-  }, [onClose, returnFocusRef])
+  useModalAccessibility({ dialogRef, isOpen: true, onClose, returnFocusRef })
 
   return (
     <motion.div

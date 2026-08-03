@@ -21,14 +21,15 @@ describe('ExportView', () => {
     expect(screen.queryByRole('button')).not.toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Servers:' })).toBeInTheDocument()
 
-    const groupARow = screen.getByText('Group A:').closest('tr')
-    const groupBRow = screen.getByText('Group B:').closest('tr')
-    const groupCRow = screen.getByText('Group C:').closest('tr')
+    const groupARow = screen.getByText('A:').closest('tr')
+    const groupBRow = screen.getByText('B:').closest('tr')
+    const groupCRow = screen.getByText('C:').closest('tr')
 
     expect(groupARow).not.toBeNull()
     expect(groupBRow).not.toBeNull()
     expect(groupCRow).not.toBeNull()
-    expect(within(groupARow!).getByRole('cell')).toHaveTextContent(`${groupA[0]}, ${groupA[2]}`)
+    expect(within(groupARow!).getByRole('list')).toHaveTextContent(`${groupA[0]}${groupA[2]}`)
+    expect(within(groupARow!).getAllByRole('listitem')).toHaveLength(2)
     expect(within(groupARow!).queryByText(String(groupA[1]))).not.toBeInTheDocument()
     expect(within(groupBRow!).getByRole('cell')).toHaveTextContent('—')
     expect(within(groupCRow!).getByRole('cell')).toHaveTextContent(String(groupC[0]))
@@ -50,6 +51,6 @@ describe('ExportView', () => {
     )
 
     expect(screen.getByRole('heading', { name: 'Juli 2026' })).toBeInTheDocument()
-    expect(screen.getByText('Gruppe A:')).toBeInTheDocument()
+    expect(screen.getByText('A:')).toBeInTheDocument()
   })
 })

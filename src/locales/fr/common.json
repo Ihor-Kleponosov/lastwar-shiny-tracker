@@ -13,10 +13,19 @@
     "nextMonth": "Mois suivant"
   },
   "export": {
+    "title": "Enregistrer la liste des serveurs",
+    "description": "Choisissez le mois pour lequel vous souhaitez enregistrer la liste des serveurs.",
+    "monthLabel": "Mois",
+    "proceed": "Continuer",
+    "close": "Fermer",
+    "previewTitle": "Aperçu de la liste des serveurs",
+    "closePreview": "Fermer l’aperçu de l’exportation",
     "download": "Télécharger l’image",
+    "useLightTheme": "Utiliser le thème clair pour l’exportation",
+    "useDarkTheme": "Utiliser le thème sombre pour l’exportation",
     "loading": "Exportation de l’image",
     "serversTitle": "Serveurs :",
-    "groupLabel": "Groupe {{label}} :"
+    "groupLabel": "{{label}}:"
   },
   "settings": {
     "open": "Ouvrir les paramètres",

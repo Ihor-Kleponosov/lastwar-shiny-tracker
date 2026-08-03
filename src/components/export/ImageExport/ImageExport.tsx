@@ -1,57 +1,69 @@
-import html2canvas from 'html2canvas'
-import { Download } from 'lucide-react'
-import { useRef, useState } from 'react'
+import { Image } from 'lucide-react'
+import { useCallback, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ExportView } from '@/components/export/ExportView'
+import { useModalAccessibility } from '@/hooks/useModalAccessibility'
 import { IconButton } from '@/components/ui/IconButton'
 import { Loader } from '@/components/ui/Loader'
+import type { ExportTheme } from '@/components/export/ExportView'
 import type { ServerId } from '@/types'
+import { downloadElementAsPng } from '@/utils/downloadElementAsPng'
 import { getExportFilename } from '@/utils/exportFilename'
+import { getCurrentMonthValue, getDateFromMonthValue } from '@/utils/month'
+import { ExportMonthPickerDialog } from './ExportMonthPickerDialog'
+import { ExportPreviewDialog } from './ExportPreviewDialog'
 
 type ImageExportProps = {
   enabledServerIds: ReadonlySet<ServerId>
-  selectedDate: Date
 }
 
-export function ImageExport({ enabledServerIds, selectedDate }: ImageExportProps) {
-  const { t } = useTranslation('common')
-  const [isExporting, setIsExporting] = useState(false)
-  const exportViewRef = useRef<HTMLDivElement>(null)
+type ExportDialogStep = 'closed' | 'month-picker' | 'preview'
 
-  const handleExport = async () => {
+export function ImageExport({ enabledServerIds }: ImageExportProps) {
+  const { t } = useTranslation('common')
+  const [dialogStep, setDialogStep] = useState<ExportDialogStep>('closed')
+  const [monthValue, setMonthValue] = useState(getCurrentMonthValue)
+  const [exportDate, setExportDate] = useState(() => getDateFromMonthValue(getCurrentMonthValue()))
+  const [isExporting, setIsExporting] = useState(false)
+  const [exportTheme, setExportTheme] = useState<ExportTheme>('dark')
+  const triggerRef = useRef<HTMLButtonElement>(null)
+  const dialogRef = useRef<HTMLDivElement>(null)
+  const exportViewRef = useRef<HTMLDivElement>(null)
+  const isDialogOpen = dialogStep !== 'closed'
+
+  const handleClose = useCallback(() => {
+    setDialogStep('closed')
+    setIsExporting(false)
+  }, [])
+
+  useModalAccessibility({
+    dialogRef,
+    focusKey: dialogStep,
+    isOpen: isDialogOpen,
+    onClose: handleClose,
+    returnFocusRef: triggerRef,
+  })
+
+  const handleOpen = () => {
+    setMonthValue(getCurrentMonthValue())
+    setDialogStep('month-picker')
+  }
+
+  const handleProceed = () => {
+    setExportDate(getDateFromMonthValue(monthValue))
+    setDialogStep('preview')
+  }
+
+  const handleDownload = async () => {
+    const exportView = exportViewRef.current
+    if (!exportView) {
+      console.error('Image export failed.', new Error('Export view was not mounted.'))
+      return
+    }
+
     setIsExporting(true)
 
     try {
-      await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()))
-
-      const exportView = exportViewRef.current
-      if (!exportView) {
-        throw new Error('Export view was not mounted.')
-      }
-
-      await document.fonts.ready
-
-      const canvas = await html2canvas(exportView, { scale: 2 })
-      const imageBlob = await new Promise<Blob>((resolve, reject) => {
-        canvas.toBlob((blob) => {
-          if (blob) {
-            resolve(blob)
-            return
-          }
-
-          reject(new Error('Unable to create the export image.'))
-        }, 'image/png')
-      })
-      const objectUrl = URL.createObjectURL(imageBlob)
-
-      try {
-        const downloadLink = document.createElement('a')
-        downloadLink.href = objectUrl
-        downloadLink.download = getExportFilename(selectedDate)
-        downloadLink.click()
-      } finally {
-        URL.revokeObjectURL(objectUrl)
-      }
+      await downloadElementAsPng(exportView, getExportFilename(exportDate))
     } catch (error) {
       console.error('Image export failed.', error)
     } finally {
@@ -61,27 +73,40 @@ export function ImageExport({ enabledServerIds, selectedDate }: ImageExportProps
 
   return (
     <>
-      <IconButton aria-label={t('export.download')} onClick={handleExport}>
-        <Download aria-hidden="true" size={20} />
+      <IconButton ref={triggerRef} aria-label={t('export.download')} onClick={handleOpen}>
+        <Image aria-hidden="true" size={20} />
       </IconButton>
+      {dialogStep === 'month-picker' ? (
+        <ExportMonthPickerDialog
+          dialogRef={dialogRef}
+          monthValue={monthValue}
+          onClose={handleClose}
+          onMonthChange={setMonthValue}
+          onProceed={handleProceed}
+        />
+      ) : null}
+      {dialogStep === 'preview' ? (
+        <ExportPreviewDialog
+          dialogRef={dialogRef}
+          enabledServerIds={enabledServerIds}
+          exportDate={exportDate}
+          exportViewRef={exportViewRef}
+          theme={exportTheme}
+          isExporting={isExporting}
+          onClose={handleClose}
+          onDownload={handleDownload}
+          onThemeChange={setExportTheme}
+        />
+      ) : null}
       {isExporting ? (
-        <>
-          <div className="fixed left-[-10000px] top-0 pointer-events-none">
-            <ExportView
-              ref={exportViewRef}
-              enabledServerIds={enabledServerIds}
-              selectedDate={selectedDate}
-            />
-          </div>
-          <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--color-overlay)]"
-            role="status"
-            aria-live="polite"
-            aria-label={t('export.loading')}
-          >
-            <Loader />
-          </div>
-        </>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--color-overlay)]"
+          role="status"
+          aria-live="polite"
+          aria-label={t('export.loading')}
+        >
+          <Loader />
+        </div>
       ) : null}
     </>
   )

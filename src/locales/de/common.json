@@ -13,10 +13,19 @@
     "nextMonth": "Nächster Monat"
   },
   "export": {
+    "title": "Serverliste speichern",
+    "description": "Wählen Sie den Monat, für den Sie die Serverliste speichern möchten.",
+    "monthLabel": "Monat",
+    "proceed": "Fortfahren",
+    "close": "Schließen",
+    "previewTitle": "Vorschau der Serverliste",
+    "closePreview": "Exportvorschau schließen",
     "download": "Bild herunterladen",
+    "useLightTheme": "Helles Exportdesign verwenden",
+    "useDarkTheme": "Dunkles Exportdesign verwenden",
     "loading": "Bild wird exportiert",
     "serversTitle": "Server:",
-    "groupLabel": "Gruppe {{label}}:"
+    "groupLabel": "{{label}}:"
   },
   "settings": {
     "open": "Einstellungen öffnen",

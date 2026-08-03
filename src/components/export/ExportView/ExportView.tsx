@@ -11,7 +11,10 @@ import { getServerGroupIndexForDate } from '@/utils'
 type ExportViewProps = {
   enabledServerIds: ReadonlySet<ServerId>
   selectedDate: Date
+  theme?: ExportTheme
 }
+
+export type ExportTheme = 'dark' | 'light'
 
 const groupClassNames = ['export-group-a', 'export-group-b', 'export-group-c'] as const
 
@@ -40,7 +43,7 @@ function ExportDay(props: DayProps) {
 }
 
 export const ExportView = forwardRef<HTMLDivElement, ExportViewProps>(function ExportView(
-  { enabledServerIds, selectedDate },
+  { enabledServerIds, selectedDate, theme = 'dark' },
   ref,
 ) {
   const { i18n, t } = useTranslation('common')
@@ -52,7 +55,7 @@ export const ExportView = forwardRef<HTMLDivElement, ExportViewProps>(function E
     <div
       ref={ref}
       data-testid="export-view"
-      className="w-[390px] bg-[var(--color-export-background)] p-5 text-[var(--color-export-text)] [color-scheme:light]"
+      className={`export-view export-view--${theme} w-[390px] bg-[var(--color-export-background)] p-5 text-[var(--color-export-text)] border-b-[var(--color-export-border)]`}
     >
       <section aria-labelledby="export-calendar-heading">
         <h1 id="export-calendar-heading" className="text-center text-2xl font-bold">
@@ -90,12 +93,28 @@ export const ExportView = forwardRef<HTMLDivElement, ExportViewProps>(function E
                 <tr key={groupLabel} className={groupClassName}>
                   <th
                     scope="row"
-                    className="w-20 rounded-l-xl py-2.5 pr-1.5 pl-3 align-top font-bold whitespace-nowrap"
+                    className="w-20 rounded-l-xl px-3 py-2.5 text-center align-middle font-bold whitespace-nowrap"
                   >
                     {t('export.groupLabel', { label: groupLabel })}
                   </th>
                   <td className="rounded-r-xl py-2.5 pr-3 pl-1.5 font-medium leading-5 tabular-nums">
-                    {enabledServers.length > 0 ? enabledServers.join(', ') : '—'}
+                    {enabledServers.length > 0 ? (
+                      <ul
+                        className="flex flex-wrap gap-1"
+                        aria-label={t('export.groupLabel', { label: groupLabel })}
+                      >
+                        {enabledServers.map((serverId) => (
+                          <li
+                            key={serverId}
+                            className="rounded-md border border-[var(--color-export-chip-border)] bg-[var(--color-export-chip-background)] px-1.5 py-0.5 text-[var(--color-export-chip-text)]"
+                          >
+                            {serverId}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      '—'
+                    )}
                   </td>
                 </tr>
               )
