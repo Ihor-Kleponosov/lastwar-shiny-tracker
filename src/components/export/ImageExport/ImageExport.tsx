@@ -1,5 +1,5 @@
 import html2canvas from 'html2canvas'
-import { Download } from 'lucide-react'
+import { Image } from 'lucide-react'
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ExportView } from '@/components/export/ExportView'
@@ -62,7 +62,7 @@ export function ImageExport({ enabledServerIds, selectedDate }: ImageExportProps
   return (
     <>
       <IconButton aria-label={t('export.download')} onClick={handleExport}>
-        <Download aria-hidden="true" size={20} />
+        <Image aria-hidden="true" size={20} />
       </IconButton>
       {isExporting ? (
         <>

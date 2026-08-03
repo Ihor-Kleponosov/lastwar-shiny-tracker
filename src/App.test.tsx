@@ -27,7 +27,7 @@ describe('App', () => {
 
     render(<App />)
 
-    expect(screen.getByText('Selected date: Today')).toBeInTheDocument()
+    expect(screen.getByText(format(new Date(), 'P'))).toBeInTheDocument()
     expect(screen.queryByRole('heading', { name: 'Calendar' })).not.toBeInTheDocument()
 
     const toggle = screen.getByRole('button', { name: 'Show calendar' })
@@ -43,7 +43,7 @@ describe('App', () => {
 
     fireEvent.click(screen.getByRole('button', { name: format(nextDate, 'PPPP') }))
 
-    expect(screen.getByText(`Selected date: ${format(nextDate, 'd MMM yyyy')}`)).toBeInTheDocument()
+    expect(screen.getByText(format(nextDate, 'P'))).toBeInTheDocument()
 
     fireEvent.click(screen.getByRole('button', { name: 'Hide calendar' }))
 
