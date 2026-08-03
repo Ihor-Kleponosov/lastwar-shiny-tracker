@@ -78,8 +78,11 @@ describe('ServerListConfiguration', () => {
       configuredServerIds,
     )
     expect(serverCheckboxes.every((checkbox) => !(checkbox as HTMLInputElement).checked)).toBe(true)
-    expect(screen.getByRole('button', { name: 'Select all' })).toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: 'Deselect displayed' })).not.toBeInTheDocument()
+    const allDisplayedCheckbox = screen.getByRole('checkbox', { name: 'All displayed' })
+    const selectedCount = screen.getByText('Selected: 0 / 75')
+
+    expect(allDisplayedCheckbox).not.toBeChecked()
+    expect(selectedCount.parentElement).toContainElement(allDisplayedCheckbox)
     expect(screen.getByRole('tab', { name: 'By range' })).toHaveAttribute('aria-selected', 'true')
     expect(screen.getByRole('button', { name: 'Apply' })).toBeDisabled()
   })
@@ -103,7 +106,7 @@ describe('ServerListConfiguration', () => {
     expect(getServerCheckboxes().map(({ id }) => Number(id.replace('server-', '')))).toEqual(
       Array.from({ length: 13 }, (_, index) => 1680 + index),
     )
-    expect(screen.getByRole('button', { name: 'Select displayed' })).toBeInTheDocument()
+    expect(screen.getByRole('checkbox', { name: 'All displayed' })).toBeInTheDocument()
   })
 
   it('resets filters when switching tabs', async () => {
@@ -187,7 +190,7 @@ describe('ServerListConfiguration', () => {
     expect(getServerCheckboxes()).toHaveLength(configuredServerIds.length)
   })
 
-  it('shows the displayed-selection control only when filtering changes the list', async () => {
+  it('keeps the displayed-selection control visible when a filter matches the full list', async () => {
     const user = userEvent.setup()
 
     renderConfiguration()
@@ -195,7 +198,7 @@ describe('ServerListConfiguration', () => {
 
     await user.type(screen.getByRole('searchbox', { name: 'Search servers' }), '1')
 
-    expect(screen.queryByRole('button', { name: 'Deselect displayed' })).not.toBeInTheDocument()
+    expect(screen.getByRole('checkbox', { name: 'All displayed' })).not.toBeChecked()
   })
 
   it('shows no-results feedback for a filter without matching servers', async () => {
@@ -207,34 +210,8 @@ describe('ServerListConfiguration', () => {
     await user.type(screen.getByRole('searchbox', { name: 'Search servers' }), '9999')
 
     expect(screen.getByText('No servers found.')).toBeInTheDocument()
-    expect(screen.queryAllByRole('checkbox')).toHaveLength(0)
-    expect(screen.getByRole('button', { name: 'Select displayed' })).toBeDisabled()
-  })
-
-  it('selects and deselects every server with the select-all checkbox', async () => {
-    const user = userEvent.setup()
-    localStorage.setItem(
-      SERVER_PREFERENCES_STORAGE_KEY,
-      JSON.stringify({ enabledServerIds: [1639] }),
-    )
-
-    renderConfiguration()
-
-    const selectAll = screen.getByRole('button', { name: 'Select all' })
-
-    expect(screen.queryByRole('button', { name: 'Select displayed' })).not.toBeInTheDocument()
-
-    await user.click(selectAll)
-
-    expect(getServerCheckboxes().every((checkbox) => checkbox.checked)).toBe(true)
-    expect(screen.getByRole('button', { name: 'Deselect all' })).toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: 'Deselect displayed' })).not.toBeInTheDocument()
-
-    await user.click(selectAll)
-
-    expect(getServerCheckboxes().every((checkbox) => !checkbox.checked)).toBe(true)
-    expect(screen.getByRole('button', { name: 'Select all' })).toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: 'Select displayed' })).not.toBeInTheDocument()
+    expect(getServerCheckboxes()).toHaveLength(0)
+    expect(screen.getByRole('checkbox', { name: 'All displayed' })).toBeDisabled()
   })
 
   it('toggles only displayed servers and updates its checked state', async () => {
@@ -250,25 +227,23 @@ describe('ServerListConfiguration', () => {
     const filter = screen.getByRole('searchbox', { name: 'Search servers' })
     await user.type(filter, '1638')
 
-    const selectDisplayed = screen.getByRole('button', { name: 'Deselect displayed' })
+    const selectDisplayed = screen.getByRole('checkbox', { name: 'All displayed' })
 
     await user.click(selectDisplayed)
     expect(screen.getByRole('checkbox', { name: '1638' })).not.toBeChecked()
-    expect(screen.getByRole('button', { name: 'Select displayed' })).toBeInTheDocument()
+    expect(screen.getByRole('checkbox', { name: 'All displayed' })).not.toBeChecked()
 
     await user.click(screen.getByRole('button', { name: 'Clear server filter' }))
     expect(screen.getByRole('checkbox', { name: '1639' })).toBeChecked()
 
     await user.type(filter, '1638')
-    const selectDisplayedAfterRefilter = screen.getByRole('button', {
-      name: 'Select displayed',
-    })
+    const selectDisplayedAfterRefilter = screen.getByRole('checkbox', { name: 'All displayed' })
 
     await user.click(selectDisplayedAfterRefilter)
     expect(screen.getByRole('checkbox', { name: '1638' })).toBeChecked()
-    expect(screen.getByRole('button', { name: 'Deselect displayed' })).toBeInTheDocument()
+    expect(screen.getByRole('checkbox', { name: 'All displayed' })).toBeChecked()
 
     await user.click(screen.getByRole('checkbox', { name: '1638' }))
-    expect(screen.getByRole('button', { name: 'Select displayed' })).toBeInTheDocument()
+    expect(screen.getByRole('checkbox', { name: 'All displayed' })).not.toBeChecked()
   })
 })

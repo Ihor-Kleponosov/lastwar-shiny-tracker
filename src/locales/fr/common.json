@@ -55,10 +55,7 @@
       "resetFilter": "Réinitialiser le filtre",
       "showDescription": "À propos de la liste des serveurs",
       "closeDescription": "Fermer la description de la liste des serveurs",
-      "selectAll": "Tout sélectionner",
-      "deselectAll": "Tout désélectionner",
-      "selectDisplayed": "Sélectionner les affichés",
-      "deselectDisplayed": "Désélectionner les affichés",
+      "allDisplayed": "Tous affichés",
       "noResults": "Aucun serveur trouvé.",
       "title": "Liste des serveurs",
       "description": "Sélectionnez les serveurs à afficher dans le calendrier. Vous pouvez désactiver ceux que vous n’utilisez pas ou pour lesquels vous n’avez pas de liens. Cliquez sur un serveur pour modifier son état. Ces préférences sont stockées dans votre navigateur et ne sont pas synchronisées avec d’autres appareils."

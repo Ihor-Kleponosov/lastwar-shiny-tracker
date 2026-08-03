@@ -9,7 +9,7 @@ export function Header() {
     <header className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 shadow-[0_8px_24px_rgb(0_0_0_/_14%)] sm:px-4">
       <div className="grid grid-cols-[100px_minmax(0,1fr)_88px] items-center">
         <img
-          className="size-[80px] rounded-xl"
+          className="size-[84px] rounded-xl"
           src={shinyTrackerLogo}
           width="90"
           height="90"

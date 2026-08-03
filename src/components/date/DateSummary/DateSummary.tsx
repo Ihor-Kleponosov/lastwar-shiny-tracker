@@ -1,5 +1,5 @@
-import { format } from 'date-fns'
-import { CalendarCheck, CalendarDays } from 'lucide-react'
+import { format, isToday } from 'date-fns'
+import { CalendarDays, LocateFixed } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { ImageExport } from '@/components/export/ImageExport'
 import { IconButton } from '@/components/ui/IconButton'
@@ -26,24 +26,25 @@ export function DateSummary({
   const selectedDateLabel = format(selectedDate, 'P', { locale })
 
   return (
-    <section className="flex items-center justify-between gap-3 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-[0_8px_24px_rgb(0_0_0_/_14%)] sm:p-5">
+    <section className="flex items-center justify-between gap-3 rounded-2xl border border-[var(--color-accent)] bg-[var(--color-surface)] p-4 shadow-[0_8px_24px_rgb(0_0_0_/_14%)] sm:p-5">
       <p className="min-w-0 text-lg font-semibold" aria-live="polite">
         {selectedDateLabel}
       </p>
       <div className="flex shrink-0 items-center gap-1">
         <ImageExport enabledServerIds={enabledServerIds} />
-        <IconButton aria-label={t('calendar.today')} onClick={onSelectToday}>
-          <CalendarCheck aria-hidden="true" size={20} />
+        <span aria-hidden="true" className="mx-1 h-8 w-px bg-[var(--color-border)]" />
+        <IconButton
+          aria-label={t('calendar.today')}
+          isActive={isToday(selectedDate)}
+          onClick={onSelectToday}
+        >
+          <LocateFixed aria-hidden="true" size={20} />
         </IconButton>
         <IconButton
           aria-label={t(isCalendarVisible ? 'calendar.hide' : 'calendar.show')}
           aria-expanded={isCalendarVisible}
+          isActive={isCalendarVisible}
           onClick={onToggleCalendar}
-          className={
-            isCalendarVisible
-              ? 'translate-y-px bg-[var(--color-surface)] shadow-[inset_0_2px_4px_rgb(0_0_0_/_30%),inset_0_-1px_0_rgb(255_255_255_/_4%)]'
-              : undefined
-          }
         >
           <CalendarDays aria-hidden="true" size={20} />
         </IconButton>

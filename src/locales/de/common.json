@@ -55,10 +55,7 @@
       "resetFilter": "Filter zurücksetzen",
       "showDescription": "Über die Serverliste",
       "closeDescription": "Beschreibung der Serverliste schließen",
-      "selectAll": "Alle auswählen",
-      "deselectAll": "Alle abwählen",
-      "selectDisplayed": "Angezeigte auswählen",
-      "deselectDisplayed": "Angezeigte abwählen",
+      "allDisplayed": "Alle angezeigten",
       "noResults": "Keine Server gefunden.",
       "title": "Serverliste",
       "description": "Wähle die Server aus, die im Kalender angezeigt werden sollen. Du kannst Server deaktivieren, die du nicht verwendest oder für die du keine Links hast. Klicke auf einen Server, um seinen Status zu ändern. Diese Einstellungen werden in deinem Browser gespeichert und nicht mit anderen Geräten synchronisiert."
