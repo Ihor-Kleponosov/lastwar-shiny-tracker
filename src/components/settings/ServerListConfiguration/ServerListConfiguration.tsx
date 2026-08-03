@@ -80,7 +80,6 @@ export function ServerListConfiguration({
         onApplyRange={handleApplyRange}
         onResetFilter={handleResetFilter}
         onToggleServers={onToggleServers}
-        serverIds={serverIds}
         displayedServerIds={displayedServerIds}
       />
       {displayedServerIds.length === 0 ? (

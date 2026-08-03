@@ -3,6 +3,7 @@ import classNames from 'class-names'
 import type { ChangeEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/Button'
+import { Checkbox } from '@/components/ui/Checkbox'
 import type { ServerId } from '@/types'
 import { MAX_ENABLED_SERVERS } from '@/utils/serverPreferences'
 
@@ -22,7 +23,6 @@ type ServerListConfigurationControlsProps = {
   rangeFrom: string
   rangeTo: string
   searchFilter: string
-  serverIds: readonly ServerId[]
 }
 
 export function ServerListConfigurationControls({
@@ -41,22 +41,11 @@ export function ServerListConfigurationControls({
   rangeFrom,
   rangeTo,
   searchFilter,
-  serverIds,
 }: ServerListConfigurationControlsProps) {
   const { t } = useTranslation('common')
-  const areAllServersSelected = serverIds.every((serverId) => enabledServerIds.has(serverId))
   const areDisplayedServersSelected =
     displayedServerIds.length > 0 &&
     displayedServerIds.every((serverId) => enabledServerIds.has(serverId))
-  const isFiltered = serverIds.length !== displayedServerIds.length
-  const selectAllLabel = t(
-    areAllServersSelected ? 'settings.serverList.deselectAll' : 'settings.serverList.selectAll',
-  )
-  const selectDisplayedLabel = t(
-    areDisplayedServersSelected
-      ? 'settings.serverList.deselectDisplayed'
-      : 'settings.serverList.selectDisplayed',
-  )
 
   function handleFilterChange(event: ChangeEvent<HTMLInputElement>) {
     onSearchFilterChange(event.target.value)
@@ -133,7 +122,7 @@ export function ServerListConfigurationControls({
               className="min-h-11 w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 text-sm text-[var(--color-text-primary)] outline-none placeholder:text-[var(--color-text-muted)] focus-visible:ring-2 focus-visible:ring-[var(--color-focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-background)]"
             />
           </div>
-          <Button disabled={isRangeApplyDisabled} onClick={onApplyRange}>
+          <Button variant="secondary" disabled={isRangeApplyDisabled} onClick={onApplyRange}>
             {t('settings.serverList.applyRange')}
           </Button>
         </div>
@@ -172,33 +161,14 @@ export function ServerListConfigurationControls({
           )}
         </div>
       )}
-      <div className="grid w-full grid-cols-2 gap-2 text-sm">
-        <Button className="w-full" variant="secondary" onClick={() => onToggleServers(serverIds)}>
-          {selectAllLabel}
-        </Button>
-        {isFiltered ? (
-          <Button
-            className="w-full"
-            variant="secondary"
-            disabled={displayedServerIds.length === 0}
-            onClick={() => onToggleServers(displayedServerIds)}
-          >
-            {selectDisplayedLabel}
-          </Button>
-        ) : null}
-      </div>
-      <div className="flex min-h-5 items-center justify-between gap-3">
-        {isFilterActive ? (
-          <button
-            type="button"
-            onClick={onResetFilter}
-            className="w-fit text-sm text-[var(--color-text-secondary)] underline decoration-[var(--color-text-muted)] underline-offset-4 transition-colors hover:text-[var(--color-text-primary)] focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus)]"
-          >
-            {t('settings.serverList.resetFilter')}
-          </button>
-        ) : (
-          <span />
-        )}
+      <div className="flex min-h-11 items-center justify-between gap-3">
+        <Checkbox
+          className="shrink-0"
+          checked={areDisplayedServersSelected}
+          disabled={displayedServerIds.length === 0}
+          label={t('settings.serverList.allDisplayed')}
+          onChange={() => onToggleServers(displayedServerIds)}
+        />
         <p className="text-right text-sm font-medium tabular-nums text-[var(--color-text-secondary)]">
           {t('settings.serverList.selectedCount', {
             count: enabledServerIds.size,
@@ -206,6 +176,15 @@ export function ServerListConfigurationControls({
           })}
         </p>
       </div>
+      {isFilterActive ? (
+        <button
+          type="button"
+          onClick={onResetFilter}
+          className="w-fit text-sm text-[var(--color-text-secondary)] underline decoration-[var(--color-text-muted)] underline-offset-4 transition-colors hover:text-[var(--color-text-primary)] focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus)]"
+        >
+          {t('settings.serverList.resetFilter')}
+        </button>
+      ) : null}
     </div>
   )
 }

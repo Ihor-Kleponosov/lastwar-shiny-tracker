@@ -172,7 +172,10 @@ describe('ConfigurationModal', () => {
       />,
     )
 
-    await user.click(screen.getByRole('button', { name: 'Select all' }))
+    await user.type(screen.getByRole('textbox', { name: 'From' }), '75')
+    await user.type(screen.getByRole('textbox', { name: 'To' }), '76')
+    await user.click(screen.getByRole('button', { name: 'Apply' }))
+    await user.click(screen.getByRole('checkbox', { name: 'All displayed' }))
 
     expect(screen.getByRole('checkbox', { name: '75' })).toBeChecked()
     expect(screen.getByRole('checkbox', { name: '76' })).not.toBeChecked()

@@ -24,4 +24,18 @@ describe('IconButton', () => {
       'py-2',
     )
   })
+
+  it('uses the inset pressed treatment when active', () => {
+    render(
+      <IconButton isActive aria-label="Active action">
+        Active
+      </IconButton>,
+    )
+
+    expect(screen.getByRole('button', { name: 'Active action' })).toHaveClass(
+      'translate-y-px',
+      'bg-[var(--color-surface)]',
+      'shadow-[inset_0_3px_7px_rgb(0_0_0_/_35%),inset_0_-1px_0_rgb(255_255_255_/_5%)]',
+    )
+  })
 })
