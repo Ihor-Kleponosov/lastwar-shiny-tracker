@@ -2,6 +2,7 @@
   "app": {
     "logoAlt": "Logo des Last War Glanz-Trackers"
   },
+  "errorBoundary": { "message": "Etwas ist schiefgelaufen" },
   "language": { "label": "Sprache", "openMenu": "Sprache auswählen" },
   "calendar": {
     "title": "Kalender",
@@ -33,10 +34,11 @@
     "close": "Einstellungen schließen",
     "cancel": "Abbrechen",
     "save": "Speichern",
+    "saved": "Einstellungen gespeichert",
     "unsavedChanges": {
       "title": "Nicht gespeicherte Änderungen",
       "description": "Du hast nicht gespeicherte Änderungen. Möchtest du sie verwerfen?",
-      "discard": "Löschen",
+      "discard": "Änderungen verwerfen",
       "return": "Zurück"
     },
     "serverList": {

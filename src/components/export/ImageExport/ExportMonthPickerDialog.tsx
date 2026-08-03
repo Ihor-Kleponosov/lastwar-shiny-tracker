@@ -51,7 +51,9 @@ export function ExportMonthPickerDialog({
           />
         </label>
         <div className="mt-6 flex justify-end gap-3">
-          <Button onClick={onClose}>{t('export.close')}</Button>
+          <Button variant="secondary" onClick={onClose}>
+            {t('export.close')}
+          </Button>
           <Button onClick={onProceed} disabled={!monthValue}>
             {t('export.proceed')}
           </Button>

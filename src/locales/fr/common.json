@@ -2,6 +2,7 @@
   "app": {
     "logoAlt": "Logo du suivi des brillants Last War"
   },
+  "errorBoundary": { "message": "Une erreur s’est produite" },
   "language": { "label": "Langue", "openMenu": "Choisir la langue" },
   "calendar": {
     "title": "Calendrier",
@@ -33,10 +34,11 @@
     "close": "Fermer les paramètres",
     "cancel": "Annuler",
     "save": "Enregistrer",
+    "saved": "Préférences enregistrées",
     "unsavedChanges": {
       "title": "Modifications non enregistrées",
       "description": "Vous avez des modifications non enregistrées. Voulez-vous les abandonner ?",
-      "discard": "Supprimer",
+      "discard": "Ignorer les modifications",
       "return": "Retour"
     },
     "serverList": {

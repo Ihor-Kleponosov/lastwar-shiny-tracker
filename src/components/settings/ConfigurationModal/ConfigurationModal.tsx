@@ -2,6 +2,7 @@ import { X } from 'lucide-react'
 import { motion, useReducedMotion } from 'motion/react'
 import { useCallback, useId, useRef, useState, type RefObject } from 'react'
 import { useTranslation } from 'react-i18next'
+import { toast } from 'sonner'
 import { useModalAccessibility } from '@/hooks/useModalAccessibility'
 import { ServerListConfiguration } from '@/components/settings/ServerListConfiguration'
 import { UnsavedChangesDialog } from '@/components/settings/UnsavedChangesDialog'
@@ -92,8 +93,9 @@ export function ConfigurationModal({
 
   const handleSave = useCallback(() => {
     onSave(draftEnabledServerIds)
+    toast.success(t('settings.saved'))
     onClose()
-  }, [draftEnabledServerIds, onClose, onSave])
+  }, [draftEnabledServerIds, onClose, onSave, t])
 
   const handleReturnToSettings = useCallback(() => {
     setIsDiscardConfirmationOpen(false)
@@ -153,7 +155,7 @@ export function ConfigurationModal({
           />
         </div>
         <footer className="flex shrink-0 gap-3 border-t border-[var(--color-border)] py-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
-          <Button className="flex-1" onClick={handleCloseRequest}>
+          <Button className="flex-1" variant="secondary" onClick={handleCloseRequest}>
             {t('settings.cancel')}
           </Button>
           <Button className="flex-1" disabled={!hasUnsavedChanges} onClick={handleSave}>

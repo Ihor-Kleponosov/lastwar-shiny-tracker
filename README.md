@@ -1,83 +1,90 @@
 # Last War Shiny Tracker
 
-An installable tracker for shiny tasks in Last War. The repository currently contains production-ready infrastructure; domain features will be added incrementally.
+An installable, offline-capable tracker for Last War shiny-task server rotations. It shows the active server group for any selected date and keeps each user's server selection in their browser.
 
 ## Features
 
-- Responsive React application shell
-- English, French, German, and Ukrainian localization
-- Browser-language detection with a persisted preference
-- Installable PWA with offline asset caching
-- Automated quality checks, dependency updates, and GitHub Pages deployment
+- Date-based server rotation using a configurable, anchored three-group cycle
+- Local server preferences with safe recovery from missing or invalid stored data
+- Active-server list for the selected date, with an empty-state shortcut to settings
+- Localized UI, dates, calendar labels, and accessible names in English, French, German, and Ukrainian
+- Calendar picker with Monday as the first day of the week
+- Full-screen server configuration with search, inclusive range filtering, bulk selection, draft saving, and unsaved-change confirmation
+- PNG export: choose a month, preview the export, select a light or dark export theme, and download the generated image
+- PWA manifest, service worker, and precached production assets for offline use
+- Error boundary and concise success feedback for saved preferences
 
-## Tech Stack
+## How it works
 
-React 19, TypeScript, Vite, Tailwind CSS, class-names, React DayPicker, date-fns, Lucide React, i18next, and vite-plugin-pwa. ESLint, Prettier, Husky, and lint-staged enforce quality; Vitest and React Testing Library provide tests.
+The configured server groups repeat from the ISO anchor date in `src/config/index.ts`. The selected date determines the current group; only servers enabled in local preferences are displayed. Preferences are saved under the `last-war-shiny-tracker-server-preferences` localStorage key and are never synced to a server.
 
-## Structure
+Open settings from the active-server card. Changes are kept as a draft until **Save**; closing a changed draft asks whether to discard it. Search filters server numbers immediately, while range filtering is inclusive and accepts bounds in either order.
+
+## Tech stack
+
+React 19, TypeScript, Vite, Tailwind CSS, React DayPicker, date-fns, Lucide React, i18next, Motion, Sonner, html2canvas, and vite-plugin-pwa. ESLint, Prettier, Husky, lint-staged, Vitest, and React Testing Library provide quality tooling.
+
+## Project structure
 
 ```text
 src/
-  components/   Reusable UI components
-  config/       Application configuration
-  hooks/        Reusable React hooks
-  i18n/         i18next setup and supported languages
-  locales/      Translation resources grouped by locale
-  test/         Shared test setup
-  types/        Shared TypeScript types
-  utils/        Framework-independent helpers
+  assets/       Local application assets
+  components/   Feature and reusable UI components, with colocated tests
+  config/       Shiny-task cycle configuration
+  hooks/        Reusable React behavior, including modal accessibility
+  i18n/         i18next setup and supported-language metadata
+  locales/      Translation resources by locale
+  test/         Shared Vitest setup
+  types/        Shared domain types
+  utils/        Framework-independent date, cycle, persistence, and export helpers
+```
+
+## Getting started
+
+Use the Node.js version in `.node-version` (the project requires Node.js 20.19.0 or later), then install the locked dependency set:
+
+```bash
+npm ci
+npm run dev
+```
+
+Copy `.env.example` to `.env` only when a non-root Vite base path is needed. `VITE_BASE_PATH=/` is appropriate for local development and custom domains; GitHub Pages builds use `/<repository-name>/`.
+
+## Scripts
+
+- `npm run dev` - start the Vite development server
+- `npm run build` - type-check and create a production build
+- `npm run preview` - serve the production build locally
+- `npm run lint` - run ESLint with zero warnings allowed
+- `npm run format` / `npm run format:check` - write or verify Prettier formatting
+- `npm run test` / `npm run test:run` - run Vitest in watch mode or once
+- `npm run test:coverage` - generate coverage
+
+Run the release checks with:
+
+```bash
+npm run format:check
+npm run lint
+npm run test:run
+npm run build
 ```
 
 ## Internationalization
 
-English (`en`) is the default and fallback. Browser preferences are detected on first use, while explicit selections are saved to `localStorage`. Supported languages are registered in `src/i18n/languages.ts`; resources live under `src/locales/<locale>/`.
+English (`en`) is the default and fallback language. The first visit uses browser-language detection when supported; explicit selections persist in localStorage. Translation resources live under `src/locales/<locale>/common.json`.
 
-To add a language:
+To add a user-facing string, add a semantic key to every supported locale in the same change. Use `react-i18next` in UI code, including accessible names and live-region messages. Format dates at the presentation boundary with the active `date-fns` locale; never store translated text in state.
 
-1. Register its code and display name in `src/i18n/languages.ts`.
-2. Create `src/locales/<code>/common.json` with the English keys.
-3. Import and register the resource in `src/i18n/index.ts`.
+To add a language, register its code and display name in `src/i18n/languages.ts`, add its `common.json`, and register its resource in `src/i18n/index.ts`.
 
-To add a namespace:
+## Configuration and persistence
 
-1. Add `<namespace>.json` beneath every locale directory.
-2. Import each file and add it beneath its locale in `resources`.
-3. Add the namespace to the `ns` array in `src/i18n/index.ts`.
-4. Use `useTranslation('<namespace>')` in components.
+`src/config/index.ts` is the source of truth for the cycle anchor date and server groups. Keep group order intentional: the group index is calculated from the calendar-day difference relative to the anchor date. Server IDs are deduplicated and sorted before they are presented or persisted.
 
-Components must use translation keys for user-facing copy. Missing keys and unsupported locales fall back to English.
+Stored preferences contain only enabled server IDs. Unknown IDs are discarded on read; malformed or unavailable storage falls back to no servers enabled without blocking use of the app.
 
-## Scripts
+## Offline and deployment
 
-- `npm run dev` — start the development server
-- `npm run build` — type-check and create a production build
-- `npm run preview` — preview the production build
-- `npm run lint` — run ESLint with zero warnings allowed
-- `npm run format` / `npm run format:check` — write or verify formatting
-- `npm run test` — run Vitest in watch mode
-- `npm run test:run` — run tests once
-- `npm run test:coverage` — generate coverage
+`vite-plugin-pwa` generates the manifest and auto-updating service worker during production builds. The worker precaches the application shell and generated assets; the app does not require remote fonts, images, or API data.
 
-Run `npm install` after cloning. This also configures the Husky pre-commit hook, which runs lint-staged.
-
-## Testing
-
-Tests use Vitest, jsdom, React Testing Library, jest-dom, and user-event. Keep tests next to their source using `*.test.ts(x)`, then run `npm run test:run`.
-
-## Deployment
-
-GitHub Actions validates pull requests. Pushes to `master` publish `dist/` to GitHub Pages after all checks pass. Enable **GitHub Actions** as the Pages source in repository settings.
-
-The Vite base path is controlled by `VITE_BASE_PATH`. CI uses `/<repository-name>/`; use `/` locally or for a custom domain. For example: `VITE_BASE_PATH=/custom-path/ npm run build`.
-
-## Offline support
-
-`vite-plugin-pwa` generates the manifest and service worker during production builds. The automatically updating worker caches the application shell and generated assets. Icons in `public/` are placeholders and may be replaced without renaming them.
-
-## Roadmap
-
-- Define the shiny-decoration domain model
-- Add tracking and calendar workflows
-- Add persistence and import/export
-- Expand offline data behavior
-- Improve accessibility and localization coverage
+GitHub Actions runs formatting, linting, tests, and a GitHub Pages-base-path build for pull requests and pushes to `master`. Successful pushes to `master` upload `dist/` and deploy it through GitHub Pages. Enable **GitHub Actions** as the Pages source in repository settings.
