@@ -29,7 +29,7 @@ export function DateSummary({
         {selectedDateLabel}
       </p>
       <div className="flex shrink-0 items-center gap-1">
-        <ImageExport enabledServerIds={enabledServerIds} selectedDate={selectedDate} />
+        <ImageExport enabledServerIds={enabledServerIds} />
         <IconButton
           aria-label={t(isCalendarVisible ? 'calendar.hide' : 'calendar.show')}
           aria-expanded={isCalendarVisible}
