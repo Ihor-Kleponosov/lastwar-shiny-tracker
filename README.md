@@ -9,7 +9,7 @@ An installable, offline-capable tracker for Last War shiny-task server rotations
 - Active-server list for the selected date, with an empty-state shortcut to settings
 - Localized UI, dates, calendar labels, and accessible names in English, French, German, and Ukrainian
 - Calendar picker with Monday as the first day of the week
-- Full-screen server configuration with search, inclusive range filtering, bulk selection, draft saving, and unsaved-change confirmation
+- Full-screen server configuration with search, inclusive range filtering, flat and grouped list views, bulk selection, draft saving, and unsaved-change confirmation
 - PNG export: choose a month, preview the export, select a light or dark export theme, and download the generated image
 - PWA manifest, service worker, and precached production assets for offline use
 - Error boundary and concise success feedback for saved preferences
@@ -18,7 +18,7 @@ An installable, offline-capable tracker for Last War shiny-task server rotations
 
 The configured server groups repeat from the ISO anchor date in `src/config/index.ts`. The selected date determines the current group; only servers enabled in local preferences are displayed. Preferences are saved under the `last-war-shiny-tracker-server-preferences` localStorage key and are never synced to a server.
 
-Open settings from the active-server card. Changes are kept as a draft until **Save**; closing a changed draft asks whether to discard it. Search filters server numbers immediately, while range filtering is inclusive and accepts bounds in either order.
+Open settings from the active-server card. Changes are kept as a draft until **Save**; closing a changed draft asks whether to discard it. Search filters server numbers immediately, while range filtering is inclusive and accepts bounds in either order. The server list can be shown as one flat list or separated into the configured A, B, and C rotation groups.
 
 ## Tech stack
 

@@ -2,7 +2,10 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { ServerId } from '@/types'
 import { ServerListConfigurationControls } from './ServerListConfigurationControls'
-import { ServerListConfigurationItem } from './ServerListConfigurationItem'
+import { ServerListConfigurationGrid } from './ServerListConfigurationGrid'
+import { ServerListConfigurationGroupedView } from './ServerListConfigurationGroupedView'
+import { ServerListConfigurationToolbar } from './ServerListConfigurationToolbar'
+import type { ServerListView } from './ServerListViewSwitcher'
 
 type AppliedRange = {
   from: number
@@ -28,6 +31,8 @@ export function ServerListConfiguration({
   const [rangeFrom, setRangeFrom] = useState('')
   const [rangeTo, setRangeTo] = useState('')
   const [appliedRange, setAppliedRange] = useState<AppliedRange | null>(null)
+  const [view, setView] = useState<ServerListView>('all')
+  const isFilterActive = searchFilter.length > 0 || appliedRange !== null
   const displayedServerIds = serverIds.filter((serverId) => {
     if (filterMode === 'search') return String(serverId).includes(searchFilter)
     if (!appliedRange) return true
@@ -72,34 +77,40 @@ export function ServerListConfiguration({
         rangeFrom={rangeFrom}
         rangeTo={rangeTo}
         isRangeApplyDisabled={!rangeFrom || !rangeTo}
-        isFilterActive={searchFilter.length > 0 || appliedRange !== null}
         onFilterModeChange={handleFilterModeChange}
         onSearchFilterChange={setSearchFilter}
         onRangeFromChange={setRangeFrom}
         onRangeToChange={setRangeTo}
         onApplyRange={handleApplyRange}
-        onResetFilter={handleResetFilter}
         onToggleServers={onToggleServers}
         displayedServerIds={displayedServerIds}
       />
-      {displayedServerIds.length === 0 ? (
-        <p className="mt-4 text-sm text-center text-[var(--color-text-secondary)]" role="status">
-          {t('settings.serverList.noResults')}
-        </p>
-      ) : null}
-      <ul
-        className="mt-2 grid grid-cols-[repeat(auto-fill,minmax(88px,1fr))] gap-2"
-        aria-label={t('settings.serverList.title')}
-      >
-        {displayedServerIds.map((serverId) => (
-          <ServerListConfigurationItem
-            key={serverId}
-            serverId={serverId}
-            isSelected={enabledServerIds.has(serverId)}
-            onToggle={onToggleServer}
+      <ServerListConfigurationToolbar
+        isFilterActive={isFilterActive}
+        onResetFilter={handleResetFilter}
+        onViewChange={setView}
+        view={view}
+      />
+      {view === 'all' ? (
+        displayedServerIds.length > 0 ? (
+          <ServerListConfigurationGrid
+            accessibleName={t('settings.serverList.title')}
+            enabledServerIds={enabledServerIds}
+            onToggleServer={onToggleServer}
+            serverIds={displayedServerIds}
           />
-        ))}
-      </ul>
+        ) : (
+          <p className="mt-4 text-sm text-center text-[var(--color-text-secondary)]" role="status">
+            {t('settings.serverList.noResults')}
+          </p>
+        )
+      ) : (
+        <ServerListConfigurationGroupedView
+          displayedServerIds={displayedServerIds}
+          enabledServerIds={enabledServerIds}
+          onToggleServer={onToggleServer}
+        />
+      )}
     </section>
   )
 }

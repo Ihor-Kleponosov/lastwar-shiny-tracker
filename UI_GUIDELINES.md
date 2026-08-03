@@ -58,7 +58,7 @@ Use a responsive grid with a minimum chip width of about 88 px. Server IDs must 
 
 Settings use a custom, full-screen dialog with the same centered maximum width and horizontal padding as the application shell. Do not add a third-party modal library.
 
-The dialog contains a title, help popover, close control, selected-server counter, filter controls, server grid, and fixed Cancel / Save actions. Its scrolling content must not obscure the header or footer. The settings workflow supports immediate number search, inclusive range filtering (including reversed input bounds), resettable filters, select/deselect-all, and select/deselect-displayed actions. A maximum of 75 servers may be selected; attempts to exceed the limit show a concise error toast.
+The dialog contains a title, help popover, close control, selected-server counter, filter controls, server grid, and fixed Cancel / Save actions. Its scrolling content must not obscure the header or footer. The settings workflow supports immediate number search, inclusive range filtering (including reversed input bounds), resettable filters, and a select/deselect-displayed action. Users can switch between one flat server list and lists separated into the configured A, B, and C groups. The two icon controls behave as one radio group, expose their selected state, and support arrow-key navigation. A maximum of 75 servers may be selected; attempts to exceed the limit show a concise error toast.
 
 Changes remain a draft until Save. A changed dialog must ask for confirmation before discard on close, Escape, or other close requests. Saving persists the enabled IDs, closes the dialog, and shows a concise success toast. Do not show a toast for individual checkbox changes.
 

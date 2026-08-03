@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it } from 'vitest'
+import { shinyTasksConfiguration } from '@/config'
 import i18n from '@/i18n'
 import {
   getConfiguredServerIds,
@@ -87,6 +88,60 @@ describe('ServerListConfiguration', () => {
     expect(screen.getByRole('button', { name: 'Apply' })).toBeDisabled()
   })
 
+  it('switches between flat and grouped views with radio-button keyboard behavior', async () => {
+    const user = userEvent.setup()
+
+    renderConfiguration()
+
+    const flatView = screen.getByRole('radio', { name: 'Show all servers in one list' })
+    const groupedView = screen.getByRole('radio', { name: 'Show servers grouped' })
+
+    expect(flatView).toHaveAttribute('aria-checked', 'true')
+    expect(groupedView).toHaveAttribute('aria-checked', 'false')
+    expect(screen.queryByRole('heading', { name: 'Group A' })).not.toBeInTheDocument()
+
+    flatView.focus()
+    await user.keyboard('{ArrowRight}')
+
+    expect(groupedView).toHaveAttribute('aria-checked', 'true')
+    expect(groupedView).toHaveFocus()
+    expect(screen.getAllByRole('separator')).toHaveLength(3)
+
+    for (const [groupIndex, groupLabel] of ['A', 'B', 'C'].entries()) {
+      const groupList = screen.getByRole('list', { name: `Group ${groupLabel}` })
+      const groupServerIds = within(groupList)
+        .getAllByRole('checkbox')
+        .map((checkbox) => Number(checkbox.id.replace('server-', '')))
+
+      expect(groupServerIds).toEqual(shinyTasksConfiguration.serverGroups[groupIndex])
+    }
+
+    await user.click(flatView)
+
+    expect(flatView).toHaveAttribute('aria-checked', 'true')
+    expect(screen.queryByRole('heading', { name: 'Group A' })).not.toBeInTheDocument()
+  })
+
+  it('filters grouped servers, handles empty groups, and keeps server selection interactive', async () => {
+    const user = userEvent.setup()
+
+    renderConfiguration()
+    await selectSearchFilter(user)
+    await user.type(screen.getByRole('searchbox', { name: 'Search servers' }), '1639')
+    await user.click(screen.getByRole('radio', { name: 'Show servers grouped' }))
+
+    expect(screen.getAllByText('No servers in this group.')).toHaveLength(2)
+    const serverCheckbox = within(screen.getByRole('list', { name: 'Group B' })).getByRole(
+      'checkbox',
+      { name: '1639' },
+    )
+
+    expect(serverCheckbox).not.toBeChecked()
+    await user.click(serverCheckbox)
+
+    expect(serverCheckbox).toBeChecked()
+  })
+
   it('filters servers inclusively by range and swaps reversed bounds', async () => {
     const user = userEvent.setup()
 
@@ -138,7 +193,13 @@ describe('ServerListConfiguration', () => {
     await user.type(screen.getByRole('textbox', { name: 'To' }), '1692')
     await user.click(screen.getByRole('button', { name: 'Apply' }))
 
-    await user.click(screen.getByRole('button', { name: 'Reset filter' }))
+    const resetFilter = screen.getByRole('button', { name: 'Reset filter' })
+    const viewSwitcher = screen.getByRole('radiogroup', { name: 'Server list view' })
+
+    expect(resetFilter.parentElement?.firstElementChild).toBe(viewSwitcher)
+    expect(resetFilter.parentElement?.lastElementChild).toBe(resetFilter)
+
+    await user.click(resetFilter)
 
     expect(screen.getByRole('textbox', { name: 'From' })).toHaveValue('')
     expect(screen.getByRole('textbox', { name: 'To' })).toHaveValue('')
@@ -212,6 +273,11 @@ describe('ServerListConfiguration', () => {
     expect(screen.getByText('No servers found.')).toBeInTheDocument()
     expect(getServerCheckboxes()).toHaveLength(0)
     expect(screen.getByRole('checkbox', { name: 'All displayed' })).toBeDisabled()
+
+    await user.click(screen.getByRole('radio', { name: 'Show servers grouped' }))
+
+    expect(screen.queryByText('No servers found.')).not.toBeInTheDocument()
+    expect(screen.getAllByText('No servers in this group.')).toHaveLength(3)
   })
 
   it('toggles only displayed servers and updates its checked state', async () => {

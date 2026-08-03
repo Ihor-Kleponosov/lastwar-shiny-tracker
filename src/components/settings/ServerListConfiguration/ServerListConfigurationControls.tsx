@@ -11,13 +11,11 @@ type ServerListConfigurationControlsProps = {
   displayedServerIds: readonly ServerId[]
   enabledServerIds: ReadonlySet<ServerId>
   filterMode: 'range' | 'search'
-  isFilterActive: boolean
   isRangeApplyDisabled: boolean
   onApplyRange: () => void
   onFilterModeChange: (mode: 'range' | 'search') => void
   onRangeFromChange: (value: string) => void
   onRangeToChange: (value: string) => void
-  onResetFilter: () => void
   onSearchFilterChange: (filter: string) => void
   onToggleServers: (serverIds: readonly ServerId[]) => void
   rangeFrom: string
@@ -29,13 +27,11 @@ export function ServerListConfigurationControls({
   displayedServerIds,
   enabledServerIds,
   filterMode,
-  isFilterActive,
   isRangeApplyDisabled,
   onApplyRange,
   onFilterModeChange,
   onRangeFromChange,
   onRangeToChange,
-  onResetFilter,
   onSearchFilterChange,
   onToggleServers,
   rangeFrom,
@@ -176,15 +172,6 @@ export function ServerListConfigurationControls({
           })}
         </p>
       </div>
-      {isFilterActive ? (
-        <button
-          type="button"
-          onClick={onResetFilter}
-          className="w-fit text-sm text-[var(--color-text-secondary)] underline decoration-[var(--color-text-muted)] underline-offset-4 transition-colors hover:text-[var(--color-text-primary)] focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus)]"
-        >
-          {t('settings.serverList.resetFilter')}
-        </button>
-      ) : null}
     </div>
   )
 }

@@ -56,6 +56,11 @@
       "showDescription": "À propos de la liste des serveurs",
       "closeDescription": "Fermer la description de la liste des serveurs",
       "allDisplayed": "Tous affichés",
+      "viewLabel": "Vue de la liste des serveurs",
+      "viewAll": "Afficher tous les serveurs dans une liste",
+      "viewGroups": "Afficher les serveurs par groupes",
+      "groupLabel": "Groupe {{label}}",
+      "noGroupResults": "Aucun serveur dans ce groupe.",
       "noResults": "Aucun serveur trouvé.",
       "title": "Liste des serveurs",
       "description": "Sélectionnez les serveurs à afficher dans le calendrier. Vous pouvez désactiver ceux que vous n’utilisez pas ou pour lesquels vous n’avez pas de liens. Cliquez sur un serveur pour modifier son état. Ces préférences sont stockées dans votre navigateur et ne sont pas synchronisées avec d’autres appareils."

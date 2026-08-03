@@ -56,6 +56,11 @@
       "showDescription": "Über die Serverliste",
       "closeDescription": "Beschreibung der Serverliste schließen",
       "allDisplayed": "Alle angezeigten",
+      "viewLabel": "Ansicht der Serverliste",
+      "viewAll": "Alle Server in einer Liste anzeigen",
+      "viewGroups": "Server nach Gruppen anzeigen",
+      "groupLabel": "Gruppe {{label}}",
+      "noGroupResults": "Keine Server in dieser Gruppe.",
       "noResults": "Keine Server gefunden.",
       "title": "Serverliste",
       "description": "Wähle die Server aus, die im Kalender angezeigt werden sollen. Du kannst Server deaktivieren, die du nicht verwendest oder für die du keine Links hast. Klicke auf einen Server, um seinen Status zu ändern. Diese Einstellungen werden in deinem Browser gespeichert und nicht mit anderen Geräten synchronisiert."
