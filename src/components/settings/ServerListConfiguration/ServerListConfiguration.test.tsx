@@ -31,6 +31,10 @@ function getServerCheckboxes() {
     .filter((checkbox) => checkbox.id.startsWith('server-')) as HTMLInputElement[]
 }
 
+async function selectSearchFilter(user: ReturnType<typeof userEvent.setup>) {
+  await user.click(screen.getByRole('tab', { name: 'Search' }))
+}
+
 describe('ServerListConfiguration', () => {
   beforeEach(async () => {
     localStorage.clear()
@@ -48,6 +52,88 @@ describe('ServerListConfiguration', () => {
     expect(serverCheckboxes.every((checkbox) => (checkbox as HTMLInputElement).checked)).toBe(true)
     expect(screen.getByRole('button', { name: 'Deselect all' })).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Deselect displayed' })).not.toBeInTheDocument()
+    expect(screen.getByRole('tab', { name: 'By range' })).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByRole('button', { name: 'Apply' })).toBeDisabled()
+  })
+
+  it('filters servers inclusively by range and swaps reversed bounds', async () => {
+    const user = userEvent.setup()
+
+    renderConfiguration()
+
+    const from = screen.getByRole('textbox', { name: 'From' })
+    const to = screen.getByRole('textbox', { name: 'To' })
+
+    await user.type(from, '1692')
+    await user.type(to, '16a80')
+    expect(to).toHaveValue('1680')
+
+    await user.click(screen.getByRole('button', { name: 'Apply' }))
+
+    expect(from).toHaveValue('1680')
+    expect(to).toHaveValue('1692')
+    expect(getServerCheckboxes().map(({ id }) => Number(id.replace('server-', '')))).toEqual(
+      Array.from({ length: 13 }, (_, index) => 1680 + index),
+    )
+    expect(screen.getByRole('button', { name: 'Deselect displayed' })).toBeInTheDocument()
+  })
+
+  it('resets filters when switching tabs', async () => {
+    const user = userEvent.setup()
+
+    renderConfiguration()
+
+    await user.type(screen.getByRole('textbox', { name: 'From' }), '1680')
+    await user.type(screen.getByRole('textbox', { name: 'To' }), '1692')
+    await user.click(screen.getByRole('button', { name: 'Apply' }))
+    expect(getServerCheckboxes()).toHaveLength(13)
+
+    await selectSearchFilter(user)
+    await user.type(screen.getByRole('searchbox', { name: 'Search servers' }), '1638')
+    expect(getServerCheckboxes()).toHaveLength(1)
+
+    await user.click(screen.getByRole('tab', { name: 'By range' }))
+    expect(screen.getByRole('textbox', { name: 'From' })).toHaveValue('')
+    expect(screen.getByRole('textbox', { name: 'To' })).toHaveValue('')
+    expect(getServerCheckboxes()).toHaveLength(configuredServerIds.length)
+  })
+
+  it('resets the applied range with the reset filter action', async () => {
+    const user = userEvent.setup()
+
+    renderConfiguration()
+
+    await user.type(screen.getByRole('textbox', { name: 'From' }), '1680')
+    await user.type(screen.getByRole('textbox', { name: 'To' }), '1692')
+    await user.click(screen.getByRole('button', { name: 'Apply' }))
+
+    await user.click(screen.getByRole('button', { name: 'Reset filter' }))
+
+    expect(screen.getByRole('textbox', { name: 'From' })).toHaveValue('')
+    expect(screen.getByRole('textbox', { name: 'To' })).toHaveValue('')
+    expect(getServerCheckboxes()).toHaveLength(configuredServerIds.length)
+    expect(screen.queryByRole('button', { name: 'Reset filter' })).not.toBeInTheDocument()
+  })
+
+  it('opens and closes the server-list description popover', async () => {
+    const user = userEvent.setup()
+
+    renderConfiguration()
+
+    expect(screen.queryByRole('dialog', { name: 'About the server list' })).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'About the server list' }))
+
+    expect(screen.getByRole('dialog', { name: 'About the server list' })).toBeInTheDocument()
+    expect(
+      screen.getByText(
+        'Select the servers to display in the calendar. You can disable servers you do not use or do not have links for. Click a server to change its state. These preferences are stored in your browser and are not synced to other devices.',
+      ),
+    ).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Close server-list description' }))
+
+    expect(screen.queryByRole('dialog', { name: 'About the server list' })).not.toBeInTheDocument()
   })
 
   it('uses the saved server preferences', () => {
@@ -81,6 +167,7 @@ describe('ServerListConfiguration', () => {
     const user = userEvent.setup()
 
     renderConfiguration()
+    await selectSearchFilter(user)
 
     const filter = screen.getByRole('searchbox', { name: 'Search servers' })
     await user.type(filter, '1638')
@@ -97,6 +184,7 @@ describe('ServerListConfiguration', () => {
     const user = userEvent.setup()
 
     renderConfiguration()
+    await selectSearchFilter(user)
 
     await user.type(screen.getByRole('searchbox', { name: 'Search servers' }), '1')
 
@@ -107,6 +195,7 @@ describe('ServerListConfiguration', () => {
     const user = userEvent.setup()
 
     renderConfiguration()
+    await selectSearchFilter(user)
 
     await user.type(screen.getByRole('searchbox', { name: 'Search servers' }), '9999')
 
@@ -149,6 +238,7 @@ describe('ServerListConfiguration', () => {
     )
 
     renderConfiguration()
+    await selectSearchFilter(user)
 
     const filter = screen.getByRole('searchbox', { name: 'Search servers' })
     await user.type(filter, '1638')
