@@ -12,7 +12,7 @@ export default function App() {
   const [isCalendarVisible, setIsCalendarVisible] = useState(false)
   const [isConfigurationOpen, setIsConfigurationOpen] = useState(false)
   const settingsButtonRef = useRef<HTMLButtonElement>(null)
-  const { enabledServerIds, serverIds, toggleServer, toggleServers } = useServerPreferences()
+  const { enabledServerIds, serverIds, saveEnabledServers } = useServerPreferences()
   const prefersReducedMotion = useReducedMotion() ?? false
 
   return (
@@ -61,8 +61,7 @@ export default function App() {
             returnFocusRef={settingsButtonRef}
             enabledServerIds={enabledServerIds}
             serverIds={serverIds}
-            onToggleServer={toggleServer}
-            onToggleServers={toggleServers}
+            onSave={saveEnabledServers}
           />
         ) : null}
       </AnimatePresence>

@@ -1,17 +1,19 @@
 import { X } from 'lucide-react'
 import { motion, useReducedMotion } from 'motion/react'
-import { useId, useRef, type RefObject } from 'react'
+import { useCallback, useId, useRef, useState, type RefObject } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useModalAccessibility } from '@/hooks/useModalAccessibility'
 import { ServerListConfiguration } from '@/components/settings/ServerListConfiguration'
+import { UnsavedChangesDialog } from '@/components/settings/UnsavedChangesDialog'
+import { Button } from '@/components/ui/Button'
+import { HelpPopover } from '@/components/ui/HelpPopover'
 import { IconButton } from '@/components/ui/IconButton'
 import type { ServerId } from '@/types'
 
 type ConfigurationModalProps = {
   enabledServerIds: ReadonlySet<ServerId>
   onClose: () => void
-  onToggleServer: (serverId: ServerId) => void
-  onToggleServers: (serverIds: readonly ServerId[]) => void
+  onSave: (serverIds: ReadonlySet<ServerId>) => void
   returnFocusRef: RefObject<HTMLButtonElement | null>
   serverIds: readonly ServerId[]
 }
@@ -19,21 +21,86 @@ type ConfigurationModalProps = {
 export function ConfigurationModal({
   enabledServerIds,
   onClose,
-  onToggleServer,
-  onToggleServers,
+  onSave,
   returnFocusRef,
   serverIds,
 }: ConfigurationModalProps) {
   const { t } = useTranslation('common')
   const dialogRef = useRef<HTMLDivElement>(null)
+  const closeButtonRef = useRef<HTMLButtonElement>(null)
+  const discardConfirmationTriggerRef = useRef<HTMLElement>(null)
   const titleId = useId()
+  const initialEnabledServerIds = useRef(new Set(enabledServerIds))
+  const [draftEnabledServerIds, setDraftEnabledServerIds] = useState(
+    () => new Set(enabledServerIds),
+  )
+  const [isDiscardConfirmationOpen, setIsDiscardConfirmationOpen] = useState(false)
   const prefersReducedMotion = useReducedMotion() ?? false
   const transition = {
     duration: prefersReducedMotion ? 0 : 0.2,
     ease: [0.2, 0.8, 0.2, 1] as const,
   }
 
-  useModalAccessibility({ dialogRef, isOpen: true, onClose, returnFocusRef })
+  const hasUnsavedChanges =
+    draftEnabledServerIds.size !== initialEnabledServerIds.current.size ||
+    [...draftEnabledServerIds].some((serverId) => !initialEnabledServerIds.current.has(serverId))
+
+  const handleCloseRequest = useCallback(() => {
+    if (isDiscardConfirmationOpen) return
+
+    if (hasUnsavedChanges) {
+      discardConfirmationTriggerRef.current =
+        document.activeElement instanceof HTMLElement ? document.activeElement : null
+      setIsDiscardConfirmationOpen(true)
+      return
+    }
+
+    onClose()
+  }, [hasUnsavedChanges, isDiscardConfirmationOpen, onClose])
+
+  const handleToggleServer = useCallback((serverId: ServerId) => {
+    setDraftEnabledServerIds((currentEnabledServerIds) => {
+      const nextEnabledServerIds = new Set(currentEnabledServerIds)
+
+      if (nextEnabledServerIds.has(serverId)) {
+        nextEnabledServerIds.delete(serverId)
+      } else {
+        nextEnabledServerIds.add(serverId)
+      }
+
+      return nextEnabledServerIds
+    })
+  }, [])
+
+  const handleToggleServers = useCallback((targetServerIds: readonly ServerId[]) => {
+    if (targetServerIds.length === 0) return
+
+    setDraftEnabledServerIds((currentEnabledServerIds) => {
+      const nextEnabledServerIds = new Set(currentEnabledServerIds)
+      const areAllTargetServersSelected = targetServerIds.every((serverId) =>
+        currentEnabledServerIds.has(serverId),
+      )
+
+      for (const serverId of targetServerIds) {
+        if (areAllTargetServersSelected) nextEnabledServerIds.delete(serverId)
+        else nextEnabledServerIds.add(serverId)
+      }
+
+      return nextEnabledServerIds
+    })
+  }, [])
+
+  const handleSave = useCallback(() => {
+    onSave(draftEnabledServerIds)
+    onClose()
+  }, [draftEnabledServerIds, onClose, onSave])
+
+  const handleReturnToSettings = useCallback(() => {
+    setIsDiscardConfirmationOpen(false)
+    discardConfirmationTriggerRef.current?.focus()
+  }, [])
+
+  useModalAccessibility({ dialogRef, isOpen: true, onClose: handleCloseRequest, returnFocusRef })
 
   return (
     <motion.div
@@ -58,19 +125,45 @@ export function ConfigurationModal({
           <h2 id={titleId} className="text-xl font-semibold">
             {t('settings.title')}
           </h2>
-          <IconButton aria-label={t('settings.close')} onClick={onClose}>
-            <X aria-hidden="true" size={20} />
-          </IconButton>
+          <div className="relative flex items-center gap-1">
+            <IconButton
+              ref={closeButtonRef}
+              aria-label={t('settings.close')}
+              onClick={handleCloseRequest}
+            >
+              <X aria-hidden="true" size={20} />
+            </IconButton>
+            <HelpPopover
+              className="order-first"
+              label={t('settings.serverList.showDescription')}
+              closeLabel={t('settings.serverList.closeDescription')}
+            >
+              <p className="text-sm text-[var(--color-text-secondary)]">
+                {t('settings.serverList.description')}
+              </p>
+            </HelpPopover>
+          </div>
         </header>
         <div className="min-h-0 flex-1 overflow-y-auto py-6">
           <ServerListConfiguration
-            enabledServerIds={enabledServerIds}
+            enabledServerIds={draftEnabledServerIds}
             serverIds={serverIds}
-            onToggleServer={onToggleServer}
-            onToggleServers={onToggleServers}
+            onToggleServer={handleToggleServer}
+            onToggleServers={handleToggleServers}
           />
         </div>
+        <footer className="flex shrink-0 gap-3 border-t border-[var(--color-border)] py-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+          <Button className="flex-1" onClick={handleCloseRequest}>
+            {t('settings.cancel')}
+          </Button>
+          <Button className="flex-1" disabled={!hasUnsavedChanges} onClick={handleSave}>
+            {t('settings.save')}
+          </Button>
+        </footer>
       </motion.div>
+      {isDiscardConfirmationOpen ? (
+        <UnsavedChangesDialog onDiscard={onClose} onReturn={handleReturnToSettings} />
+      ) : null}
     </motion.div>
   )
 }

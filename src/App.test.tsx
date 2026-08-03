@@ -56,7 +56,7 @@ describe('App', () => {
     expect(screen.getByText(format(new Date(), 'P'))).toBeInTheDocument()
   })
 
-  it('updates the active server list immediately when preferences change', async () => {
+  it('updates the active server list only after saving settings changes', async () => {
     const user = userEvent.setup()
     const selectedDate = new Date()
     const serverId = getServersForIndex(
@@ -75,13 +75,14 @@ describe('App', () => {
     await user.click(screen.getByRole('checkbox', { name: String(serverId) }))
 
     expect(screen.getByRole('dialog', { name: 'Settings' })).toBeInTheDocument()
-    expect(within(serverList!).queryByText(String(serverId))).not.toBeInTheDocument()
+    expect(within(serverList!).getByText(String(serverId))).toBeInTheDocument()
 
-    await user.click(screen.getByRole('button', { name: 'Close settings' }))
+    await user.click(screen.getByRole('button', { name: 'Save' }))
 
     await waitFor(() => {
       expect(screen.queryByRole('dialog', { name: 'Settings' })).not.toBeInTheDocument()
     })
+    expect(within(serverList!).queryByText(String(serverId))).not.toBeInTheDocument()
     expect(settingsButton).toHaveFocus()
   })
 })

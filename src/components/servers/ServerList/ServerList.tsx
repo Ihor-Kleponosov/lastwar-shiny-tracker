@@ -3,6 +3,7 @@ import { useMemo, type RefObject } from 'react'
 import { useTranslation } from 'react-i18next'
 import { shinyTasksConfiguration } from '@/config'
 import { IconButton } from '@/components/ui/IconButton'
+import { Button } from '@/components/ui/Button'
 import type { ServerId } from '@/types'
 import { getServerGroupIndexForDate, getServersForIndex } from '@/utils'
 import { ServerChip } from './ServerChip'
@@ -54,13 +55,7 @@ export function ServerList({
       {activeServers.length === 0 ? (
         <div className="mt-3 flex flex-col items-center gap-3 text-center">
           <p className="text-sm text-[var(--color-text-secondary)]">{t('servers.empty')}</p>
-          <button
-            type="button"
-            onClick={onOpenSettings}
-            className="inline-flex min-h-11 items-center justify-center rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-elevated)] px-3 text-sm font-medium text-[var(--color-text-primary)] transition-colors duration-150 hover:bg-[var(--color-surface)] focus-visible:ring-2 focus-visible:ring-[var(--color-focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-background)] motion-reduce:transition-none"
-          >
-            {t('settings.open')}
-          </button>
+          <Button onClick={onOpenSettings}>{t('settings.open')}</Button>
         </div>
       ) : (
         <ul

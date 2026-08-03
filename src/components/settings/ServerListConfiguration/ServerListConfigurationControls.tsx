@@ -2,6 +2,7 @@ import { Search, X } from 'lucide-react'
 import classNames from 'class-names'
 import type { ChangeEvent } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Button } from '@/components/ui/Button'
 import type { ServerId } from '@/types'
 
 type ServerListConfigurationControlsProps = {
@@ -131,14 +132,9 @@ export function ServerListConfigurationControls({
               className="min-h-11 w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 text-sm text-[var(--color-text-primary)] outline-none placeholder:text-[var(--color-text-muted)] focus-visible:ring-2 focus-visible:ring-[var(--color-focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-background)]"
             />
           </div>
-          <button
-            type="button"
-            disabled={isRangeApplyDisabled}
-            onClick={onApplyRange}
-            className="inline-flex min-h-11 items-center justify-center rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-elevated)] px-3 text-sm font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface)] focus-visible:ring-2 focus-visible:ring-[var(--color-focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-background)] disabled:cursor-not-allowed disabled:opacity-50"
-          >
+          <Button disabled={isRangeApplyDisabled} onClick={onApplyRange}>
             {t('settings.serverList.applyRange')}
-          </button>
+          </Button>
         </div>
       ) : (
         <div
@@ -176,27 +172,17 @@ export function ServerListConfigurationControls({
         </div>
       )}
       <div className="grid w-full grid-cols-2 gap-2 text-sm">
-        <button
-          type="button"
-          onClick={() => onToggleServers(serverIds)}
-          className="inline-flex min-h-11 w-full cursor-pointer items-center justify-center rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 text-center font-medium text-[var(--color-text-secondary)] transition-colors duration-150 hover:text-[var(--color-text-primary)] focus-visible:ring-2 focus-visible:ring-[var(--color-focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-background)] motion-reduce:transition-none"
-        >
+        <Button className="w-full" onClick={() => onToggleServers(serverIds)}>
           {selectAllLabel}
-        </button>
+        </Button>
         {isFiltered ? (
-          <button
-            type="button"
+          <Button
+            className="w-full"
             disabled={displayedServerIds.length === 0}
             onClick={() => onToggleServers(displayedServerIds)}
-            className={classNames(
-              'inline-flex min-h-11 w-full items-center justify-center rounded-lg border px-3 text-center font-medium transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-[var(--color-focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-background)] motion-reduce:transition-none',
-              displayedServerIds.length === 0
-                ? 'cursor-not-allowed border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-muted)]'
-                : 'cursor-pointer border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]',
-            )}
           >
             {selectDisplayedLabel}
-          </button>
+          </Button>
         ) : null}
       </div>
       {isFilterActive ? (

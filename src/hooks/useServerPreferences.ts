@@ -14,42 +14,9 @@ export function useServerPreferences() {
     saveEnabledServerIds(enabledServerIds)
   }, [enabledServerIds])
 
-  const toggleServer = useCallback((serverId: ServerId) => {
-    setEnabledServerIds((currentEnabledServerIds) => {
-      const nextEnabledServerIds = new Set(currentEnabledServerIds)
-
-      if (nextEnabledServerIds.has(serverId)) {
-        nextEnabledServerIds.delete(serverId)
-      } else {
-        nextEnabledServerIds.add(serverId)
-      }
-
-      return nextEnabledServerIds
-    })
+  const saveEnabledServers = useCallback((nextEnabledServerIds: ReadonlySet<ServerId>) => {
+    setEnabledServerIds(new Set(nextEnabledServerIds))
   }, [])
 
-  const toggleServers = useCallback((targetServerIds: readonly ServerId[]) => {
-    if (targetServerIds.length === 0) {
-      return
-    }
-
-    setEnabledServerIds((currentEnabledServerIds) => {
-      const nextEnabledServerIds = new Set(currentEnabledServerIds)
-      const areAllTargetServersSelected = targetServerIds.every((serverId) =>
-        currentEnabledServerIds.has(serverId),
-      )
-
-      for (const serverId of targetServerIds) {
-        if (areAllTargetServersSelected) {
-          nextEnabledServerIds.delete(serverId)
-        } else {
-          nextEnabledServerIds.add(serverId)
-        }
-      }
-
-      return nextEnabledServerIds
-    })
-  }, [])
-
-  return { enabledServerIds, serverIds, toggleServer, toggleServers }
+  return { enabledServerIds, serverIds, saveEnabledServers }
 }

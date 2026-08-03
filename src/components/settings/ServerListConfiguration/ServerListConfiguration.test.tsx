@@ -1,15 +1,43 @@
+import { useState } from 'react'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { useServerPreferences } from '@/hooks/useServerPreferences'
 import i18n from '@/i18n'
-import { getConfiguredServerIds, SERVER_PREFERENCES_STORAGE_KEY } from '@/utils/serverPreferences'
+import {
+  getConfiguredServerIds,
+  getEnabledServerIds,
+  SERVER_PREFERENCES_STORAGE_KEY,
+} from '@/utils/serverPreferences'
 import { ServerListConfiguration } from '.'
 
 const configuredServerIds = getConfiguredServerIds()
 
 function ServerListConfigurationHarness() {
-  const { enabledServerIds, serverIds, toggleServer, toggleServers } = useServerPreferences()
+  const [enabledServerIds, setEnabledServerIds] = useState<Set<number>>(getEnabledServerIds)
+  const serverIds = getConfiguredServerIds()
+
+  function toggleServer(serverId: number) {
+    setEnabledServerIds((currentEnabledServerIds) => {
+      const nextEnabledServerIds = new Set(currentEnabledServerIds)
+      if (nextEnabledServerIds.has(serverId)) nextEnabledServerIds.delete(serverId)
+      else nextEnabledServerIds.add(serverId)
+      return nextEnabledServerIds
+    })
+  }
+
+  function toggleServers(targetServerIds: readonly number[]) {
+    setEnabledServerIds((currentEnabledServerIds) => {
+      const nextEnabledServerIds = new Set(currentEnabledServerIds)
+      const areAllTargetServersSelected = targetServerIds.every((serverId) =>
+        currentEnabledServerIds.has(serverId),
+      )
+      for (const serverId of targetServerIds) {
+        if (areAllTargetServersSelected) nextEnabledServerIds.delete(serverId)
+        else nextEnabledServerIds.add(serverId)
+      }
+      return nextEnabledServerIds
+    })
+  }
 
   return (
     <ServerListConfiguration
@@ -113,27 +141,6 @@ describe('ServerListConfiguration', () => {
     expect(screen.getByRole('textbox', { name: 'To' })).toHaveValue('')
     expect(getServerCheckboxes()).toHaveLength(configuredServerIds.length)
     expect(screen.queryByRole('button', { name: 'Reset filter' })).not.toBeInTheDocument()
-  })
-
-  it('opens and closes the server-list description popover', async () => {
-    const user = userEvent.setup()
-
-    renderConfiguration()
-
-    expect(screen.queryByRole('dialog', { name: 'About the server list' })).not.toBeInTheDocument()
-
-    await user.click(screen.getByRole('button', { name: 'About the server list' }))
-
-    expect(screen.getByRole('dialog', { name: 'About the server list' })).toBeInTheDocument()
-    expect(
-      screen.getByText(
-        'Select the servers to display in the calendar. You can disable servers you do not use or do not have links for. Click a server to change its state. These preferences are stored in your browser and are not synced to other devices.',
-      ),
-    ).toBeInTheDocument()
-
-    await user.click(screen.getByRole('button', { name: 'Close server-list description' }))
-
-    expect(screen.queryByRole('dialog', { name: 'About the server list' })).not.toBeInTheDocument()
   })
 
   it('uses the saved server preferences', () => {
