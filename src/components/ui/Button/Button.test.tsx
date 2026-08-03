@@ -3,9 +3,9 @@ import { describe, expect, it } from 'vitest'
 import { Button } from '.'
 
 describe('Button', () => {
-  it('uses the shared neutral style and forwards button props', () => {
+  it('uses the secondary style and forwards button props', () => {
     render(
-      <Button className="w-full" disabled>
+      <Button className="w-full" disabled variant="secondary">
         Save
       </Button>,
     )
@@ -20,6 +20,15 @@ describe('Button', () => {
       'border-[var(--color-border)]',
       'bg-[var(--color-surface-elevated)]',
       'w-full',
+    )
+  })
+
+  it('uses the primary style by default', () => {
+    render(<Button>Save</Button>)
+
+    expect(screen.getByRole('button', { name: 'Save' })).toHaveClass(
+      'bg-[var(--color-accent)]',
+      'text-[var(--color-accent-contrast)]',
     )
   })
 

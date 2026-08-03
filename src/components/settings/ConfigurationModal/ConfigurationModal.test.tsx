@@ -6,6 +6,10 @@ import i18n from '@/i18n'
 import { getConfiguredServerIds } from '@/utils/serverPreferences'
 import { ConfigurationModal } from '.'
 
+const { toastSuccess } = vi.hoisted(() => ({ toastSuccess: vi.fn() }))
+
+vi.mock('sonner', () => ({ toast: { success: toastSuccess } }))
+
 const configurationModalProps = {
   enabledServerIds: new Set(getConfiguredServerIds()),
   serverIds: getConfiguredServerIds(),
@@ -47,6 +51,7 @@ function ConfigurationModalHarness({
 describe('ConfigurationModal', () => {
   beforeEach(async () => {
     await i18n.changeLanguage('en')
+    toastSuccess.mockClear()
   })
 
   it('renders a labelled dialog with a close action', () => {
@@ -123,6 +128,7 @@ describe('ConfigurationModal', () => {
 
     expect(onSave).toHaveBeenCalledTimes(1)
     expect(onSave.mock.calls[0][0].has(1638)).toBe(false)
+    expect(toastSuccess).toHaveBeenCalledWith('Preferences saved')
     expect(screen.queryByRole('dialog', { name: 'Settings' })).not.toBeInTheDocument()
   })
 
@@ -152,7 +158,7 @@ describe('ConfigurationModal', () => {
 
     await user.click(screen.getByRole('checkbox', { name: '1638' }))
     await user.click(screen.getByRole('button', { name: 'Close settings' }))
-    await user.click(screen.getByRole('button', { name: 'Delete' }))
+    await user.click(screen.getByRole('button', { name: 'Discard changes' }))
 
     expect(screen.queryByRole('dialog', { name: 'Settings' })).not.toBeInTheDocument()
   })

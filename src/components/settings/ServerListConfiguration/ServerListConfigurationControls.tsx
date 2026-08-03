@@ -172,12 +172,13 @@ export function ServerListConfigurationControls({
         </div>
       )}
       <div className="grid w-full grid-cols-2 gap-2 text-sm">
-        <Button className="w-full" onClick={() => onToggleServers(serverIds)}>
+        <Button className="w-full" variant="secondary" onClick={() => onToggleServers(serverIds)}>
           {selectAllLabel}
         </Button>
         {isFiltered ? (
           <Button
             className="w-full"
+            variant="secondary"
             disabled={displayedServerIds.length === 0}
             onClick={() => onToggleServers(displayedServerIds)}
           >

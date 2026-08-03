@@ -68,7 +68,7 @@ export function UnsavedChangesDialog({ onDiscard, onReturn }: UnsavedChangesDial
           {t('settings.unsavedChanges.description')}
         </p>
         <div className="mt-5 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-          <Button ref={returnButtonRef} onClick={onReturn}>
+          <Button ref={returnButtonRef} variant="secondary" onClick={onReturn}>
             {t('settings.unsavedChanges.return')}
           </Button>
           <Button variant="danger" onClick={onDiscard}>

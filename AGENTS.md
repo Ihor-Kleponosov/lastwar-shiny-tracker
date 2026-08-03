@@ -1,227 +1,64 @@
-# AGENTS.md
-
 # Repository Agent Instructions
 
-This repository is primarily developed using OpenAI Codex.
+## Source of truth
 
-Your goal is to produce production-quality code that integrates naturally into the existing codebase while keeping changes as small, readable, and maintainable as possible.
+Follow project documentation in this order:
 
----
+1. `AGENTS.md`
+2. `UI_GUIDELINES.md`
+3. `README.md`
 
-# Mission
+When guidance conflicts, the earlier document wins.
 
-- Implement requested features.
-- Fix bugs without introducing regressions.
-- Preserve the existing architecture.
-- Leave the repository in a releasable state.
+## Working approach
 
----
+For non-trivial work, read the relevant documentation and implementation first, make a short plan, then implement the smallest focused change. Preserve existing architecture and unrelated working-tree changes. Do not rewrite code before understanding the current behavior.
 
-# Source of Truth
+Prefer readable, strongly typed, immutable code; meaningful names; short functions; early returns; and focused diffs. Avoid speculative refactors, dead code, commented-out code, unnecessary dependencies, and unrelated formatting or lockfile changes.
 
-Always follow project documentation in this order:
+## Architecture and domain behavior
 
-1. AGENTS.md
-2. UI_GUIDELINES.md
-3. README.md
+- Keep business logic in hooks and framework-independent utilities; keep components focused on rendering and interaction.
+- The shiny-task cycle is configured by `anchorDate` and ordered server groups in `src/config/index.ts`. Use the existing cycle utilities rather than duplicating date arithmetic.
+- Treat server IDs as numbers and preserve their numerical ordering.
+- Server preferences are local-only. Use the existing persistence helpers and retain their safe fallback behavior for invalid, stale, or unavailable localStorage data.
+- Keep settings edits as a draft until an explicit save. A dirty settings dialog must confirm discard before closing.
+- Reuse `useModalAccessibility` for dialogs so Escape handling, focus movement, focus return, focus trapping, and scroll locking remain consistent.
+- Reuse existing export helpers and the export view for PNG capture; do not introduce a second rendering or download path without a demonstrated need.
 
-If instructions conflict, follow the highest-priority document.
+## React, TypeScript, and styling
 
----
+- Use functional components, hooks, composition, and local state where practical.
+- Avoid `any`; reuse shared types and use explicit public props and utility return types.
+- Use Tailwind and semantic CSS variables from `src/index.css`; do not hardcode visual colors or introduce another UI framework.
+- Follow `UI_GUIDELINES.md` for layout, touch targets, icons, motion, responsive behavior, and accessibility.
+- Preserve semantic HTML, native controls where practical, keyboard operation, visible focus states, dialog ARIA semantics, and reduced-motion behavior.
 
-# Workflow
+## Internationalization
 
-For every non-trivial task:
+- All user-facing strings, including labels, placeholders, ARIA text, status text, and dialog titles, must use `react-i18next`.
+- Add every new key to `en`, `fr`, `de`, and `uk` locale files in the same change. English is the fallback.
+- Keep values in literal characters, including Ukrainian Cyrillic; do not use Unicode escapes.
+- Use the existing `date-fns` locale helper for displayed dates and React DayPicker. Store `Date` values or machine-readable strings, never translated dates.
+- Allow layouts to accommodate longer French and German strings.
 
-1. Read the relevant documentation.
-2. Inspect the existing implementation.
-3. Produce a short implementation plan.
-4. Reuse existing code whenever practical.
-5. Implement the smallest reasonable change.
-6. Verify the result before finishing.
+## Testing and verification
 
-Do not start rewriting code before understanding how the current implementation works.
+- Colocate component and utility tests using `*.test.ts(x)`.
+- Update affected tests whenever behavior changes; favor independent utility tests for business logic and interaction tests for accessible UI behavior.
+- Before completion, run:
 
----
+  ```bash
+  npm run format:check
+  npm run lint
+  npm run test:run
+  npm run build
+  ```
 
-# General Principles
+- If any check cannot run, state why and what was verified instead.
 
-Prefer:
+## Git and documentation
 
-- small focused commits
-- minimal diffs
-- readable code
-- simple solutions
-- consistency with the existing project
-
-Avoid:
-
-- unnecessary refactoring
-- speculative improvements
-- introducing abstractions too early
-- changing unrelated files
-
----
-
-# Architecture
-
-Respect the existing project structure.
-
-Keep:
-
-- business logic outside UI components whenever practical
-- utilities framework-independent
-- components focused on presentation and interaction
-- state as local as reasonably possible
-
-Do not introduce new architectural patterns unless explicitly requested.
-
----
-
-# React
-
-Prefer:
-
-- functional components
-- composition
-- hooks
-- early returns
-
-Avoid creating components only to reduce file size.
-
-Extract components or hooks only when they improve readability or reuse.
-
----
-
-# TypeScript
-
-- Avoid `any`.
-- Prefer explicit types.
-- Reuse existing shared types.
-- Prefer immutable updates.
-- Keep functions strongly typed.
-
----
-
-# Styling
-
-UI implementation must follow **UI_GUIDELINES.md**.
-
-- Use existing Tailwind conventions.
-- Use semantic CSS variables.
-- Avoid hardcoded colors.
-- Do not introduce additional UI frameworks.
-
----
-
-# Accessibility
-
-Accessibility is required.
-
-Always preserve:
-
-- semantic HTML
-- keyboard navigation
-- visible focus states
-- proper ARIA attributes
-- sufficient contrast
-
-Never remove accessibility for convenience.
-
----
-
-# Internationalization
-
-All user-facing strings must use i18n.
-
-Never hardcode visible text.
-
-When introducing new strings:
-
-- add English first
-- update every supported locale
-- write translation values using their literal characters (for example, Ukrainian Cyrillic), not Unicode escape codes such as `\u041c`
-
----
-
-# Dependencies
-
-Before adding a dependency:
-
-- verify that existing libraries cannot solve the problem
-- choose the smallest suitable dependency
-- avoid overlapping functionality
-
-Do not introduce large UI libraries.
-
----
-
-# Testing
-
-When changing behavior:
-
-- update affected tests
-- add tests for new logic where appropriate
-
-Prefer testing business logic independently from UI.
-
----
-
-# Performance
-
-Prefer naturally efficient code.
-
-Avoid:
-
-- unnecessary renders
-- unnecessary allocations
-- duplicated computations
-
-Do not optimize prematurely.
-
----
-
-# Code Quality
-
-Prefer:
-
-- meaningful names
-- short functions
-- early returns
-- low nesting
-
-Avoid:
-
-- dead code
-- commented-out code
-- TODO comments unless explicitly requested
-
----
-
-# Git
-
-Only modify files required for the task.
-
-Do not:
-
-- reformat unrelated files
-- update lockfiles unnecessarily
-- rename files without reason
-
-Keep the resulting diff easy to review.
-
----
-
-# Completion Checklist
-
-Before considering a task complete:
-
-- UI follows UI_GUIDELINES.md
-- All user-facing text is localized
-- Accessibility is preserved
-- Relevant tests are updated
-- Lint passes
-- Tests pass
-- Build succeeds
-
-If any verification cannot be performed, explicitly state why.
+- Modify only files required by the task. Do not reset, overwrite, or discard user changes.
+- Keep the result easy to review; do not rename files without a clear reason.
+- Update `README.md` when user-visible behavior, setup, configuration, storage, or deployment changes. Update `UI_GUIDELINES.md` when interaction or visual conventions change.

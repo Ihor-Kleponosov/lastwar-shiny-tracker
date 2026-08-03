@@ -2,6 +2,7 @@
   "app": {
     "logoAlt": "Last War Shiny Tracker logo"
   },
+  "errorBoundary": { "message": "Something went wrong" },
   "language": { "label": "Language", "openMenu": "Choose language" },
   "calendar": {
     "title": "Calendar",
@@ -33,10 +34,11 @@
     "close": "Close settings",
     "cancel": "Cancel",
     "save": "Save",
+    "saved": "Preferences saved",
     "unsavedChanges": {
       "title": "Unsaved changes",
       "description": "You have unsaved changes. Do you want to discard them?",
-      "discard": "Delete",
+      "discard": "Discard changes",
       "return": "Return"
     },
     "serverList": {
