@@ -66,23 +66,23 @@ describe('App', () => {
 
     render(<App />)
 
-    const settingsButton = screen.getByRole('button', { name: 'Open settings' })
+    const settingsButton = screen.getAllByRole('button', { name: 'Open settings' })[0]
     const serverList = settingsButton.closest('section')
     expect(serverList).not.toBeNull()
-    expect(within(serverList!).getByText(String(serverId))).toBeInTheDocument()
+    expect(within(serverList!).queryByText(String(serverId))).not.toBeInTheDocument()
 
     await user.click(settingsButton)
     await user.click(screen.getByRole('checkbox', { name: String(serverId) }))
 
     expect(screen.getByRole('dialog', { name: 'Settings' })).toBeInTheDocument()
-    expect(within(serverList!).getByText(String(serverId))).toBeInTheDocument()
+    expect(within(serverList!).queryByText(String(serverId))).not.toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: 'Save' }))
 
     await waitFor(() => {
       expect(screen.queryByRole('dialog', { name: 'Settings' })).not.toBeInTheDocument()
     })
-    expect(within(serverList!).queryByText(String(serverId))).not.toBeInTheDocument()
+    expect(within(serverList!).getByText(String(serverId))).toBeInTheDocument()
     expect(settingsButton).toHaveFocus()
   })
 })
