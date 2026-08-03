@@ -16,7 +16,7 @@ describe('ExportView', () => {
       <ExportView selectedDate={new Date(2026, 6, 20)} enabledServerIds={enabledServerIds} />,
     )
 
-    expect(screen.getByRole('heading', { name: 'July 2026' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'July' })).toBeInTheDocument()
     expect(container.querySelector('.rdp-weekday')).toHaveTextContent('Mo')
     expect(screen.queryByRole('button')).not.toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Servers:' })).toBeInTheDocument()
@@ -50,7 +50,7 @@ describe('ExportView', () => {
       />,
     )
 
-    expect(screen.getByRole('heading', { name: 'Juli 2026' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Juli' })).toBeInTheDocument()
     expect(screen.getByText('A:')).toBeInTheDocument()
   })
 })
