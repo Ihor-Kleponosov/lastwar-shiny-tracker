@@ -49,16 +49,16 @@ export const ExportView = forwardRef<HTMLDivElement, ExportViewProps>(function E
   const { i18n, t } = useTranslation('common')
   const locale = getDateLocale(i18n.resolvedLanguage ?? i18n.language)
   const month = startOfMonth(selectedDate)
-  const monthLabel = format(month, 'LLLL yyyy', { locale })
+  const monthLabel = format(month, 'LLLL', { locale })
 
   return (
     <div
       ref={ref}
       data-testid="export-view"
-      className={`export-view export-view--${theme} w-[390px] bg-[var(--color-export-background)] p-5 text-[var(--color-export-text)] border-b-[var(--color-export-border)]`}
+      className={`export-view export-view--${theme} w-[390px] border-b-[var(--color-export-border)] bg-[var(--color-export-background)] p-5 font-[Arial,sans-serif] text-[var(--color-export-text)] [letter-spacing:normal] [line-height:normal] [word-spacing:normal]`}
     >
       <section aria-labelledby="export-calendar-heading">
-        <h1 id="export-calendar-heading" className="text-center text-2xl font-bold">
+        <h1 id="export-calendar-heading" className="text-center text-2xl font-normal">
           {monthLabel}
         </h1>
         <DayPicker
@@ -77,7 +77,7 @@ export const ExportView = forwardRef<HTMLDivElement, ExportViewProps>(function E
       </section>
 
       <section className="mt-5" aria-labelledby="export-servers-heading">
-        <h2 id="export-servers-heading" className="text-xl font-bold">
+        <h2 id="export-servers-heading" className="text-xl font-normal">
           {t('export.serversTitle')}
         </h2>
         <table className="mt-2 w-full border-separate border-spacing-y-1.5 text-left text-sm">
@@ -93,11 +93,11 @@ export const ExportView = forwardRef<HTMLDivElement, ExportViewProps>(function E
                 <tr key={groupLabel} className={groupClassName}>
                   <th
                     scope="row"
-                    className="w-20 rounded-l-xl px-3 py-2.5 text-center align-middle font-bold whitespace-nowrap"
+                    className="w-20 rounded-l-xl px-3 py-2.5 text-center align-middle font-normal whitespace-nowrap"
                   >
                     {t('export.groupLabel', { label: groupLabel })}
                   </th>
-                  <td className="rounded-r-xl py-2.5 pr-3 pl-1.5 font-medium leading-5 tabular-nums">
+                  <td className="rounded-r-xl py-2.5 pr-3 pl-1.5 font-normal tabular-nums">
                     {enabledServers.length > 0 ? (
                       <ul
                         className="flex flex-wrap gap-1"
@@ -106,7 +106,7 @@ export const ExportView = forwardRef<HTMLDivElement, ExportViewProps>(function E
                         {enabledServers.map((serverId) => (
                           <li
                             key={serverId}
-                            className="rounded-md border border-[var(--color-export-chip-border)] bg-[var(--color-export-chip-background)] px-1.5 py-0.5 text-[var(--color-export-chip-text)]"
+                            className="rounded-md border border-[var(--color-export-chip-border)] bg-[var(--color-export-chip-background)] pl-[2px] pr-[3px] pt-[2px] pb-[3px] text-[var(--color-export-chip-text)]"
                           >
                             {serverId}
                           </li>
