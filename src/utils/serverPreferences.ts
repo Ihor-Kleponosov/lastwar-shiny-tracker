@@ -2,6 +2,7 @@ import { shinyTasksConfiguration } from '@/config'
 import type { PersistedServerPreferences, ServerId } from '@/types'
 
 export const SERVER_PREFERENCES_STORAGE_KEY = 'last-war-shiny-tracker-server-preferences'
+export const MAX_ENABLED_SERVERS = 75
 
 const configuredServerIds = [...new Set(shinyTasksConfiguration.serverGroups.flat())].sort(
   (first, second) => first - second,
@@ -21,13 +22,23 @@ function getDefaultEnabledServerIds(): Set<ServerId> {
   return new Set()
 }
 
+function normalizeEnabledServerIds(enabledServerIds: Iterable<ServerId>): Set<ServerId> {
+  const selectedServerIds = new Set(enabledServerIds)
+
+  return new Set(
+    configuredServerIds
+      .filter((serverId) => selectedServerIds.has(serverId))
+      .slice(0, MAX_ENABLED_SERVERS),
+  )
+}
+
 export function getConfiguredServerIds(): ServerId[] {
   return [...configuredServerIds]
 }
 
-export function saveEnabledServerIds(enabledServerIds: Set<ServerId>) {
+export function saveEnabledServerIds(enabledServerIds: Iterable<ServerId>) {
   const preferences: PersistedServerPreferences = {
-    enabledServerIds: configuredServerIds.filter((serverId) => enabledServerIds.has(serverId)),
+    enabledServerIds: [...normalizeEnabledServerIds(enabledServerIds)],
   }
 
   try {
@@ -50,11 +61,15 @@ export function getEnabledServerIds(): Set<ServerId> {
     const preferences: unknown = JSON.parse(storedPreferences)
 
     if (isPersistedServerPreferences(preferences)) {
-      const enabledServerIds = new Set(
-        preferences.enabledServerIds.filter((serverId) => configuredServerIds.includes(serverId)),
-      )
+      const enabledServerIds = normalizeEnabledServerIds(preferences.enabledServerIds)
 
-      if (enabledServerIds.size !== preferences.enabledServerIds.length) {
+      const normalizedServerIds = [...enabledServerIds]
+      if (
+        preferences.enabledServerIds.length !== normalizedServerIds.length ||
+        preferences.enabledServerIds.some(
+          (serverId, index) => serverId !== normalizedServerIds[index],
+        )
+      ) {
         saveEnabledServerIds(enabledServerIds)
       }
 

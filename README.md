@@ -81,7 +81,7 @@ To add a language, register its code and display name in `src/i18n/languages.ts`
 
 `src/config/index.ts` is the source of truth for the cycle anchor date and server groups. Keep group order intentional: the group index is calculated from the calendar-day difference relative to the anchor date. Server IDs are deduplicated and sorted before they are presented or persisted.
 
-Stored preferences contain only enabled server IDs. Unknown IDs are discarded on read; malformed or unavailable storage falls back to no servers enabled without blocking use of the app.
+Stored preferences contain only enabled server IDs, capped at 75 selections. Unknown, duplicate, and over-limit IDs are discarded on read; malformed or unavailable storage falls back to no servers enabled without blocking use of the app.
 
 ## Offline and deployment
 
