@@ -6,9 +6,12 @@ import i18n from '@/i18n'
 import { getConfiguredServerIds } from '@/utils/serverPreferences'
 import { ConfigurationModal } from '.'
 
-const { toastSuccess } = vi.hoisted(() => ({ toastSuccess: vi.fn() }))
+const { toastError, toastSuccess } = vi.hoisted(() => ({
+  toastError: vi.fn(),
+  toastSuccess: vi.fn(),
+}))
 
-vi.mock('sonner', () => ({ toast: { success: toastSuccess } }))
+vi.mock('sonner', () => ({ toast: { error: toastError, success: toastSuccess } }))
 
 const configurationModalProps = {
   enabledServerIds: new Set(getConfiguredServerIds()),
@@ -51,6 +54,7 @@ function ConfigurationModalHarness({
 describe('ConfigurationModal', () => {
   beforeEach(async () => {
     await i18n.changeLanguage('en')
+    toastError.mockClear()
     toastSuccess.mockClear()
   })
 
@@ -130,6 +134,50 @@ describe('ConfigurationModal', () => {
     expect(onSave.mock.calls[0][0].has(1638)).toBe(false)
     expect(toastSuccess).toHaveBeenCalledWith('Preferences saved')
     expect(screen.queryByRole('dialog', { name: 'Settings' })).not.toBeInTheDocument()
+  })
+
+  it('prevents selecting more than 75 servers and reports the limit', async () => {
+    const user = userEvent.setup()
+    const serverIds = Array.from({ length: 76 }, (_, index) => index + 1)
+
+    render(
+      <ConfigurationModal
+        enabledServerIds={new Set(serverIds.slice(0, 75))}
+        serverIds={serverIds}
+        onClose={vi.fn()}
+        onSave={vi.fn()}
+        returnFocusRef={{ current: null }}
+      />,
+    )
+
+    expect(screen.getByText('Selected: 75 / 75')).toBeInTheDocument()
+
+    await user.click(screen.getByRole('checkbox', { name: '76' }))
+
+    expect(screen.getByRole('checkbox', { name: '76' })).not.toBeChecked()
+    expect(toastError).toHaveBeenCalledWith('You can select up to 75 servers.')
+  })
+
+  it('adds only the available servers during a bulk selection and reports the limit', async () => {
+    const user = userEvent.setup()
+    const serverIds = Array.from({ length: 76 }, (_, index) => index + 1)
+
+    render(
+      <ConfigurationModal
+        enabledServerIds={new Set(serverIds.slice(0, 74))}
+        serverIds={serverIds}
+        onClose={vi.fn()}
+        onSave={vi.fn()}
+        returnFocusRef={{ current: null }}
+      />,
+    )
+
+    await user.click(screen.getByRole('button', { name: 'Select all' }))
+
+    expect(screen.getByRole('checkbox', { name: '75' })).toBeChecked()
+    expect(screen.getByRole('checkbox', { name: '76' })).not.toBeChecked()
+    expect(screen.getByText('Selected: 75 / 75')).toBeInTheDocument()
+    expect(toastError).toHaveBeenCalledWith('You can select up to 75 servers.')
   })
 
   it('requires confirmation before closing dirty settings and preserves the draft on return', async () => {

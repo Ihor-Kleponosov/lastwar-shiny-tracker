@@ -42,6 +42,8 @@
       "return": "Return"
     },
     "serverList": {
+      "selectedCount": "Selected: {{count}} / {{maximum}}",
+      "selectionLimitReached": "You can select up to {{count}} servers.",
       "searchLabel": "Search servers",
       "searchPlaceholder": "Filter servers",
       "clearSearch": "Clear server filter",

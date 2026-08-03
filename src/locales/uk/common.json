@@ -45,6 +45,8 @@
       "return": "Повернутися"
     },
     "serverList": {
+      "selectedCount": "Вибрано: {{count}} / {{maximum}}",
+      "selectionLimitReached": "Можна вибрати до {{count}} серверів.",
       "searchLabel": "Пошук серверів",
       "searchPlaceholder": "Фільтрувати сервери",
       "clearSearch": "Очистити фільтр серверів",

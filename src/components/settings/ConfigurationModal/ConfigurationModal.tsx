@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/Button'
 import { HelpPopover } from '@/components/ui/HelpPopover'
 import { IconButton } from '@/components/ui/IconButton'
 import type { ServerId } from '@/types'
+import { MAX_ENABLED_SERVERS } from '@/utils/serverPreferences'
 
 type ConfigurationModalProps = {
   enabledServerIds: ReadonlySet<ServerId>
@@ -59,37 +60,53 @@ export function ConfigurationModal({
     onClose()
   }, [hasUnsavedChanges, isDiscardConfirmationOpen, onClose])
 
-  const handleToggleServer = useCallback((serverId: ServerId) => {
-    setDraftEnabledServerIds((currentEnabledServerIds) => {
-      const nextEnabledServerIds = new Set(currentEnabledServerIds)
+  const handleToggleServer = useCallback(
+    (serverId: ServerId) => {
+      setDraftEnabledServerIds((currentEnabledServerIds) => {
+        const nextEnabledServerIds = new Set(currentEnabledServerIds)
 
-      if (nextEnabledServerIds.has(serverId)) {
-        nextEnabledServerIds.delete(serverId)
-      } else {
-        nextEnabledServerIds.add(serverId)
-      }
+        if (nextEnabledServerIds.has(serverId)) {
+          nextEnabledServerIds.delete(serverId)
+        } else if (nextEnabledServerIds.size >= MAX_ENABLED_SERVERS) {
+          toast.error(
+            t('settings.serverList.selectionLimitReached', { count: MAX_ENABLED_SERVERS }),
+          )
+        } else {
+          nextEnabledServerIds.add(serverId)
+        }
 
-      return nextEnabledServerIds
-    })
-  }, [])
+        return nextEnabledServerIds
+      })
+    },
+    [t],
+  )
 
-  const handleToggleServers = useCallback((targetServerIds: readonly ServerId[]) => {
-    if (targetServerIds.length === 0) return
+  const handleToggleServers = useCallback(
+    (targetServerIds: readonly ServerId[]) => {
+      if (targetServerIds.length === 0) return
 
-    setDraftEnabledServerIds((currentEnabledServerIds) => {
-      const nextEnabledServerIds = new Set(currentEnabledServerIds)
-      const areAllTargetServersSelected = targetServerIds.every((serverId) =>
-        currentEnabledServerIds.has(serverId),
-      )
+      setDraftEnabledServerIds((currentEnabledServerIds) => {
+        const nextEnabledServerIds = new Set(currentEnabledServerIds)
+        const areAllTargetServersSelected = targetServerIds.every((serverId) =>
+          currentEnabledServerIds.has(serverId),
+        )
 
-      for (const serverId of targetServerIds) {
-        if (areAllTargetServersSelected) nextEnabledServerIds.delete(serverId)
-        else nextEnabledServerIds.add(serverId)
-      }
+        for (const serverId of targetServerIds) {
+          if (areAllTargetServersSelected) nextEnabledServerIds.delete(serverId)
+          else if (nextEnabledServerIds.has(serverId)) continue
+          else if (nextEnabledServerIds.size >= MAX_ENABLED_SERVERS) {
+            toast.error(
+              t('settings.serverList.selectionLimitReached', { count: MAX_ENABLED_SERVERS }),
+            )
+            break
+          } else nextEnabledServerIds.add(serverId)
+        }
 
-      return nextEnabledServerIds
-    })
-  }, [])
+        return nextEnabledServerIds
+      })
+    },
+    [t],
+  )
 
   const handleSave = useCallback(() => {
     onSave(draftEnabledServerIds)
