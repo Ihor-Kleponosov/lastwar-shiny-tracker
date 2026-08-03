@@ -1,6 +1,7 @@
 import type { RefObject } from 'react'
 import { useId } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Button } from '@/components/ui/Button'
 
 type ExportMonthPickerDialogProps = {
   dialogRef: RefObject<HTMLDivElement | null>
@@ -50,21 +51,10 @@ export function ExportMonthPickerDialog({
           />
         </label>
         <div className="mt-6 flex justify-end gap-3">
-          <button
-            type="button"
-            onClick={onClose}
-            className="min-h-11 rounded-lg border border-[var(--color-border)] px-4 text-sm font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-elevated)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus)]"
-          >
-            {t('export.close')}
-          </button>
-          <button
-            type="button"
-            onClick={onProceed}
-            disabled={!monthValue}
-            className="min-h-11 rounded-lg bg-[var(--color-accent)] px-4 text-sm font-medium text-[var(--color-accent-contrast)] transition-colors hover:bg-[var(--color-accent-hover)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus)] disabled:cursor-not-allowed disabled:opacity-50"
-          >
+          <Button onClick={onClose}>{t('export.close')}</Button>
+          <Button onClick={onProceed} disabled={!monthValue}>
             {t('export.proceed')}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

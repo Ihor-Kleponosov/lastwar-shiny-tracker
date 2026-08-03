@@ -31,6 +31,14 @@
     "open": "Open settings",
     "title": "Settings",
     "close": "Close settings",
+    "cancel": "Cancel",
+    "save": "Save",
+    "unsavedChanges": {
+      "title": "Unsaved changes",
+      "description": "You have unsaved changes. Do you want to discard them?",
+      "discard": "Delete",
+      "return": "Return"
+    },
     "serverList": {
       "searchLabel": "Search servers",
       "searchPlaceholder": "Filter servers",

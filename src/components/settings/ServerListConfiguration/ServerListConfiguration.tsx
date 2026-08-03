@@ -1,7 +1,5 @@
-import { CircleHelp, X } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { IconButton } from '@/components/ui/IconButton'
 import type { ServerId } from '@/types'
 import { ServerListConfigurationControls } from './ServerListConfigurationControls'
 import { ServerListConfigurationItem } from './ServerListConfigurationItem'
@@ -30,7 +28,6 @@ export function ServerListConfiguration({
   const [rangeFrom, setRangeFrom] = useState('')
   const [rangeTo, setRangeTo] = useState('')
   const [appliedRange, setAppliedRange] = useState<AppliedRange | null>(null)
-  const [isDescriptionOpen, setIsDescriptionOpen] = useState(false)
   const displayedServerIds = serverIds.filter((serverId) => {
     if (filterMode === 'search') return String(serverId).includes(searchFilter)
     if (!appliedRange) return true
@@ -67,43 +64,7 @@ export function ServerListConfiguration({
   }
 
   return (
-    <section aria-labelledby="server-list-configuration-heading">
-      <div className="relative flex min-h-11 items-center justify-between gap-3">
-        <h3
-          id="server-list-configuration-heading"
-          className="text-lg font-semibold text-[var(--color-text-primary)]"
-        >
-          {t('settings.serverList.title')}
-        </h3>
-        <IconButton
-          aria-label={t('settings.serverList.showDescription')}
-          aria-expanded={isDescriptionOpen}
-          aria-controls="server-list-description"
-          onClick={() => setIsDescriptionOpen((isOpen) => !isOpen)}
-        >
-          <CircleHelp aria-hidden="true" size={20} />
-        </IconButton>
-        {isDescriptionOpen ? (
-          <div
-            id="server-list-description"
-            role="dialog"
-            aria-label={t('settings.serverList.showDescription')}
-            className="absolute top-full right-0 z-10 mt-2 w-full max-w-md rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-elevated)] p-3 shadow-[0_8px_24px_rgb(0_0_0_/_24%)]"
-          >
-            <div className="flex items-start justify-between gap-3">
-              <p className="text-sm text-[var(--color-text-secondary)]">
-                {t('settings.serverList.description')}
-              </p>
-              <IconButton
-                aria-label={t('settings.serverList.closeDescription')}
-                onClick={() => setIsDescriptionOpen(false)}
-              >
-                <X aria-hidden="true" size={20} />
-              </IconButton>
-            </div>
-          </div>
-        ) : null}
-      </div>
+    <section aria-label={t('settings.serverList.title')}>
       <ServerListConfigurationControls
         enabledServerIds={enabledServerIds}
         filterMode={filterMode}

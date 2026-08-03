@@ -31,6 +31,14 @@
     "open": "Einstellungen öffnen",
     "title": "Einstellungen",
     "close": "Einstellungen schließen",
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "unsavedChanges": {
+      "title": "Nicht gespeicherte Änderungen",
+      "description": "Du hast nicht gespeicherte Änderungen. Möchtest du sie verwerfen?",
+      "discard": "Löschen",
+      "return": "Zurück"
+    },
     "serverList": {
       "searchLabel": "Server suchen",
       "searchPlaceholder": "Server filtern",

@@ -31,6 +31,14 @@
     "open": "Ouvrir les paramètres",
     "title": "Paramètres",
     "close": "Fermer les paramètres",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "unsavedChanges": {
+      "title": "Modifications non enregistrées",
+      "description": "Vous avez des modifications non enregistrées. Voulez-vous les abandonner ?",
+      "discard": "Supprimer",
+      "return": "Retour"
+    },
     "serverList": {
       "searchLabel": "Rechercher des serveurs",
       "searchPlaceholder": "Filtrer les serveurs",

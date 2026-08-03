@@ -1,4 +1,4 @@
-import { useEffect, type RefObject } from 'react'
+import { useEffect, useRef, type RefObject } from 'react'
 
 const focusableSelector =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
@@ -18,6 +18,9 @@ export function useModalAccessibility({
   onClose,
   returnFocusRef,
 }: UseModalAccessibilityOptions) {
+  const onCloseRef = useRef(onClose)
+  onCloseRef.current = onClose
+
   useEffect(() => {
     if (!isOpen) return
 
@@ -28,7 +31,7 @@ export function useModalAccessibility({
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === 'Escape') {
         event.preventDefault()
-        onClose()
+        onCloseRef.current()
         return
       }
 
@@ -57,7 +60,7 @@ export function useModalAccessibility({
       document.removeEventListener('keydown', handleKeyDown)
       returnFocusElement?.focus()
     }
-  }, [dialogRef, isOpen, onClose, returnFocusRef])
+  }, [dialogRef, isOpen, returnFocusRef])
 
   useEffect(() => {
     if (isOpen) {
