@@ -30,12 +30,9 @@
     "groupLabel": "{{label}}:"
   },
   "settings": {
-    "open": "Einstellungen öffnen",
-    "title": "Einstellungen",
     "close": "Einstellungen schließen",
     "cancel": "Abbrechen",
     "save": "Speichern",
-    "saved": "Einstellungen gespeichert",
     "unsavedChanges": {
       "title": "Nicht gespeicherte Änderungen",
       "description": "Du hast nicht gespeicherte Änderungen. Möchtest du sie verwerfen?",

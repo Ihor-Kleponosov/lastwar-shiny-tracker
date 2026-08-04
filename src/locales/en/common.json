@@ -30,12 +30,9 @@
     "groupLabel": "{{label}}:"
   },
   "settings": {
-    "open": "Open settings",
-    "title": "Settings",
     "close": "Close settings",
     "cancel": "Cancel",
     "save": "Save",
-    "saved": "Preferences saved",
     "unsavedChanges": {
       "title": "Unsaved changes",
       "description": "You have unsaved changes. Do you want to discard them?",

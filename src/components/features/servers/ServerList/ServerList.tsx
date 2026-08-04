@@ -1,38 +1,29 @@
-import { Settings } from 'lucide-react'
-import { useMemo, type RefObject } from 'react'
+import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { shinyTasksConfiguration } from '@/config'
-import { IconButton } from '@/components/shared/ui/IconButton'
-import { Button } from '@/components/shared/ui/Button'
-import type { ServerId } from '@/types'
+import type { Preset, ServerId } from '@/types'
 import { getServerGroupIndexForDate, getServersForIndex } from '@/utils'
 import { ServerChip } from './ServerChip'
 
 type ServerListProps = {
-  enabledServerIds: ReadonlySet<ServerId>
-  onOpenSettings: () => void
+  preset: Preset
   selectedDate: Date
-  settingsButtonRef: RefObject<HTMLButtonElement | null>
 }
 
-function getActiveServers(selectedDate: Date, enabledServerIds: ReadonlySet<ServerId>): ServerId[] {
+function getActiveServers(selectedDate: Date, enabledServerIds: readonly ServerId[]): ServerId[] {
   const groupIndex = getServerGroupIndexForDate(selectedDate, shinyTasksConfiguration)
+  const enabledServerIdSet = new Set(enabledServerIds)
 
   return getServersForIndex(groupIndex, shinyTasksConfiguration)
-    .filter((serverId) => enabledServerIds.has(serverId))
+    .filter((serverId) => enabledServerIdSet.has(serverId))
     .sort((first, second) => first - second)
 }
 
-export function ServerList({
-  enabledServerIds,
-  onOpenSettings,
-  selectedDate,
-  settingsButtonRef,
-}: ServerListProps) {
+export function ServerList({ preset, selectedDate }: ServerListProps) {
   const { t } = useTranslation('common')
   const activeServers = useMemo(
-    () => getActiveServers(selectedDate, enabledServerIds),
-    [enabledServerIds, selectedDate],
+    () => getActiveServers(selectedDate, preset.enabledServerIds),
+    [preset.enabledServerIds, selectedDate],
   )
 
   return (
@@ -40,22 +31,15 @@ export function ServerList({
       className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-3 shadow-[0_8px_24px_rgb(0_0_0_/_14%)] sm:p-4"
       aria-label={t('servers.count', { count: activeServers.length })}
     >
-      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+        <h2 className="text-base font-semibold text-[var(--color-text-primary)]">{preset.name}</h2>
         <p className="text-sm text-[var(--color-text-secondary)]" aria-live="polite">
           {t('servers.count', { count: activeServers.length })}
         </p>
-        <IconButton
-          ref={settingsButtonRef}
-          aria-label={t('settings.open')}
-          onClick={onOpenSettings}
-        >
-          <Settings aria-hidden="true" size={20} />
-        </IconButton>
       </div>
       {activeServers.length === 0 ? (
         <div className="mt-3 flex flex-col items-center gap-3 text-center">
           <p className="text-sm text-[var(--color-text-secondary)]">{t('servers.empty')}</p>
-          <Button onClick={onOpenSettings}>{t('settings.open')}</Button>
         </div>
       ) : (
         <ul

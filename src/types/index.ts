@@ -12,7 +12,3 @@ export interface ShinyTasksConfiguration {
   readonly anchorDate: string
   readonly serverGroups: readonly ServerGroup[]
 }
-
-export interface PersistedServerPreferences {
-  readonly enabledServerIds: readonly ServerId[]
-}

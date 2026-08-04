@@ -1,25 +1,24 @@
 # Last War Shiny Tracker
 
-An installable, offline-capable tracker for Last War shiny-task server rotations. It shows the active server group for any selected date and keeps each user's server selection in their browser.
+An installable, offline-capable tracker for Last War shiny-task server rotations. It shows active server groups for selected presets on any selected date.
 
 ## Features
 
 - Date-based server rotation using a configurable, anchored three-group cycle
-- Local server preferences with safe recovery from missing or invalid stored data
-- Active-server list for the selected date, with an empty-state shortcut to settings
+- Select one or more saved presets to show their active server lists for the selected date
 - Localized UI, dates, calendar labels, and accessible names in English, French, German, and Ukrainian
 - Two-page navigation with a Presets page for creating and editing in-memory server-list presets
 - Calendar picker with Monday as the first day of the week
-- Full-screen server configuration with search, inclusive range filtering, flat and grouped list views, bulk selection, draft saving, and unsaved-change confirmation
+- Full-screen preset configuration with search, inclusive range filtering, flat and grouped list views, bulk selection, draft saving, and unsaved-change confirmation
 - PNG export: choose a month, preview the export, select a light or dark export theme, and download the generated image
 - PWA manifest, service worker, and precached production assets for offline use
 - Error boundary and concise success feedback for saved preferences
 
 ## How it works
 
-The configured server groups repeat from the ISO anchor date in `src/config/index.ts`. The selected date determines the current group; only servers enabled in local preferences are displayed. Preferences are saved under the `last-war-shiny-tracker-server-preferences` localStorage key and are never synced to a server. Presets are saved under the `last-war-shiny-tracker-presets` localStorage key as objects containing `id`, `name`, and `enabledServerIds`; up to 30 can be saved. The Presets page creates and saves an all-servers default preset on first launch when no stored presets exist and shows a dismissible notice. Invalid stored preset data is preserved and reported with an error toast; an existing stored list, including an empty list, is preserved.
+The configured server groups repeat from the ISO anchor date in `src/config/index.ts`. The selected date determines the current group. Select one or more presets on the main page to show one active-server list per preset. Presets are saved under the `last-war-shiny-tracker-presets` localStorage key as objects containing `id`, `name`, and `enabledServerIds`; up to 30 can be saved. The Presets page creates and saves an all-servers default preset on first launch when no stored presets exist and shows a dismissible notice. Invalid stored preset data is preserved and reported with an error toast; an existing stored list, including an empty list, is preserved.
 
-Open settings from the active-server card. Changes are kept as a draft until **Save**; closing a changed draft asks whether to discard it. Search filters server numbers immediately, while range filtering is inclusive and accepts bounds in either order. The server list can be shown as one flat list or separated into the configured A, B, and C rotation groups.
+Use **Edit Presets** to create or change server lists. Changes are kept as a draft until **Save**; closing a changed draft asks whether to discard it. Search filters server numbers immediately, while range filtering is inclusive and accepts bounds in either order. The server list can be shown as one flat list or separated into the configured A, B, and C rotation groups. PNG export uses the first selected preset.
 
 ## Tech stack
 
@@ -83,7 +82,7 @@ To add a language, register its code and display name in `src/i18n/languages.ts`
 
 `src/config/index.ts` is the source of truth for the cycle anchor date and server groups. Keep group order intentional: the group index is calculated from the calendar-day difference relative to the anchor date. Server IDs are deduplicated and sorted before they are presented or persisted.
 
-Stored preferences contain only enabled server IDs, capped at 75 selections. Unknown, duplicate, and over-limit IDs are discarded on read; malformed or unavailable storage falls back to no servers enabled without blocking use of the app. Preset server IDs use the same configured-server normalization and are capped at 100 servers per preset.
+Preset server IDs are normalized to configured servers and capped at 100 selections per preset.
 
 ## Offline and deployment
 

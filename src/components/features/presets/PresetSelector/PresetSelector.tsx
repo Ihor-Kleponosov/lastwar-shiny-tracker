@@ -1,26 +1,30 @@
-import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/shared/ui/Button'
 import { MultiSelect } from '@/components/shared/ui/MultiSelect'
 import type { Preset } from '@/types'
 
 type PresetSelectorProps = {
+  checkedPresetIds: ReadonlySet<string>
   onEditPresets: () => void
+  onSelectedPresetIdsChange: (presetIds: ReadonlySet<string>) => void
   presets: readonly Preset[]
 }
 
-export function PresetSelector({ onEditPresets, presets }: PresetSelectorProps) {
+export function PresetSelector({
+  checkedPresetIds,
+  onEditPresets,
+  onSelectedPresetIdsChange,
+  presets,
+}: PresetSelectorProps) {
   const { t } = useTranslation('common')
-  const [checkedPresetIds, setCheckedPresetIds] = useState<ReadonlySet<string>>(() => new Set())
 
   function handleOptionToggle(value: string) {
-    setCheckedPresetIds((currentValues) => {
-      const nextValues = new Set(currentValues)
+    const nextPresetIds = new Set(checkedPresetIds)
 
-      return nextValues.has(value)
-        ? new Set([...nextValues].filter((presetId) => presetId !== value))
-        : new Set([...nextValues, value])
-    })
+    if (nextPresetIds.has(value)) nextPresetIds.delete(value)
+    else nextPresetIds.add(value)
+
+    onSelectedPresetIdsChange(nextPresetIds)
   }
 
   return (

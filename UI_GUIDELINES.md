@@ -21,8 +21,9 @@ The primary application shell is:
 Header (logo, title, language selector)
 Date summary (selected date, export, today, calendar controls)
   Calendar overlay (when open)
-Active server list (count, settings control, server chips or empty state)
-Settings dialog (when open)
+Preset selector
+Selected preset server lists (preset name, count, server chips or empty state)
+Preset configuration dialog (when editing presets)
 Export dialogs (when open)
 ```
 
@@ -48,25 +49,25 @@ The calendar opens as an overlay below the summary instead of permanently occupy
 
 Today must remain distinguishable from the selected date. Calendar month navigation changes only the visible month, not the selected date.
 
-### Active server list
+### Selected preset server lists
 
-The active-server card is the main content. It shows a localized live count and numerically sorted server chips for the selected cycle group. The settings icon belongs here. When no configured server is enabled for the selected date, show a neutral, translated empty state with an **Open settings** action; this is not an error.
+The preset selector can select one or more saved presets. Render one active-server card for each selected preset, in preset order. Each card uses its preset name as a title and shows a localized live count and numerically sorted server chips for the selected cycle group. When no configured server in that preset is enabled for the selected date, show a neutral, translated empty state; this is not an error.
 
 Use a responsive grid with a minimum chip width of about 88 px. Server IDs must remain easy to scan and must not rely on color alone for meaning.
 
-### Settings dialog
+### Preset configuration dialog
 
-Settings use a custom, full-screen dialog with the same centered maximum width and horizontal padding as the application shell. Do not add a third-party modal library.
+Preset configuration uses a custom, full-screen dialog with the same centered maximum width and horizontal padding as the application shell. Do not add a third-party modal library.
 
-The dialog contains a title, help popover, close control, selected-server counter, filter controls, server grid, and fixed Cancel / Save actions. Its scrolling content must not obscure the header or footer. The settings workflow supports immediate number search, inclusive range filtering (including reversed input bounds), resettable filters, and a select/deselect-displayed action. Users can switch between one flat server list and lists separated into the configured A, B, and C groups. The two icon controls behave as one radio group, expose their selected state, and support arrow-key navigation. A maximum of 75 servers may be selected; attempts to exceed the limit show a concise error toast.
+The dialog contains a title, preset-name input, help popover, close control, selected-server counter, filter controls, server grid, and fixed Cancel / Save actions. Its scrolling content must not obscure the header or footer. The configuration workflow supports immediate number search, inclusive range filtering (including reversed input bounds), resettable filters, and a select/deselect-displayed action. Users can switch between one flat server list and lists separated into the configured A, B, and C groups. The two icon controls behave as one radio group, expose their selected state, and support arrow-key navigation. A maximum of 75 servers may be selected; attempts to exceed the limit show a concise error toast.
 
-Changes remain a draft until Save. A changed dialog must ask for confirmation before discard on close, Escape, or other close requests. Saving persists the enabled IDs, closes the dialog, and shows a concise success toast. Do not show a toast for individual checkbox changes.
+Changes remain a draft until Save. A changed dialog must ask for confirmation before discard on close, Escape, or other close requests. Saving persists the preset name and enabled IDs, closes the dialog, and shows a concise success toast. Do not show a toast for individual checkbox changes.
 
 Every dialog must use `role="dialog"`, `aria-modal="true"`, and a heading connected through `aria-labelledby`; move focus inside on open, trap focus, lock body scrolling, restore focus to the trigger on close, and support Escape. A confirmation dialog may use a backdrop; a full-screen settings dialog does not need one.
 
 ### PNG export
 
-The export action opens a month picker, then a preview dialog. The preview renders the calendar and enabled servers for the chosen month, supports light and dark export themes, and downloads only the export view as a PNG. Keep its fixed export dimensions, local font choice, group colors, and calendar rendering stable so generated images remain predictable.
+The export action opens a month picker, then a preview dialog. The preview renders the calendar and enabled servers from the first selected preset for the chosen month, supports light and dark export themes, and downloads only the export view as a PNG. With no selected preset, export an empty server list. Keep its fixed export dimensions, local font choice, group colors, and calendar rendering stable so generated images remain predictable.
 
 While capture is in progress, show a localized status overlay and prevent duplicate export actions. Export failures should be logged for diagnosis without exposing technical details in the interface.
 
@@ -99,7 +100,7 @@ Recover silently to default preferences when localStorage is missing, corrupt, o
 
 - Verify at approximately 360 px, 390 px, 768 px, and 1280 px widths with no horizontal scrolling.
 - Verify calendar date selection, today action, calendar visibility, active-server updates, and localized calendar labels.
-- Verify settings search, range filtering, bulk actions, Save, dirty-discard confirmation, keyboard navigation, focus return, and translated feedback.
+- Verify preset configuration search, range filtering, bulk actions, Save, dirty-discard confirmation, keyboard navigation, focus return, and translated feedback.
 - Verify the export month picker, preview, theme switch, loading state, and PNG download path.
 - Verify all supported languages, especially longer French/German labels and Ukrainian Cyrillic text.
 - Verify dark visual contrast, reduced motion, offline-capable layout, and absence of remote visual dependencies.
