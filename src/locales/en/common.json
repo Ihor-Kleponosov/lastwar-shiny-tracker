@@ -70,5 +70,12 @@
     "empty": "No enabled servers for this date.",
     "count_one": "{{count}} server",
     "count_other": "{{count}} servers"
+  },
+  "presets": {
+    "title": "Presets",
+    "placeholder": "Choose groups",
+    "group": "Group {{label}}",
+    "help": "Select one or more presets to display.",
+    "button": "Edit Presets"
   }
 }

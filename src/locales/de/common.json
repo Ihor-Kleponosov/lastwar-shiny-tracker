@@ -70,5 +70,12 @@
     "empty": "Keine aktivierten Server für dieses Datum.",
     "count_one": "{{count}} Server",
     "count_other": "{{count}} Server"
+  },
+  "presets": {
+    "title": "Voreinstellungen",
+    "placeholder": "Gruppen auswählen",
+    "group": "Gruppe {{label}}",
+    "help": "Wählen Sie eine oder mehrere anzuzeigende Voreinstellungen.",
+    "button": "Voreinstellungen bearbeiten"
   }
 }

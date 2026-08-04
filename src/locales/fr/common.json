@@ -70,5 +70,12 @@
     "empty": "Aucun serveur activé pour cette date.",
     "count_one": "{{count}} serveur",
     "count_other": "{{count}} serveurs"
+  },
+  "presets": {
+    "title": "Préréglages",
+    "placeholder": "Choisir des groupes",
+    "group": "Groupe {{label}}",
+    "help": "Sélectionnez un ou plusieurs préréglages à afficher.",
+    "button": "Modifier les préréglages"
   }
 }
