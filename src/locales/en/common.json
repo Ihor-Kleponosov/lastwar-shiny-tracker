@@ -1,6 +1,7 @@
 {
   "app": {
-    "logoAlt": "Last War Shiny Tracker logo"
+    "logoAlt": "Last War Shiny Tracker logo",
+    "goHome": "Go to main page"
   },
   "errorBoundary": { "message": "Something went wrong" },
   "language": { "label": "Language", "openMenu": "Choose language" },
@@ -76,6 +77,9 @@
     "placeholder": "Choose groups",
     "group": "Group {{label}}",
     "help": "Select one or more presets to display.",
-    "button": "Edit Presets"
+    "button": "Edit Presets",
+    "pageTitle": "Edit Presets",
+    "pageDescription": "Preset editing will be available here soon.",
+    "back": "Back"
   }
 }
