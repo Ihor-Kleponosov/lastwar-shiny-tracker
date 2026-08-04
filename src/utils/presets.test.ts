@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { getPresets, PRESETS_STORAGE_KEY, savePresets } from './presets'
+import { getPresets, loadPresets, PRESETS_STORAGE_KEY, savePresets } from './presets'
 
 vi.mock('@/config', () => ({
   shinyTasksConfiguration: {
@@ -47,6 +47,17 @@ describe('presets storage', () => {
     localStorage.setItem(PRESETS_STORAGE_KEY, '{invalid JSON')
 
     expect(getPresets()).toEqual([])
+  })
+
+  it('does not overwrite malformed presets when loading the page', () => {
+    const storedPresets = '{invalid JSON'
+    localStorage.setItem(PRESETS_STORAGE_KEY, storedPresets)
+
+    expect(loadPresets({ id: 'default', name: 'Default', enabledServerIds: [] })).toEqual({
+      presets: [],
+      hasInvalidStoredData: true,
+    })
+    expect(localStorage.getItem(PRESETS_STORAGE_KEY)).toBe(storedPresets)
   })
 
   it('keeps saving usable when storage is unavailable', () => {
