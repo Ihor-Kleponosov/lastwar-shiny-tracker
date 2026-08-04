@@ -2,9 +2,13 @@ import { fireEvent, render, screen, waitFor, within } from '@testing-library/rea
 import userEvent from '@testing-library/user-event'
 import { format } from 'date-fns'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { shinyTasksConfiguration } from '@/config'
 import i18n from '@/i18n'
 import { ImageExport } from '.'
+
+const presets = [
+  { id: 'first', name: 'First preset', enabledServerIds: [1638] },
+  { id: 'second', name: 'Second preset', enabledServerIds: [1639] },
+] as const
 
 const html2canvas = vi.hoisted(() => vi.fn())
 
@@ -22,7 +26,7 @@ describe('ImageExport', () => {
 
   it('opens a month picker defaulted to the current month and restores focus when closed', async () => {
     const user = userEvent.setup()
-    render(<ImageExport enabledServerIds={new Set(shinyTasksConfiguration.serverGroups.flat())} />)
+    render(<ImageExport presets={presets} />)
 
     const trigger = screen.getByRole('button', { name: 'Download image' })
     await user.click(trigger)
@@ -32,6 +36,8 @@ describe('ImageExport', () => {
       screen.getByText('Choose the month for which you want to save the server list'),
     ).toBeInTheDocument()
     expect(screen.getByLabelText('Month')).toHaveValue(format(new Date(), 'yyyy-MM'))
+    expect(screen.getByLabelText('Preset')).toHaveValue('')
+    expect(screen.getByRole('option', { name: 'Second preset' })).toBeInTheDocument()
     expect(document.body).toHaveStyle({ overflow: 'hidden' })
 
     await user.click(screen.getByRole('button', { name: 'Close' }))
@@ -61,15 +67,18 @@ describe('ImageExport', () => {
     const revokeObjectURL = vi.spyOn(URL, 'revokeObjectURL')
     const click = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => undefined)
 
-    render(<ImageExport enabledServerIds={new Set(shinyTasksConfiguration.serverGroups.flat())} />)
+    render(<ImageExport presets={presets} />)
 
     await user.click(screen.getByRole('button', { name: 'Download image' }))
     fireEvent.change(screen.getByLabelText('Month'), { target: { value: '2026-07' } })
+    await user.selectOptions(screen.getByLabelText('Preset'), 'second')
     await user.click(screen.getByRole('button', { name: 'Proceed' }))
 
     const preview = screen.getByRole('dialog', { name: 'Server list preview' })
     expect(within(preview).getByRole('heading', { name: 'July' })).toBeInTheDocument()
     const exportView = screen.getByTestId('export-view')
+    expect(within(exportView).getByText('1639')).toBeInTheDocument()
+    expect(within(exportView).queryByText('1638')).not.toBeInTheDocument()
     expect(exportView).toHaveClass('export-view--dark')
 
     await user.click(within(preview).getByRole('button', { name: 'Use light export theme' }))
@@ -104,7 +113,7 @@ describe('ImageExport', () => {
     html2canvas.mockRejectedValue(exportError)
     const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined)
 
-    render(<ImageExport enabledServerIds={new Set(shinyTasksConfiguration.serverGroups.flat())} />)
+    render(<ImageExport presets={presets} />)
 
     await user.click(screen.getByRole('button', { name: 'Download image' }))
     await user.click(screen.getByRole('button', { name: 'Proceed' }))

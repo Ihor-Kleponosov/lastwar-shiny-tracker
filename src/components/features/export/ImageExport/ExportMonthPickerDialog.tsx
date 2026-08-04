@@ -2,20 +2,27 @@ import type { RefObject } from 'react'
 import { useId } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/shared/ui/Button'
+import type { Preset } from '@/types'
 
 type ExportMonthPickerDialogProps = {
   dialogRef: RefObject<HTMLDivElement | null>
   monthValue: string
+  presets: readonly Preset[]
+  presetValue: string
   onClose: () => void
   onMonthChange: (monthValue: string) => void
+  onPresetChange: (presetId: string) => void
   onProceed: () => void
 }
 
 export function ExportMonthPickerDialog({
   dialogRef,
   monthValue,
+  presets,
+  presetValue,
   onClose,
   onMonthChange,
+  onPresetChange,
   onProceed,
 }: ExportMonthPickerDialogProps) {
   const { t } = useTranslation('common')
@@ -49,6 +56,22 @@ export function ExportMonthPickerDialog({
             onChange={(event) => onMonthChange(event.target.value)}
             className="min-h-11 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-elevated)] px-3 text-base text-[var(--color-text-primary)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus)]"
           />
+        </label>
+        <label className="mt-5 flex flex-col gap-2 text-sm font-medium" htmlFor="export-preset">
+          {t('export.presetLabel')}
+          <select
+            id="export-preset"
+            value={presetValue}
+            onChange={(event) => onPresetChange(event.target.value)}
+            className="min-h-11 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-elevated)] px-3 text-base text-[var(--color-text-primary)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus)]"
+          >
+            <option value="">{t('export.noPreset')}</option>
+            {presets.map((preset) => (
+              <option key={preset.id} value={preset.id}>
+                {preset.name}
+              </option>
+            ))}
+          </select>
         </label>
         <div className="mt-6 flex justify-end gap-3">
           <Button variant="secondary" onClick={onClose}>

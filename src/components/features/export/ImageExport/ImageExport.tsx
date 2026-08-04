@@ -5,7 +5,7 @@ import { useModalAccessibility } from '@/hooks/useModalAccessibility'
 import { IconButton } from '@/components/shared/ui/IconButton'
 import { Loader } from '@/components/shared/ui/Loader'
 import type { ExportTheme } from '@/components/features/export/ExportView'
-import type { ServerId } from '@/types'
+import type { Preset, ServerId } from '@/types'
 import { downloadElementAsPng } from '@/utils/downloadElementAsPng'
 import { getExportFilename } from '@/utils/exportFilename'
 import { getCurrentMonthValue, getDateFromMonthValue } from '@/utils/month'
@@ -13,16 +13,18 @@ import { ExportMonthPickerDialog } from './ExportMonthPickerDialog'
 import { ExportPreviewDialog } from './ExportPreviewDialog'
 
 type ImageExportProps = {
-  enabledServerIds: ReadonlySet<ServerId>
+  presets: readonly Preset[]
 }
 
 type ExportDialogStep = 'closed' | 'month-picker' | 'preview'
 
-export function ImageExport({ enabledServerIds }: ImageExportProps) {
+export function ImageExport({ presets }: ImageExportProps) {
   const { t } = useTranslation('common')
   const [dialogStep, setDialogStep] = useState<ExportDialogStep>('closed')
   const [monthValue, setMonthValue] = useState(getCurrentMonthValue)
+  const [presetValue, setPresetValue] = useState('')
   const [exportDate, setExportDate] = useState(() => getDateFromMonthValue(getCurrentMonthValue()))
+  const [exportServerIds, setExportServerIds] = useState<ReadonlySet<ServerId>>(() => new Set())
   const [isExporting, setIsExporting] = useState(false)
   const [exportTheme, setExportTheme] = useState<ExportTheme>('dark')
   const triggerRef = useRef<HTMLButtonElement>(null)
@@ -45,11 +47,14 @@ export function ImageExport({ enabledServerIds }: ImageExportProps) {
 
   const handleOpen = () => {
     setMonthValue(getCurrentMonthValue())
+    setPresetValue('')
     setDialogStep('month-picker')
   }
 
   const handleProceed = () => {
+    const selectedPreset = presets.find((preset) => preset.id === presetValue)
     setExportDate(getDateFromMonthValue(monthValue))
+    setExportServerIds(new Set(selectedPreset?.enabledServerIds ?? []))
     setDialogStep('preview')
   }
 
@@ -80,15 +85,18 @@ export function ImageExport({ enabledServerIds }: ImageExportProps) {
         <ExportMonthPickerDialog
           dialogRef={dialogRef}
           monthValue={monthValue}
+          presets={presets}
+          presetValue={presetValue}
           onClose={handleClose}
           onMonthChange={setMonthValue}
+          onPresetChange={setPresetValue}
           onProceed={handleProceed}
         />
       ) : null}
       {dialogStep === 'preview' ? (
         <ExportPreviewDialog
           dialogRef={dialogRef}
-          enabledServerIds={enabledServerIds}
+          enabledServerIds={exportServerIds}
           exportDate={exportDate}
           exportViewRef={exportViewRef}
           theme={exportTheme}
