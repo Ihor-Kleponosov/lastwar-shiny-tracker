@@ -16,7 +16,7 @@
   },
   "export": {
     "title": "Save server list",
-    "description": "Choose the month for which you want to save the server list.",
+    "description": "Choose the month for which you want to save the server list",
     "monthLabel": "Month",
     "proceed": "Proceed",
     "close": "Close",
@@ -41,7 +41,7 @@
     },
     "serverList": {
       "selectedCount": "Selected: {{count}} / {{maximum}}",
-      "selectionLimitReached": "You can select up to {{count}} servers.",
+      "selectionLimitReached": "You can select up to {{count}} servers",
       "searchLabel": "Search servers",
       "searchPlaceholder": "Filter servers",
       "clearSearch": "Clear server filter",
@@ -58,42 +58,43 @@
       "viewAll": "Show all servers in one list",
       "viewGroups": "Show servers grouped",
       "groupLabel": "Group {{label}}",
-      "noGroupResults": "No servers in this group.",
-      "noResults": "No servers found.",
+      "noGroupResults": "No servers in this group",
+      "noResults": "No servers found",
       "title": "Server list",
-      "description": "Select the servers to display in the calendar. You can disable servers you do not use or do not have links for. Click a server to change its state. These preferences are stored in your browser and are not synced to other devices."
+      "description": "Select the servers to display in the calendar. You can disable servers you do not use or do not have links for. Click a server to change its state. These preferences are stored in your browser and are not synced to other devices"
     }
   },
   "servers": {
-    "empty": "No enabled servers for this date.",
+    "empty": "No enabled servers for this date",
     "count_one": "{{count}} server",
     "count_other": "{{count}} servers"
   },
   "presets": {
-    "invalidStorage": "Saved presets could not be loaded.",
+    "invalidStorage": "Saved presets could not be loaded",
     "addTitle": "Add preset",
     "editTitle": "Edit preset",
     "nameLabel": "Preset name",
     "namePlaceholder": "Enter a preset name",
     "nameMaxLength": "Max 20 characters",
-    "nameDuplicate": "A preset with this name already exists.",
+    "nameDuplicate": "A preset with this name already exists",
     "saved": "Preset saved",
-    "limitReached": "You can't create more than {{count}} presets.",
+    "limitReached": "You can't create more than {{count}} presets",
     "defaultNotice": {
       "label": "Default preset applied",
       "close": "Close default preset notification",
-      "message": "No saved presets found, so we applied the default preset. This only happens once to help you get started."
+      "message": "No saved presets found, so we applied the default preset. This only happens once to help you get started"
     },
     "title": "Presets",
-    "placeholder": "Choose groups",
+    "placeholder": "Select presets",
+    "noOptions": "No presets available. Create one to see it here",
     "group": "Group {{label}}",
-    "help": "Select one or more presets to display.",
+    "help": "Select one or more presets to display",
     "button": "Edit Presets",
     "pageTitle": "Edit Presets",
-    "pageDescription": "Manage your saved server lists.",
+    "pageDescription": "Manage your saved server lists",
     "back": "Back",
     "listTitle": "Created presets",
-    "empty": "No presets created yet.",
+    "empty": "No presets created yet",
     "add": "Add new preset",
     "edit": "Edit preset {{name}}",
     "delete": "Delete preset {{name}}"

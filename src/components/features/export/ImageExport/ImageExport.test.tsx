@@ -29,7 +29,7 @@ describe('ImageExport', () => {
 
     expect(screen.getByRole('dialog', { name: 'Save server list' })).toBeInTheDocument()
     expect(
-      screen.getByText('Choose the month for which you want to save the server list.'),
+      screen.getByText('Choose the month for which you want to save the server list'),
     ).toBeInTheDocument()
     expect(screen.getByLabelText('Month')).toHaveValue(format(new Date(), 'yyyy-MM'))
     expect(document.body).toHaveStyle({ overflow: 'hidden' })

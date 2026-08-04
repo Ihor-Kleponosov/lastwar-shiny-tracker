@@ -1,5 +1,6 @@
+import { Settings } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { Button } from '@/components/shared/ui/Button'
+import { IconButton } from '@/components/shared/ui/IconButton'
 import { MultiSelect } from '@/components/shared/ui/MultiSelect'
 import type { Preset } from '@/types'
 
@@ -38,6 +39,7 @@ export function PresetSelector({
       <div className="flex min-w-0 items-center gap-3">
         <MultiSelect
           ariaLabel={t('presets.title')}
+          emptyMessage={t('presets.noOptions')}
           placeholder={t('presets.placeholder')}
           describedBy="preset-selector-help"
           options={presets.map((preset) => ({
@@ -47,13 +49,10 @@ export function PresetSelector({
           checkedValues={checkedPresetIds}
           onOptionToggle={handleOptionToggle}
         />
-        <Button variant="secondary" onClick={onEditPresets}>
-          {t('presets.button')}
-        </Button>
+        <IconButton aria-label={t('presets.button')} onClick={onEditPresets}>
+          <Settings aria-hidden="true" size={20} />
+        </IconButton>
       </div>
-      <p id="preset-selector-help" className="text-xs text-[var(--color-text-secondary)]">
-        {t('presets.help')}
-      </p>
     </section>
   )
 }

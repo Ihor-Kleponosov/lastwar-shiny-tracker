@@ -10,6 +10,7 @@ export type MultiSelectOption = {
 type MultiSelectProps = {
   describedBy?: string
   ariaLabel: string
+  emptyMessage?: string
   options: readonly MultiSelectOption[]
   placeholder: string
   checkedValues: ReadonlySet<string>
@@ -19,6 +20,7 @@ type MultiSelectProps = {
 export function MultiSelect({
   ariaLabel,
   describedBy,
+  emptyMessage,
   options,
   placeholder,
   checkedValues,
@@ -64,7 +66,12 @@ export function MultiSelect({
         aria-label={ariaLabel}
         onClick={() => setIsOpen((open) => !open)}
       >
-        <span className="min-w-0 truncate">{placeholder}</span>
+        <span className="min-w-0 truncate">
+          {options
+            .filter((option) => checkedValues.has(option.value))
+            .map((option) => option.label)
+            .join(', ') || placeholder}
+        </span>
         <ChevronDown
           aria-hidden="true"
           size={18}
@@ -79,20 +86,26 @@ export function MultiSelect({
           aria-multiselectable="true"
           className="absolute top-[calc(100%+0.25rem)] right-0 left-0 z-30 max-h-52 overflow-y-auto rounded-md border border-[var(--color-border)] bg-[var(--color-surface-elevated)] p-1 shadow-[0_8px_24px_rgb(0_0_0_/_35%)]"
         >
-          {options.map((option) => (
-            <div
-              key={option.value}
-              role="option"
-              aria-selected={checkedValues.has(option.value)}
-              className="rounded-sm hover:bg-[var(--color-surface)]"
-            >
-              <Checkbox
-                checked={checkedValues.has(option.value)}
-                label={option.label}
-                onChange={() => onOptionToggle(option.value)}
-              />
-            </div>
-          ))}
+          {options.length > 0
+            ? options.map((option) => (
+                <div
+                  key={option.value}
+                  role="option"
+                  aria-selected={checkedValues.has(option.value)}
+                  className="rounded-sm hover:bg-[var(--color-surface)]"
+                >
+                  <Checkbox
+                    checked={checkedValues.has(option.value)}
+                    label={option.label}
+                    onChange={() => onOptionToggle(option.value)}
+                  />
+                </div>
+              ))
+            : emptyMessage && (
+                <p className="px-3 py-2 text-sm text-[var(--color-text-secondary)]">
+                  {emptyMessage}
+                </p>
+              )}
         </div>
       ) : null}
     </div>

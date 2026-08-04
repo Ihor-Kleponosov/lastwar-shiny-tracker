@@ -64,6 +64,11 @@ describe('PresetSelector', () => {
       'aria-selected',
       'true',
     )
+    expect(screen.getByRole('button', { name: 'Presets' })).toHaveTextContent('Weekly servers')
+    await user.click(screen.getByRole('checkbox', { name: 'Weekend servers' }))
+    expect(screen.getByRole('button', { name: 'Presets' })).toHaveTextContent(
+      'Weekly servers, Weekend servers',
+    )
     await user.click(screen.getByRole('checkbox', { name: 'Weekly servers' }))
     expect(screen.getByRole('option', { name: 'Weekly servers' })).toHaveAttribute(
       'aria-selected',
@@ -72,6 +77,23 @@ describe('PresetSelector', () => {
 
     await user.keyboard('{Escape}')
     expect(screen.queryByRole('listbox')).not.toBeInTheDocument()
+  })
+
+  it('shows guidance when no presets are available', async () => {
+    const user = userEvent.setup()
+
+    render(
+      <PresetSelector
+        checkedPresetIds={new Set()}
+        onEditPresets={vi.fn()}
+        onSelectedPresetIdsChange={vi.fn()}
+        presets={[]}
+      />,
+    )
+
+    await user.click(screen.getByRole('button', { name: 'Presets' }))
+
+    expect(screen.getByText('No presets available. Create one to see it here')).toBeInTheDocument()
   })
 
   it('opens the presets page when edit is clicked', async () => {

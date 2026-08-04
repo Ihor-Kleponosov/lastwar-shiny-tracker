@@ -99,7 +99,7 @@ describe('App', () => {
     render(<App />)
 
     expect(await screen.findByRole('heading', { name: 'Presets' })).toBeInTheDocument()
-    expect(toastError).toHaveBeenCalledWith('Saved presets could not be loaded.')
+    expect(toastError).toHaveBeenCalledWith('Saved presets could not be loaded')
     expect(localStorage.getItem('last-war-shiny-tracker-presets')).toBe(storedPresets)
   })
 })

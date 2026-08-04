@@ -84,6 +84,8 @@ To add a language, register its code and display name in `src/i18n/languages.ts`
 
 Preset server IDs are normalized to configured servers and capped at 100 selections per preset.
 
+Selected preset IDs are persisted under the `last-war-shiny-tracker-selected-preset-ids` localStorage key. IDs for presets that no longer exist are discarded, and a missing or invalid selection defaults to an empty list.
+
 ## Offline and deployment
 
 `vite-plugin-pwa` generates the manifest and auto-updating service worker during production builds. The worker precaches the application shell and generated assets; the app does not require remote fonts, images, or API data.

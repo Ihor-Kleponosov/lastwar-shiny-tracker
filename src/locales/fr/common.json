@@ -16,7 +16,7 @@
   },
   "export": {
     "title": "Enregistrer la liste des serveurs",
-    "description": "Choisissez le mois pour lequel vous souhaitez enregistrer la liste des serveurs.",
+    "description": "Choisissez le mois pour lequel vous souhaitez enregistrer la liste des serveurs",
     "monthLabel": "Mois",
     "proceed": "Continuer",
     "close": "Fermer",
@@ -41,7 +41,7 @@
     },
     "serverList": {
       "selectedCount": "Sélectionnés : {{count}} / {{maximum}}",
-      "selectionLimitReached": "Vous pouvez sélectionner jusqu’à {{count}} serveurs.",
+      "selectionLimitReached": "Vous pouvez sélectionner jusqu’à {{count}} serveurs",
       "searchLabel": "Rechercher des serveurs",
       "searchPlaceholder": "Filtrer les serveurs",
       "clearSearch": "Effacer le filtre des serveurs",
@@ -58,42 +58,43 @@
       "viewAll": "Afficher tous les serveurs dans une liste",
       "viewGroups": "Afficher les serveurs par groupes",
       "groupLabel": "Groupe {{label}}",
-      "noGroupResults": "Aucun serveur dans ce groupe.",
-      "noResults": "Aucun serveur trouvé.",
+      "noGroupResults": "Aucun serveur dans ce groupe",
+      "noResults": "Aucun serveur trouvé",
       "title": "Liste des serveurs",
-      "description": "Sélectionnez les serveurs à afficher dans le calendrier. Vous pouvez désactiver ceux que vous n’utilisez pas ou pour lesquels vous n’avez pas de liens. Cliquez sur un serveur pour modifier son état. Ces préférences sont stockées dans votre navigateur et ne sont pas synchronisées avec d’autres appareils."
+      "description": "Sélectionnez les serveurs à afficher dans le calendrier. Vous pouvez désactiver ceux que vous n’utilisez pas ou pour lesquels vous n’avez pas de liens. Cliquez sur un serveur pour modifier son état. Ces préférences sont stockées dans votre navigateur et ne sont pas synchronisées avec d’autres appareils"
     }
   },
   "servers": {
-    "empty": "Aucun serveur activé pour cette date.",
+    "empty": "Aucun serveur activé pour cette date",
     "count_one": "{{count}} serveur",
     "count_other": "{{count}} serveurs"
   },
   "presets": {
-    "invalidStorage": "Les presets enregistrés n’ont pas pu être chargés.",
+    "invalidStorage": "Les presets enregistrés n’ont pas pu être chargés",
     "addTitle": "Ajouter un preset",
     "editTitle": "Modifier le preset",
     "nameLabel": "Nom du preset",
     "namePlaceholder": "Saisissez un nom de preset",
     "nameMaxLength": "20 caractères maximum",
-    "nameDuplicate": "Un preset portant ce nom existe déjà.",
+    "nameDuplicate": "Un preset portant ce nom existe déjà",
     "saved": "Preset enregistré",
-    "limitReached": "Vous ne pouvez pas créer plus de {{count}} presets.",
+    "limitReached": "Vous ne pouvez pas créer plus de {{count}} presets",
     "defaultNotice": {
       "label": "Preset par défaut appliqué",
       "close": "Fermer la notification du preset par défaut",
-      "message": "Aucun preset enregistré n’a été trouvé ; nous avons donc appliqué le preset par défaut. Cela n’arrive qu’une seule fois pour vous aider à démarrer."
+      "message": "Aucun preset enregistré n’a été trouvé ; nous avons donc appliqué le preset par défaut. Cela n’arrive qu’une seule fois pour vous aider à démarrer"
     },
     "title": "Préréglages",
-    "placeholder": "Choisir des groupes",
+    "placeholder": "Sélectionner des préréglages",
+    "noOptions": "Aucun preset disponible. Créez-en un pour le voir ici",
     "group": "Groupe {{label}}",
-    "help": "Sélectionnez un ou plusieurs préréglages à afficher.",
+    "help": "Sélectionnez un ou plusieurs préréglages à afficher",
     "button": "Modifier les préréglages",
     "pageTitle": "Modifier les préréglages",
-    "pageDescription": "Gérez vos listes de serveurs enregistrées.",
+    "pageDescription": "Gérez vos listes de serveurs enregistrées",
     "back": "Retour",
     "listTitle": "Préréglages créés",
-    "empty": "Aucun préréglage n’a encore été créé.",
+    "empty": "Aucun préréglage n’a encore été créé",
     "add": "Ajouter un préréglage",
     "edit": "Modifier le préréglage {{name}}",
     "delete": "Supprimer le préréglage {{name}}"

@@ -15,6 +15,7 @@ export default function App() {
   const { t } = useTranslation('common')
   const [route, setRoute] = useState<AppRoute>('main')
   const [presets, setPresets] = useState<readonly Preset[]>([])
+  const [isPresetsLoaded, setIsPresetsLoaded] = useState(false)
   const [isDefaultPresetNoticeOpen, setIsDefaultPresetNoticeOpen] = useState(false)
   const navigateToMain = () => setRoute('main')
 
@@ -23,6 +24,7 @@ export default function App() {
 
     setPresets(result.presets)
     setIsDefaultPresetNoticeOpen(result.wasDefaultPresetApplied)
+    setIsPresetsLoaded(true)
 
     if (result.hasInvalidStoredData) {
       toast.error(t('presets.invalidStorage'))
@@ -48,6 +50,10 @@ export default function App() {
     savePresets(limitedPresets)
     setPresets(limitedPresets)
     return true
+  }
+
+  if (!isPresetsLoaded) {
+    return null
   }
 
   const page =

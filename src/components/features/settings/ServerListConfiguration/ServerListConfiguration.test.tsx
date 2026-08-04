@@ -126,7 +126,7 @@ describe('ServerListConfiguration', () => {
     await user.type(screen.getByRole('searchbox', { name: 'Search servers' }), '1639')
     await user.click(screen.getByRole('radio', { name: 'Show servers grouped' }))
 
-    expect(screen.getAllByText('No servers in this group.')).toHaveLength(2)
+    expect(screen.getAllByText('No servers in this group')).toHaveLength(2)
     const serverCheckbox = within(screen.getByRole('list', { name: 'Group B' })).getByRole(
       'checkbox',
       { name: '1639' },
@@ -253,14 +253,14 @@ describe('ServerListConfiguration', () => {
 
     await user.type(screen.getByRole('searchbox', { name: 'Search servers' }), '9999')
 
-    expect(screen.getByText('No servers found.')).toBeInTheDocument()
+    expect(screen.getByText('No servers found')).toBeInTheDocument()
     expect(getServerCheckboxes()).toHaveLength(0)
     expect(screen.getByRole('checkbox', { name: 'All displayed' })).toBeDisabled()
 
     await user.click(screen.getByRole('radio', { name: 'Show servers grouped' }))
 
-    expect(screen.queryByText('No servers found.')).not.toBeInTheDocument()
-    expect(screen.getAllByText('No servers in this group.')).toHaveLength(3)
+    expect(screen.queryByText('No servers found')).not.toBeInTheDocument()
+    expect(screen.getAllByText('No servers in this group')).toHaveLength(3)
   })
 
   it('toggles only displayed servers and updates its checked state', async () => {

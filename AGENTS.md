@@ -16,6 +16,8 @@ For non-trivial work, read the relevant documentation and implementation first, 
 
 Prefer readable, strongly typed, immutable code; meaningful names; short functions; early returns; and focused diffs. Avoid speculative refactors, dead code, commented-out code, unnecessary dependencies, and unrelated formatting or lockfile changes.
 
+Avoid nested ternary expressions; use clear control flow instead.
+
 ## Architecture and domain behavior
 
 - Keep business logic in hooks and framework-independent utilities; keep components focused on rendering and interaction.
