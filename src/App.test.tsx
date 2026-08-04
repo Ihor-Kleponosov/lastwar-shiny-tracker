@@ -56,6 +56,23 @@ describe('App', () => {
     expect(screen.getByText(format(new Date(), 'P'))).toBeInTheDocument()
   })
 
+  it('navigates between the main page and the presets page', async () => {
+    const user = userEvent.setup()
+
+    render(<App />)
+
+    expect(screen.getAllByRole('button', { name: 'Open settings' })).not.toHaveLength(0)
+    await user.click(screen.getByRole('button', { name: 'Edit Presets' }))
+
+    expect(screen.getByRole('heading', { name: 'Edit Presets' })).toBeInTheDocument()
+    expect(screen.queryAllByRole('button', { name: 'Open settings' })).toHaveLength(0)
+
+    await user.click(screen.getByRole('button', { name: 'Go to main page' }))
+
+    expect(screen.getAllByRole('button', { name: 'Open settings' })).not.toHaveLength(0)
+    expect(screen.queryByRole('heading', { name: 'Edit Presets' })).not.toBeInTheDocument()
+  })
+
   it('updates the active server list only after saving settings changes', async () => {
     const user = userEvent.setup()
     const selectedDate = new Date()

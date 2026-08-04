@@ -1,6 +1,7 @@
 {
   "app": {
-    "logoAlt": "Logo des Last War Glanz-Trackers"
+    "logoAlt": "Logo des Last War Glanz-Trackers",
+    "goHome": "Zur Hauptseite"
   },
   "errorBoundary": { "message": "Etwas ist schiefgelaufen" },
   "language": { "label": "Sprache", "openMenu": "Sprache auswählen" },
@@ -76,6 +77,9 @@
     "placeholder": "Gruppen auswählen",
     "group": "Gruppe {{label}}",
     "help": "Wählen Sie eine oder mehrere anzuzeigende Voreinstellungen.",
-    "button": "Voreinstellungen bearbeiten"
+    "button": "Voreinstellungen bearbeiten",
+    "pageTitle": "Voreinstellungen bearbeiten",
+    "pageDescription": "Die Bearbeitung von Voreinstellungen wird hier bald verfügbar sein.",
+    "back": "Zurück"
   }
 }

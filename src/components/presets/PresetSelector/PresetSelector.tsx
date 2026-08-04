@@ -4,10 +4,11 @@ import { MultiSelect } from '@/components/ui/MultiSelect'
 import type { ServerId } from '@/types'
 
 type PresetSelectorProps = {
+  onEditPresets: () => void
   serverGroups: readonly (readonly ServerId[])[]
 }
 
-export function PresetSelector({ serverGroups }: PresetSelectorProps) {
+export function PresetSelector({ onEditPresets, serverGroups }: PresetSelectorProps) {
   const { t } = useTranslation('common')
 
   return (
@@ -28,7 +29,9 @@ export function PresetSelector({ serverGroups }: PresetSelectorProps) {
             label: t('presets.group', { label: String.fromCharCode(65 + index) }),
           }))}
         />
-        <Button variant="secondary">{t('presets.button')}</Button>
+        <Button variant="secondary" onClick={onEditPresets}>
+          {t('presets.button')}
+        </Button>
       </div>
       <p id="preset-selector-help" className="text-xs text-[var(--color-text-secondary)]">
         {t('presets.help')}

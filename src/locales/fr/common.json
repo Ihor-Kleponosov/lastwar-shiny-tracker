@@ -1,6 +1,7 @@
 {
   "app": {
-    "logoAlt": "Logo du suivi des brillants Last War"
+    "logoAlt": "Logo du suivi des brillants Last War",
+    "goHome": "Aller à la page principale"
   },
   "errorBoundary": { "message": "Une erreur s’est produite" },
   "language": { "label": "Langue", "openMenu": "Choisir la langue" },
@@ -76,6 +77,9 @@
     "placeholder": "Choisir des groupes",
     "group": "Groupe {{label}}",
     "help": "Sélectionnez un ou plusieurs préréglages à afficher.",
-    "button": "Modifier les préréglages"
+    "button": "Modifier les préréglages",
+    "pageTitle": "Modifier les préréglages",
+    "pageDescription": "La modification des préréglages sera bientôt disponible ici.",
+    "back": "Retour"
   }
 }

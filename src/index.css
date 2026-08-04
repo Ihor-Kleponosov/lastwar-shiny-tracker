@@ -12,6 +12,10 @@
   img {
     @apply inline-block;
   }
+
+  button:not(:disabled) {
+    @apply cursor-pointer;
+  }
 }
 
 :root {
