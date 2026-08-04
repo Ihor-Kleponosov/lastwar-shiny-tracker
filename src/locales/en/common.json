@@ -73,6 +73,7 @@
     "count_other": "{{count}} servers"
   },
   "presets": {
+    "invalidStorage": "Saved presets could not be loaded.",
     "addTitle": "Add preset",
     "editTitle": "Edit preset",
     "nameLabel": "Preset name",

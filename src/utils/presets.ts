@@ -4,6 +4,11 @@ import type { Preset, ServerId } from '@/types'
 export const PRESETS_STORAGE_KEY = 'last-war-shiny-tracker-presets'
 export const MAX_PRESET_SERVERS = 75
 
+export type PresetsLoadResult = {
+  readonly presets: Preset[]
+  readonly hasInvalidStoredData: boolean
+}
+
 const configuredServerIds = [...new Set(shinyTasksConfiguration.serverGroups.flat())].sort(
   (first, second) => first - second,
 )
@@ -69,5 +74,29 @@ export function getPresets(): Preset[] {
     return presets
   } catch {
     return []
+  }
+}
+
+export function loadPresets(defaultPreset: Preset): PresetsLoadResult {
+  try {
+    const storedPresets = localStorage.getItem(PRESETS_STORAGE_KEY)
+
+    if (storedPresets === null) {
+      const presets = [defaultPreset]
+      savePresets(presets)
+      return { presets, hasInvalidStoredData: false }
+    }
+
+    const parsedPresets: unknown = JSON.parse(storedPresets)
+
+    if (!Array.isArray(parsedPresets) || !parsedPresets.every(isPreset)) {
+      return { presets: [], hasInvalidStoredData: true }
+    }
+
+    const presets = normalizePresets(parsedPresets)
+    savePresets(presets)
+    return { presets, hasInvalidStoredData: false }
+  } catch {
+    return { presets: [], hasInvalidStoredData: true }
   }
 }

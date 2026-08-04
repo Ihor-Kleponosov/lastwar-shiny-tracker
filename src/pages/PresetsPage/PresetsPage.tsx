@@ -1,13 +1,16 @@
 import { AnimatePresence } from 'motion/react'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { toast } from 'sonner'
 import { Header } from '@/components/app-shell/Header'
 import { PresetList } from '@/components/features/presets/PresetList'
 import { PresetConfigurationModal } from '@/components/features/settings/PresetConfigurationModal'
 import { ActionFooter } from '@/components/shared/ui/ActionFooter'
 import { Button } from '@/components/shared/ui/Button'
 import type { Preset } from '@/types'
+import { defaultPreset } from '@/config'
 import { generateUniqueId } from '@/utils'
+import { loadPresets, savePresets } from '@/utils/presets'
 import { getConfiguredServerIds } from '@/utils/serverPreferences'
 
 type PresetsPageProps = {
@@ -17,14 +20,20 @@ type PresetsPageProps = {
 
 export function PresetsPage({ onBack, onNavigateHome }: PresetsPageProps) {
   const { t } = useTranslation('common')
-  const [presets, setPresets] = useState<readonly Preset[]>(() => [
-    { id: generateUniqueId(), name: 'Main servers', enabledServerIds: [] },
-    { id: generateUniqueId(), name: 'Event servers', enabledServerIds: [1692] },
-    { id: generateUniqueId(), name: 'Backup servers', enabledServerIds: [] },
-  ])
+  const [presets, setPresets] = useState<readonly Preset[] | null>(null)
   const [editingPreset, setEditingPreset] = useState<Preset | null>(null)
   const [isPresetModalOpen, setIsPresetModalOpen] = useState(false)
   const presetTriggerRef = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    const result = loadPresets(defaultPreset)
+
+    if (result.hasInvalidStoredData) {
+      toast.error(t('presets.invalidStorage'))
+    }
+
+    setPresets(result.presets)
+  }, [t])
 
   function handleAddPreset(trigger: HTMLButtonElement) {
     presetTriggerRef.current = trigger
@@ -43,19 +52,30 @@ export function PresetsPage({ onBack, onNavigateHome }: PresetsPageProps) {
   }
 
   function handleDeletePreset(preset: Preset) {
-    setPresets((currentPresets) =>
-      currentPresets.filter((currentPreset) => currentPreset.id !== preset.id),
-    )
+    setPresets((currentPresets) => {
+      if (currentPresets === null) {
+        return currentPresets
+      }
+
+      const nextPresets = currentPresets.filter((currentPreset) => currentPreset.id !== preset.id)
+      savePresets(nextPresets)
+      return nextPresets
+    })
   }
 
   function handleSavePreset(nextPreset: Preset) {
     setPresets((currentPresets) => {
+      if (currentPresets === null) {
+        return currentPresets
+      }
+
       const nextPresets =
         editingPreset !== null
           ? currentPresets.map((preset) =>
               preset.id === editingPreset.id ? { ...nextPreset, id: editingPreset.id } : preset,
             )
           : [...currentPresets, { ...nextPreset, id: generateUniqueId() }]
+      savePresets(nextPresets)
       return nextPresets
     })
   }
@@ -77,12 +97,14 @@ export function PresetsPage({ onBack, onNavigateHome }: PresetsPageProps) {
           <p className="text-sm text-[var(--color-text-secondary)]">
             {t('presets.pageDescription')}
           </p>
-          <PresetList
-            presets={presets}
-            onAdd={handleAddPreset}
-            onDelete={handleDeletePreset}
-            onEdit={handleEditPreset}
-          />
+          {presets === null ? null : (
+            <PresetList
+              presets={presets}
+              onAdd={handleAddPreset}
+              onDelete={handleDeletePreset}
+              onEdit={handleEditPreset}
+            />
+          )}
         </section>
         <ActionFooter className="mt-auto">
           <Button variant="secondary" className="w-full sm:w-auto" onClick={onBack}>

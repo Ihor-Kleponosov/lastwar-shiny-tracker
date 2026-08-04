@@ -78,6 +78,7 @@
     "count_other": "{{count}} серверів"
   },
   "presets": {
+    "invalidStorage": "Не вдалося завантажити збережені пресети.",
     "addTitle": "Додати пресет",
     "editTitle": "Редагувати пресет",
     "nameLabel": "Назва пресету",

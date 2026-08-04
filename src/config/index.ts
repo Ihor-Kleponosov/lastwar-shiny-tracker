@@ -1,4 +1,4 @@
-import type { ShinyTasksConfiguration } from '@/types'
+import type { Preset, ShinyTasksConfiguration } from '@/types'
 
 export const shinyTasksConfiguration: ShinyTasksConfiguration = {
   anchorDate: '2026-07-15',
@@ -12,5 +12,16 @@ export const shinyTasksConfiguration: ShinyTasksConfiguration = {
       1637, 1641, 1642, 1649, 1654, 1655, 1660, 1661, 1666, 1667, 1668, 1671, 1672, 1678, 1682,
       1683, 1684, 1694, 1695, 1700,
     ],
+  ],
+}
+
+export const defaultPreset: Preset = {
+  id: 'default-preset',
+  name: 'Default preset',
+  enabledServerIds: [
+    1638, 1643, 1650, 1651, 1656, 1657, 1658, 1662, 1663, 1664, 1669, 1670, 1673, 1674, 1675, 1676,
+    1679, 1680, 1681, 1685, 1686, 1687, 1690, 1691, 1692, 1693, 1696, 1697, 1698, 1639, 1640, 1644,
+    1645, 1646, 1647, 1648, 1652, 1653, 1659, 1665, 1677, 1688, 1689, 1699, 1637, 1641, 1642, 1649,
+    1654, 1655, 1660, 1661, 1666, 1667, 1668, 1671, 1672, 1678, 1682, 1683, 1684, 1694, 1695, 1700,
   ],
 }
