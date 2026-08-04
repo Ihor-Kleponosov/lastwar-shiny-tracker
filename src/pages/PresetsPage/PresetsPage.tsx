@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { Header } from '@/components/layout/Header'
-import { Button } from '@/components/ui/Button'
+import { Header } from '@/components/app-shell/Header'
+import { Button } from '@/components/shared/ui/Button'
 
 type PresetsPageProps = {
   onBack: () => void
