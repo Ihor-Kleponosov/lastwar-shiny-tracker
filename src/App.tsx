@@ -7,7 +7,7 @@ import { Notification } from '@/components/shared/ui/Notification'
 import { defaultPreset } from '@/config'
 import type { Preset } from '@/types'
 import { generateUniqueId } from '@/utils'
-import { loadPresets, MAX_PRESETS, savePresets } from '@/utils/presets'
+import { loadPresets, MAX_PRESETS, savePresets, saveSelectedPresetIds } from '@/utils/presets'
 
 type AppRoute = 'main' | 'presets'
 
@@ -21,6 +21,10 @@ export default function App() {
 
   useEffect(() => {
     const result = loadPresets(defaultPreset)
+
+    if (result.wasDefaultPresetApplied) {
+      saveSelectedPresetIds([defaultPreset.id])
+    }
 
     setPresets(result.presets)
     setIsDefaultPresetNoticeOpen(result.wasDefaultPresetApplied)

@@ -84,7 +84,7 @@ To add a language, register its code and display name in `src/i18n/languages.ts`
 
 Preset server IDs are normalized to configured servers and capped at 100 selections per preset.
 
-Selected preset IDs are persisted under the `last-war-shiny-tracker-selected-preset-ids` localStorage key. IDs for presets that no longer exist are discarded, and a missing or invalid selection defaults to an empty list.
+Selected preset IDs are persisted under the `last-war-shiny-tracker-selected-preset-ids` localStorage key. When the first-launch default preset is created, it is selected automatically. IDs for presets that no longer exist are discarded, and a missing or invalid selection defaults to an empty list.
 
 ## Offline and deployment
 
