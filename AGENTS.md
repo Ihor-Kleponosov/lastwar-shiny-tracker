@@ -26,6 +26,20 @@ Prefer readable, strongly typed, immutable code; meaningful names; short functio
 - Reuse `useModalAccessibility` for dialogs so Escape handling, focus movement, focus return, focus trapping, and scroll locking remain consistent.
 - Reuse existing export helpers and the export view for PNG capture; do not introduce a second rendering or download path without a demonstrated need.
 
+## Component architecture
+
+- Keep application-wide shell elements, such as the header and language controls, in `src/components/app-shell/`.
+- Keep domain-specific components in `src/components/features/<domain>/`, grouped by capability such as calendar, date, export, presets, servers, or settings.
+- Keep reusable visual primitives and generic composite controls in `src/components/shared/ui/`.
+- Keep cross-application technical concerns, such as error boundaries, in `src/components/infrastructure/`.
+- Keep page composition in `src/pages/`, business logic in hooks or framework-independent utilities, and domain configuration in its existing configuration modules.
+- Keep feature-specific components inside their owning feature even when they resemble generic UI. Promote a component to shared UI only when it has a clear, reusable contract independent of domain behavior.
+- Keep private helpers and feature subcomponents colocated with their owning component unless independent reuse is demonstrated.
+- Colocate component tests and component-specific utilities with the implementation.
+- Avoid global component barrels that hide ownership; preserve focused local `index.ts` exports where they already exist.
+- Update import paths when moving components and preserve public component APIs unless the task explicitly requires an API change.
+- Maintain one-way dependency intent: shared UI must not import feature components, infrastructure should remain independent of domain features, and features may consume shared UI plus application hooks and utilities.
+
 ## React, TypeScript, and styling
 
 - Use functional components, hooks, composition, and local state where practical.
