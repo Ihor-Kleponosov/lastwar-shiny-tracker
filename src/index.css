@@ -31,6 +31,7 @@
   --color-accent-contrast: #111827;
   --color-danger: #5f1212;
   --color-danger-hover: #460d0d;
+  --color-danger-text: #fca5a5;
   --color-focus: #38bdf8;
   --color-overlay: rgb(2 6 23 / 72%);
   --color-export-background: var(--color-background);

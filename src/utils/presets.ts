@@ -3,10 +3,12 @@ import type { Preset, ServerId } from '@/types'
 
 export const PRESETS_STORAGE_KEY = 'last-war-shiny-tracker-presets'
 export const MAX_PRESET_SERVERS = 75
+export const MAX_PRESETS = 5
 
 export type PresetsLoadResult = {
   readonly presets: Preset[]
   readonly hasInvalidStoredData: boolean
+  readonly wasDefaultPresetApplied: boolean
 }
 
 const configuredServerIds = [...new Set(shinyTasksConfiguration.serverGroups.flat())].sort(
@@ -36,7 +38,7 @@ function normalizeEnabledServerIds(enabledServerIds: Iterable<ServerId>): Server
 }
 
 function normalizePresets(presets: readonly Preset[]): Preset[] {
-  return presets.map((preset) => ({
+  return presets.slice(0, MAX_PRESETS).map((preset) => ({
     ...preset,
     enabledServerIds: normalizeEnabledServerIds(preset.enabledServerIds),
   }))
@@ -84,19 +86,19 @@ export function loadPresets(defaultPreset: Preset): PresetsLoadResult {
     if (storedPresets === null) {
       const presets = [defaultPreset]
       savePresets(presets)
-      return { presets, hasInvalidStoredData: false }
+      return { presets, hasInvalidStoredData: false, wasDefaultPresetApplied: true }
     }
 
     const parsedPresets: unknown = JSON.parse(storedPresets)
 
     if (!Array.isArray(parsedPresets) || !parsedPresets.every(isPreset)) {
-      return { presets: [], hasInvalidStoredData: true }
+      return { presets: [], hasInvalidStoredData: true, wasDefaultPresetApplied: false }
     }
 
     const presets = normalizePresets(parsedPresets)
     savePresets(presets)
-    return { presets, hasInvalidStoredData: false }
+    return { presets, hasInvalidStoredData: false, wasDefaultPresetApplied: false }
   } catch {
-    return { presets: [], hasInvalidStoredData: true }
+    return { presets: [], hasInvalidStoredData: true, wasDefaultPresetApplied: false }
   }
 }

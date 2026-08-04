@@ -78,7 +78,15 @@
     "editTitle": "Modifier le preset",
     "nameLabel": "Nom du preset",
     "namePlaceholder": "Saisissez un nom de preset",
+    "nameMaxLength": "20 caractères maximum",
+    "nameDuplicate": "Un preset portant ce nom existe déjà.",
     "saved": "Preset enregistré",
+    "limitReached": "Vous ne pouvez pas créer plus de {{count}} presets.",
+    "defaultNotice": {
+      "label": "Preset par défaut appliqué",
+      "close": "Fermer la notification du preset par défaut",
+      "message": "Aucun preset enregistré n’a été trouvé ; nous avons donc appliqué le preset par défaut. Cela n’arrive qu’une seule fois pour vous aider à démarrer."
+    },
     "title": "Préréglages",
     "placeholder": "Choisir des groupes",
     "group": "Groupe {{label}}",
