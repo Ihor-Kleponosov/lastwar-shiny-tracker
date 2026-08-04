@@ -3,8 +3,10 @@ import { useRef, useState } from 'react'
 import { Calendar } from '@/components/calendar/Calendar'
 import { DateSummary } from '@/components/date/DateSummary'
 import { Header } from '@/components/layout/Header'
+import { PresetSelector } from '@/components/presets/PresetSelector'
 import { ConfigurationModal } from '@/components/settings/ConfigurationModal'
 import { ServerList } from '@/components/servers/ServerList'
+import { shinyTasksConfiguration } from '@/config'
 import { useServerPreferences } from '@/hooks/useServerPreferences'
 
 export default function App() {
@@ -47,6 +49,7 @@ export default function App() {
             ) : null}
           </AnimatePresence>
         </div>
+        <PresetSelector serverGroups={shinyTasksConfiguration.serverGroups} />
         <ServerList
           selectedDate={selectedDate}
           enabledServerIds={enabledServerIds}
