@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { getConfiguredServerIds } from '@/utils/serverPreferences'
 import i18n from '@/i18n'
@@ -111,5 +112,16 @@ describe('ServerList', () => {
     expect(screen.getByRole('heading', { name: 'Empty preset' })).toBeInTheDocument()
     expect(screen.getByText('No enabled servers for this date')).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Open settings' })).not.toBeInTheDocument()
+  })
+
+  it('opens export with this preset selected and locked', async () => {
+    const user = userEvent.setup()
+    render(<ServerList selectedDate={new Date(2026, 6, 15)} preset={allServersPreset} />)
+
+    await user.click(screen.getByRole('button', { name: 'Download image for All servers' }))
+
+    expect(screen.getByRole('dialog', { name: 'Save server list' })).toBeInTheDocument()
+    expect(screen.getByLabelText('Preset')).toHaveValue('all-servers')
+    expect(screen.getByLabelText('Preset')).toBeDisabled()
   })
 })

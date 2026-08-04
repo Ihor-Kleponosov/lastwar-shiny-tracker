@@ -9,6 +9,7 @@ type ExportMonthPickerDialogProps = {
   monthValue: string
   presets: readonly Preset[]
   presetValue: string
+  isPresetDisabled?: boolean
   onClose: () => void
   onMonthChange: (monthValue: string) => void
   onPresetChange: (presetId: string) => void
@@ -20,6 +21,7 @@ export function ExportMonthPickerDialog({
   monthValue,
   presets,
   presetValue,
+  isPresetDisabled = false,
   onClose,
   onMonthChange,
   onPresetChange,
@@ -62,8 +64,9 @@ export function ExportMonthPickerDialog({
           <select
             id="export-preset"
             value={presetValue}
+            disabled={isPresetDisabled}
             onChange={(event) => onPresetChange(event.target.value)}
-            className="min-h-11 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-elevated)] px-3 text-base text-[var(--color-text-primary)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus)]"
+            className={`min-h-11 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-elevated)] px-3 text-base focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus)] disabled:cursor-not-allowed disabled:opacity-50 ${presetValue ? 'text-[var(--color-text-primary)]' : 'text-[var(--color-text-secondary)]'}`}
           >
             <option value="">{t('export.noPreset')}</option>
             {presets.map((preset) => (
@@ -77,7 +80,7 @@ export function ExportMonthPickerDialog({
           <Button variant="secondary" onClick={onClose}>
             {t('export.close')}
           </Button>
-          <Button onClick={onProceed} disabled={!monthValue}>
+          <Button onClick={onProceed} disabled={!monthValue || !presetValue}>
             {t('export.proceed')}
           </Button>
         </div>

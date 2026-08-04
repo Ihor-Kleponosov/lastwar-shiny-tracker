@@ -14,11 +14,13 @@ import { ExportPreviewDialog } from './ExportPreviewDialog'
 
 type ImageExportProps = {
   presets: readonly Preset[]
+  presetId?: string
+  triggerLabel?: string
 }
 
 type ExportDialogStep = 'closed' | 'month-picker' | 'preview'
 
-export function ImageExport({ presets }: ImageExportProps) {
+export function ImageExport({ presets, presetId, triggerLabel }: ImageExportProps) {
   const { t } = useTranslation('common')
   const [dialogStep, setDialogStep] = useState<ExportDialogStep>('closed')
   const [monthValue, setMonthValue] = useState(getCurrentMonthValue)
@@ -47,7 +49,7 @@ export function ImageExport({ presets }: ImageExportProps) {
 
   const handleOpen = () => {
     setMonthValue(getCurrentMonthValue())
-    setPresetValue('')
+    setPresetValue(presetId ?? '')
     setDialogStep('month-picker')
   }
 
@@ -78,7 +80,11 @@ export function ImageExport({ presets }: ImageExportProps) {
 
   return (
     <>
-      <IconButton ref={triggerRef} aria-label={t('export.download')} onClick={handleOpen}>
+      <IconButton
+        ref={triggerRef}
+        aria-label={triggerLabel ?? t('export.download')}
+        onClick={handleOpen}
+      >
         <Image aria-hidden="true" size={20} />
       </IconButton>
       {dialogStep === 'month-picker' ? (
@@ -87,6 +93,7 @@ export function ImageExport({ presets }: ImageExportProps) {
           monthValue={monthValue}
           presets={presets}
           presetValue={presetValue}
+          isPresetDisabled={presetId !== undefined}
           onClose={handleClose}
           onMonthChange={setMonthValue}
           onPresetChange={setPresetValue}

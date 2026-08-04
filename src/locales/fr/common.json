@@ -16,7 +16,7 @@
   },
   "export": {
     "presetLabel": "Préréglage",
-    "noPreset": "Aucun préréglage",
+    "noPreset": "Sélectionner un préréglage",
     "title": "Enregistrer la liste des serveurs",
     "description": "Choisissez le mois pour lequel vous souhaitez enregistrer la liste des serveurs",
     "monthLabel": "Mois",
@@ -25,6 +25,7 @@
     "previewTitle": "Aperçu de la liste des serveurs",
     "closePreview": "Fermer l’aperçu de l’exportation",
     "download": "Télécharger l’image",
+    "downloadPreset": "Télécharger l’image de {{name}}",
     "useLightTheme": "Utiliser le thème clair pour l’exportation",
     "useDarkTheme": "Utiliser le thème sombre pour l’exportation",
     "loading": "Exportation de l’image",

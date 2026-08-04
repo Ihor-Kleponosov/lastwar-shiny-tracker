@@ -29,10 +29,7 @@ export function PresetSelector({
   }
 
   return (
-    <section
-      className="flex flex-col gap-3 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-3 shadow-[0_8px_24px_rgb(0_0_0_/_14%)] sm:p-4"
-      aria-label={t('presets.title')}
-    >
+    <section className="flex flex-col gap-3 p-3 sm:p-4" aria-label={t('presets.title')}>
       <h2 className="text-base font-semibold text-[var(--color-text-primary)]">
         {t('presets.title')}
       </h2>

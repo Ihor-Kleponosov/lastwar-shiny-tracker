@@ -11,6 +11,7 @@ An installable, offline-capable tracker for Last War shiny-task server rotations
 - Calendar picker with Monday as the first day of the week
 - Full-screen preset configuration with search, inclusive range filtering, flat and grouped list views, bulk selection, draft saving, and unsaved-change confirmation
 - PNG export: choose a month and preset, preview the export, select a light or dark export theme, and download the generated image
+- Each selected server-list card also provides a PNG export action with its preset preselected; only the export month can be changed
 - PWA manifest, service worker, and precached production assets for offline use
 - Error boundary and concise success feedback for saved preferences
 

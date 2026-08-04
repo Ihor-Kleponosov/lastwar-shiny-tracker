@@ -116,6 +116,7 @@ describe('ImageExport', () => {
     render(<ImageExport presets={presets} />)
 
     await user.click(screen.getByRole('button', { name: 'Download image' }))
+    await user.selectOptions(screen.getByLabelText('Preset'), 'first')
     await user.click(screen.getByRole('button', { name: 'Proceed' }))
     await user.click(
       within(screen.getByRole('dialog', { name: 'Server list preview' })).getByRole('button', {
