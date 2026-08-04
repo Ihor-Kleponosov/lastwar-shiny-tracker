@@ -4,17 +4,13 @@ import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { shinyTasksConfiguration } from '@/config'
 import i18n from '@/i18n'
-import {
-  getConfiguredServerIds,
-  getEnabledServerIds,
-  SERVER_PREFERENCES_STORAGE_KEY,
-} from '@/utils/serverPreferences'
+import { getConfiguredServerIds } from '@/utils/serverPreferences'
 import { ServerListConfiguration } from '.'
 
 const configuredServerIds = getConfiguredServerIds()
 
 function ServerListConfigurationHarness() {
-  const [enabledServerIds, setEnabledServerIds] = useState<Set<number>>(getEnabledServerIds)
+  const [enabledServerIds, setEnabledServerIds] = useState<Set<number>>(() => new Set())
   const serverIds = getConfiguredServerIds()
 
   function toggleServer(serverId: number) {
@@ -207,19 +203,6 @@ describe('ServerListConfiguration', () => {
     expect(screen.queryByRole('button', { name: 'Reset filter' })).not.toBeInTheDocument()
   })
 
-  it('uses the saved server preferences', () => {
-    localStorage.setItem(
-      SERVER_PREFERENCES_STORAGE_KEY,
-      JSON.stringify({ enabledServerIds: [1639] }),
-    )
-
-    renderConfiguration()
-
-    expect(screen.getByRole('checkbox', { name: '1638' })).not.toBeChecked()
-    expect(screen.getByRole('checkbox', { name: '1640' })).not.toBeChecked()
-    expect(screen.getByRole('checkbox', { name: '1639' })).toBeChecked()
-  })
-
   it('toggles a server with pointer and keyboard interaction', async () => {
     const user = userEvent.setup()
 
@@ -282,10 +265,6 @@ describe('ServerListConfiguration', () => {
 
   it('toggles only displayed servers and updates its checked state', async () => {
     const user = userEvent.setup()
-    localStorage.setItem(
-      SERVER_PREFERENCES_STORAGE_KEY,
-      JSON.stringify({ enabledServerIds: [1638, 1639] }),
-    )
 
     renderConfiguration()
     await selectSearchFilter(user)
@@ -296,20 +275,20 @@ describe('ServerListConfiguration', () => {
     const selectDisplayed = screen.getByRole('checkbox', { name: 'All displayed' })
 
     await user.click(selectDisplayed)
-    expect(screen.getByRole('checkbox', { name: '1638' })).not.toBeChecked()
-    expect(screen.getByRole('checkbox', { name: 'All displayed' })).not.toBeChecked()
+    expect(screen.getByRole('checkbox', { name: '1638' })).toBeChecked()
+    expect(screen.getByRole('checkbox', { name: 'All displayed' })).toBeChecked()
 
     await user.click(screen.getByRole('button', { name: 'Clear server filter' }))
-    expect(screen.getByRole('checkbox', { name: '1639' })).toBeChecked()
+    expect(screen.getByRole('checkbox', { name: '1639' })).not.toBeChecked()
 
     await user.type(filter, '1638')
     const selectDisplayedAfterRefilter = screen.getByRole('checkbox', { name: 'All displayed' })
 
     await user.click(selectDisplayedAfterRefilter)
-    expect(screen.getByRole('checkbox', { name: '1638' })).toBeChecked()
-    expect(screen.getByRole('checkbox', { name: 'All displayed' })).toBeChecked()
+    expect(screen.getByRole('checkbox', { name: '1638' })).not.toBeChecked()
+    expect(screen.getByRole('checkbox', { name: 'All displayed' })).not.toBeChecked()
 
     await user.click(screen.getByRole('checkbox', { name: '1638' }))
-    expect(screen.getByRole('checkbox', { name: 'All displayed' })).not.toBeChecked()
+    expect(screen.getByRole('checkbox', { name: 'All displayed' })).toBeChecked()
   })
 })

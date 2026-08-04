@@ -1,10 +1,8 @@
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { addDays, format } from 'date-fns'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { shinyTasksConfiguration } from '@/config'
 import i18n from '@/i18n'
-import { getServerGroupIndexForDate, getServersForIndex } from '@/utils'
 import App from './App'
 
 const { toastError } = vi.hoisted(() => ({ toastError: vi.fn() }))
@@ -66,46 +64,14 @@ describe('App', () => {
 
     render(<App />)
 
-    expect(screen.getAllByRole('button', { name: 'Open settings' })).not.toHaveLength(0)
     await user.click(screen.getByRole('button', { name: 'Edit Presets' }))
 
     expect(screen.getByRole('heading', { name: 'Edit Presets' })).toBeInTheDocument()
-    expect(screen.queryAllByRole('button', { name: 'Open settings' })).toHaveLength(0)
 
     await user.click(screen.getByRole('button', { name: 'Go to main page' }))
 
-    expect(screen.getAllByRole('button', { name: 'Open settings' })).not.toHaveLength(0)
+    expect(screen.getByRole('heading', { name: 'Presets' })).toBeInTheDocument()
     expect(screen.queryByRole('heading', { name: 'Edit Presets' })).not.toBeInTheDocument()
-  })
-
-  it('updates the active server list only after saving settings changes', async () => {
-    const user = userEvent.setup()
-    const selectedDate = new Date()
-    const serverId = getServersForIndex(
-      getServerGroupIndexForDate(selectedDate, shinyTasksConfiguration),
-      shinyTasksConfiguration,
-    )[0]
-
-    render(<App />)
-
-    const settingsButton = screen.getAllByRole('button', { name: 'Open settings' })[0]
-    const serverList = settingsButton.closest('section')
-    expect(serverList).not.toBeNull()
-    expect(within(serverList!).queryByText(String(serverId))).not.toBeInTheDocument()
-
-    await user.click(settingsButton)
-    await user.click(screen.getByRole('checkbox', { name: String(serverId) }))
-
-    expect(screen.getByRole('dialog', { name: 'Settings' })).toBeInTheDocument()
-    expect(within(serverList!).queryByText(String(serverId))).not.toBeInTheDocument()
-
-    await user.click(screen.getByRole('button', { name: 'Save' }))
-
-    await waitFor(() => {
-      expect(screen.queryByRole('dialog', { name: 'Settings' })).not.toBeInTheDocument()
-    })
-    expect(within(serverList!).getByText(String(serverId))).toBeInTheDocument()
-    expect(settingsButton).toHaveFocus()
   })
 
   it('creates the default preset and shows its notice on the main page on first visit', () => {

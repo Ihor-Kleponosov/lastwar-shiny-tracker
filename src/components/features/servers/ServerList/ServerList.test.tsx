@@ -1,9 +1,15 @@
 import { render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { getConfiguredServerIds } from '@/utils/serverPreferences'
 import i18n from '@/i18n'
+import type { Preset } from '@/types'
 import { ServerList } from '.'
+
+const allServersPreset: Preset = {
+  id: 'all-servers',
+  name: 'All servers',
+  enabledServerIds: getConfiguredServerIds(),
+}
 
 describe('ServerList', () => {
   beforeEach(async () => {
@@ -11,14 +17,7 @@ describe('ServerList', () => {
   })
 
   it('displays the active server group for the selected date in numerical order', () => {
-    render(
-      <ServerList
-        selectedDate={new Date(2026, 6, 15)}
-        enabledServerIds={new Set(getConfiguredServerIds())}
-        onOpenSettings={vi.fn()}
-        settingsButtonRef={{ current: null }}
-      />,
-    )
+    render(<ServerList selectedDate={new Date(2026, 6, 15)} preset={allServersPreset} />)
 
     expect(screen.getByText('29 servers')).toBeInTheDocument()
     expect(screen.getAllByRole('listitem').map(({ textContent }) => textContent)).toEqual([
@@ -55,24 +54,11 @@ describe('ServerList', () => {
   })
 
   it('updates the active servers when the selected date changes', () => {
-    const enabledServerIds = new Set(getConfiguredServerIds())
     const { rerender } = render(
-      <ServerList
-        selectedDate={new Date(2026, 6, 15)}
-        enabledServerIds={enabledServerIds}
-        onOpenSettings={vi.fn()}
-        settingsButtonRef={{ current: null }}
-      />,
+      <ServerList selectedDate={new Date(2026, 6, 15)} preset={allServersPreset} />,
     )
 
-    rerender(
-      <ServerList
-        selectedDate={new Date(2026, 6, 16)}
-        enabledServerIds={enabledServerIds}
-        onOpenSettings={vi.fn()}
-        settingsButtonRef={{ current: null }}
-      />,
-    )
+    rerender(<ServerList selectedDate={new Date(2026, 6, 16)} preset={allServersPreset} />)
 
     expect(screen.getByText('15 servers')).toBeInTheDocument()
     expect(screen.getAllByRole('listitem').map(({ textContent }) => textContent)).toEqual([
@@ -98,9 +84,11 @@ describe('ServerList', () => {
     render(
       <ServerList
         selectedDate={new Date(2026, 6, 15)}
-        enabledServerIds={new Set([1691, 1638, 1698])}
-        onOpenSettings={vi.fn()}
-        settingsButtonRef={{ current: null }}
+        preset={{
+          id: 'custom',
+          name: 'Custom servers',
+          enabledServerIds: [1691, 1638, 1698],
+        }}
       />,
     )
 
@@ -112,42 +100,16 @@ describe('ServerList', () => {
     ])
   })
 
-  it('opens settings from the list header', async () => {
-    const user = userEvent.setup()
-    const onOpenSettings = vi.fn()
-
+  it('uses the preset name as its title and shows an empty state without settings controls', () => {
     render(
       <ServerList
         selectedDate={new Date(2026, 6, 15)}
-        enabledServerIds={new Set(getConfiguredServerIds())}
-        onOpenSettings={onOpenSettings}
-        settingsButtonRef={{ current: null }}
+        preset={{ id: 'empty', name: 'Empty preset', enabledServerIds: [] }}
       />,
     )
 
-    await user.click(screen.getByRole('button', { name: 'Open settings' }))
-
-    expect(onOpenSettings).toHaveBeenCalledOnce()
-  })
-
-  it('shows an empty state and opens settings when no active servers are enabled', async () => {
-    const user = userEvent.setup()
-    const onOpenSettings = vi.fn()
-
-    render(
-      <ServerList
-        selectedDate={new Date(2026, 6, 15)}
-        enabledServerIds={new Set()}
-        onOpenSettings={onOpenSettings}
-        settingsButtonRef={{ current: null }}
-      />,
-    )
-
+    expect(screen.getByRole('heading', { name: 'Empty preset' })).toBeInTheDocument()
     expect(screen.getByText('No enabled servers for this date.')).toBeInTheDocument()
-    const settingsButtons = screen.getAllByRole('button', { name: 'Open settings' })
-    expect(settingsButtons).toHaveLength(2)
-
-    await user.click(settingsButtons[1])
-    expect(onOpenSettings).toHaveBeenCalledOnce()
+    expect(screen.queryByRole('button', { name: 'Open settings' })).not.toBeInTheDocument()
   })
 })

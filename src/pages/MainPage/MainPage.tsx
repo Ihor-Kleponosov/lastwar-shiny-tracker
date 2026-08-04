@@ -1,13 +1,11 @@
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { Calendar } from '@/components/features/calendar/Calendar'
 import { DateSummary } from '@/components/features/date/DateSummary'
 import { Header } from '@/components/app-shell/Header'
+import { PresetsList } from '@/components/features/presets/PresetsList'
 import { PresetSelector } from '@/components/features/presets/PresetSelector'
-import { ConfigurationModal } from '@/components/features/settings/ConfigurationModal'
-import { ServerList } from '@/components/features/servers/ServerList'
 import type { Preset } from '@/types'
-import { useServerPreferences } from '@/hooks/useServerPreferences'
 
 type MainPageProps = {
   onOpenPresets: () => void
@@ -18,10 +16,10 @@ type MainPageProps = {
 export function MainPage({ onOpenPresets, onNavigateHome, presets }: MainPageProps) {
   const [selectedDate, setSelectedDate] = useState(() => new Date())
   const [isCalendarVisible, setIsCalendarVisible] = useState(false)
-  const [isConfigurationOpen, setIsConfigurationOpen] = useState(false)
-  const settingsButtonRef = useRef<HTMLButtonElement>(null)
-  const { enabledServerIds, serverIds, saveEnabledServers } = useServerPreferences()
+  const [selectedPresetIds, setSelectedPresetIds] = useState<ReadonlySet<string>>(() => new Set())
   const prefersReducedMotion = useReducedMotion() ?? false
+  const selectedPresets = presets.filter((preset) => selectedPresetIds.has(preset.id))
+  const exportServerIds = new Set(selectedPresets[0]?.enabledServerIds ?? [])
 
   return (
     <main className="min-h-screen bg-[var(--color-background)] px-4 py-6 text-[var(--color-text-primary)] sm:px-6">
@@ -29,7 +27,7 @@ export function MainPage({ onOpenPresets, onNavigateHome, presets }: MainPagePro
         <Header onNavigateHome={onNavigateHome} />
         <div className="relative">
           <DateSummary
-            enabledServerIds={enabledServerIds}
+            enabledServerIds={exportServerIds}
             selectedDate={selectedDate}
             isCalendarVisible={isCalendarVisible}
             onSelectToday={() => setSelectedDate(new Date())}
@@ -55,25 +53,14 @@ export function MainPage({ onOpenPresets, onNavigateHome, presets }: MainPagePro
             ) : null}
           </AnimatePresence>
         </div>
-        <PresetSelector presets={presets} onEditPresets={onOpenPresets} />
-        <ServerList
-          selectedDate={selectedDate}
-          enabledServerIds={enabledServerIds}
-          onOpenSettings={() => setIsConfigurationOpen(true)}
-          settingsButtonRef={settingsButtonRef}
+        <PresetSelector
+          checkedPresetIds={selectedPresetIds}
+          onEditPresets={onOpenPresets}
+          onSelectedPresetIdsChange={setSelectedPresetIds}
+          presets={presets}
         />
+        <PresetsList presets={selectedPresets} selectedDate={selectedDate} />
       </div>
-      <AnimatePresence>
-        {isConfigurationOpen ? (
-          <ConfigurationModal
-            onClose={() => setIsConfigurationOpen(false)}
-            returnFocusRef={settingsButtonRef}
-            enabledServerIds={enabledServerIds}
-            serverIds={serverIds}
-            onSave={saveEnabledServers}
-          />
-        ) : null}
-      </AnimatePresence>
     </main>
   )
 }

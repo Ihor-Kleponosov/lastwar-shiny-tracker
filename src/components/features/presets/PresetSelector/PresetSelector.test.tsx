@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { useState } from 'react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import i18n from '@/i18n'
 import type { Preset } from '@/types'
@@ -10,13 +11,26 @@ const presets: readonly Preset[] = [
   { id: 'weekend', name: 'Weekend servers', enabledServerIds: [1639] },
 ]
 
+function PresetSelectorHarness({ onEditPresets = vi.fn() }: { onEditPresets?: () => void }) {
+  const [checkedPresetIds, setCheckedPresetIds] = useState<ReadonlySet<string>>(() => new Set())
+
+  return (
+    <PresetSelector
+      checkedPresetIds={checkedPresetIds}
+      onEditPresets={onEditPresets}
+      onSelectedPresetIdsChange={setCheckedPresetIds}
+      presets={presets}
+    />
+  )
+}
+
 describe('PresetSelector', () => {
   beforeEach(async () => {
     await i18n.changeLanguage('en')
   })
 
   it('renders preset names as selector options', async () => {
-    render(<PresetSelector presets={presets} onEditPresets={vi.fn()} />)
+    render(<PresetSelectorHarness />)
 
     expect(screen.getByRole('heading', { name: 'Presets' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Presets' })).toBeEnabled()
@@ -36,7 +50,7 @@ describe('PresetSelector', () => {
   it('opens and closes the options without changing application state', async () => {
     const user = userEvent.setup()
 
-    render(<PresetSelector presets={presets} onEditPresets={vi.fn()} />)
+    render(<PresetSelectorHarness />)
 
     const trigger = screen.getByRole('button', { name: 'Presets' })
     await user.click(trigger)
@@ -64,7 +78,7 @@ describe('PresetSelector', () => {
     const user = userEvent.setup()
     const onEditPresets = vi.fn()
 
-    render(<PresetSelector presets={presets} onEditPresets={onEditPresets} />)
+    render(<PresetSelectorHarness onEditPresets={onEditPresets} />)
 
     await user.click(screen.getByRole('button', { name: 'Edit Presets' }))
 

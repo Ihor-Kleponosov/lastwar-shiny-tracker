@@ -30,12 +30,9 @@
     "groupLabel": "{{label}}:"
   },
   "settings": {
-    "open": "Ouvrir les paramètres",
-    "title": "Paramètres",
     "close": "Fermer les paramètres",
     "cancel": "Annuler",
     "save": "Enregistrer",
-    "saved": "Préférences enregistrées",
     "unsavedChanges": {
       "title": "Modifications non enregistrées",
       "description": "Vous avez des modifications non enregistrées. Voulez-vous les abandonner ?",
