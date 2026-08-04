@@ -79,7 +79,12 @@
     "help": "Sélectionnez un ou plusieurs préréglages à afficher.",
     "button": "Modifier les préréglages",
     "pageTitle": "Modifier les préréglages",
-    "pageDescription": "La modification des préréglages sera bientôt disponible ici.",
-    "back": "Retour"
+    "pageDescription": "Gérez vos listes de serveurs enregistrées.",
+    "back": "Retour",
+    "listTitle": "Préréglages créés",
+    "empty": "Aucun préréglage n’a encore été créé.",
+    "add": "Ajouter un préréglage",
+    "edit": "Modifier le préréglage {{name}}",
+    "delete": "Supprimer le préréglage {{name}}"
   }
 }

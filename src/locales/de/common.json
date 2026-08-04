@@ -79,7 +79,12 @@
     "help": "Wählen Sie eine oder mehrere anzuzeigende Voreinstellungen.",
     "button": "Voreinstellungen bearbeiten",
     "pageTitle": "Voreinstellungen bearbeiten",
-    "pageDescription": "Die Bearbeitung von Voreinstellungen wird hier bald verfügbar sein.",
-    "back": "Zurück"
+    "pageDescription": "Verwalten Sie Ihre gespeicherten Serverlisten.",
+    "back": "Zurück",
+    "listTitle": "Erstellte Voreinstellungen",
+    "empty": "Noch keine Voreinstellungen erstellt.",
+    "add": "Neue Voreinstellung hinzufügen",
+    "edit": "Voreinstellung {{name}} bearbeiten",
+    "delete": "Voreinstellung {{name}} löschen"
   }
 }

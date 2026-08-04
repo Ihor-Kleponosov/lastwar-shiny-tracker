@@ -2,6 +2,14 @@ import { differenceInCalendarDays, parseISO } from 'date-fns'
 
 import type { ServerId, ShinyTasksConfiguration } from '@/types'
 
+export function generateUniqueId(): string {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID()
+  }
+
+  return `${Date.now()}-${Math.random().toString(36).slice(2)}`
+}
+
 export function getServerGroupIndexForDate(
   date: Date,
   configuration: ShinyTasksConfiguration,

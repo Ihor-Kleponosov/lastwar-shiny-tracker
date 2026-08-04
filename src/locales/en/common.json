@@ -79,7 +79,12 @@
     "help": "Select one or more presets to display.",
     "button": "Edit Presets",
     "pageTitle": "Edit Presets",
-    "pageDescription": "Preset editing will be available here soon.",
-    "back": "Back"
+    "pageDescription": "Manage your saved server lists.",
+    "back": "Back",
+    "listTitle": "Created presets",
+    "empty": "No presets created yet.",
+    "add": "Add new preset",
+    "edit": "Edit preset {{name}}",
+    "delete": "Delete preset {{name}}"
   }
 }
