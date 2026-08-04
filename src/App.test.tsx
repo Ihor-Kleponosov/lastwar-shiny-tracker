@@ -74,11 +74,23 @@ describe('App', () => {
     expect(screen.queryByRole('heading', { name: 'Edit Presets' })).not.toBeInTheDocument()
   })
 
-  it('creates the default preset and shows its notice on the main page on first visit', () => {
+  it('creates and selects the default preset and shows its notice on the main page on first visit', async () => {
+    const user = userEvent.setup()
+
     render(<App />)
 
     expect(screen.getByRole('status', { name: 'Default preset applied' })).toBeInTheDocument()
     expect(localStorage.getItem('last-war-shiny-tracker-presets')).toContain('Default preset')
+    expect(localStorage.getItem('last-war-shiny-tracker-selected-preset-ids')).toBe(
+      JSON.stringify(['default-preset']),
+    )
+
+    await user.click(screen.getByRole('button', { name: 'Presets' }))
+
+    expect(screen.getByRole('option', { name: 'Default preset' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    )
   })
 
   it('preserves an explicitly stored empty preset list without showing the default notice', async () => {
