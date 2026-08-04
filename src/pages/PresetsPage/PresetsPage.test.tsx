@@ -45,11 +45,11 @@ describe('PresetsPage', () => {
     expect(screen.queryByRole('status', { name: 'Default preset applied' })).not.toBeInTheDocument()
   })
 
-  it('shows a limit toast instead of opening the add modal at five presets', async () => {
+  it('shows a limit toast instead of opening the add modal at thirty presets', async () => {
     localStorage.setItem(
       'last-war-shiny-tracker-presets',
       JSON.stringify(
-        Array.from({ length: 5 }, (_, index) => ({
+        Array.from({ length: 30 }, (_, index) => ({
           id: `preset-${index}`,
           name: `Preset ${index}`,
           enabledServerIds: [],
@@ -61,7 +61,7 @@ describe('PresetsPage', () => {
 
     await user.click(await screen.findByRole('button', { name: 'Add new preset' }))
 
-    expect(toastError).toHaveBeenCalledWith("You can't create more than 5 presets.")
+    expect(toastError).toHaveBeenCalledWith("You can't create more than 30 presets.")
     expect(screen.queryByRole('dialog', { name: 'Add preset' })).not.toBeInTheDocument()
   })
 
