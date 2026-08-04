@@ -1,6 +1,6 @@
 import { Download, Moon, Sun, X } from 'lucide-react'
 import type { RefObject } from 'react'
-import { useId, useLayoutEffect, useRef, useState } from 'react'
+import { useId } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ExportView, type ExportTheme } from '@/components/features/export/ExportView'
 import { IconButton } from '@/components/shared/ui/IconButton'
@@ -18,8 +18,6 @@ type ExportPreviewDialogProps = {
   onThemeChange: (theme: ExportTheme) => void
 }
 
-const exportViewWidth = 390
-
 export function ExportPreviewDialog({
   dialogRef,
   enabledServerIds,
@@ -33,38 +31,6 @@ export function ExportPreviewDialog({
 }: ExportPreviewDialogProps) {
   const { t } = useTranslation('common')
   const titleId = useId()
-  const previewViewportRef = useRef<HTMLDivElement>(null)
-  const previewContentRef = useRef<HTMLDivElement>(null)
-  const [previewScale, setPreviewScale] = useState(1)
-  const [previewHeight, setPreviewHeight] = useState<number>()
-
-  useLayoutEffect(() => {
-    const previewViewport = previewViewportRef.current
-    const previewContent = previewContentRef.current
-
-    if (!previewViewport || !previewContent) {
-      return
-    }
-
-    const updatePreviewSize = () => {
-      setPreviewScale(Math.min(1, previewViewport.clientWidth / exportViewWidth))
-      setPreviewHeight(previewContent.offsetHeight)
-    }
-
-    updatePreviewSize()
-
-    if (typeof ResizeObserver === 'undefined') {
-      return
-    }
-
-    const resizeObserver = new ResizeObserver(updatePreviewSize)
-    resizeObserver.observe(previewViewport)
-    resizeObserver.observe(previewContent)
-
-    return () => resizeObserver.disconnect()
-  }, [enabledServerIds, exportDate, theme])
-
-  const isPreviewScaled = previewScale < 1
 
   return (
     <div
@@ -112,29 +78,8 @@ export function ExportPreviewDialog({
           <X aria-hidden="true" size={20} />
         </IconButton>
         <div className="min-h-0 flex-1 overflow-y-auto">
-          <div
-            ref={previewViewportRef}
-            className="relative w-full overflow-hidden"
-            style={
-              isPreviewScaled && previewHeight
-                ? { height: `${previewHeight * previewScale}px` }
-                : undefined
-            }
-          >
-            <div
-              ref={previewContentRef}
-              className="mx-auto w-[390px]"
-              style={
-                isPreviewScaled
-                  ? {
-                      position: 'absolute',
-                      left: '50%',
-                      transform: `translateX(-50%) scale(${previewScale})`,
-                      transformOrigin: 'top center',
-                    }
-                  : undefined
-              }
-            >
+          <div className="w-full overflow-x-auto">
+            <div className="mx-auto w-full">
               <ExportView
                 ref={exportViewRef}
                 enabledServerIds={enabledServerIds}

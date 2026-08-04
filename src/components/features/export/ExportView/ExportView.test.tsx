@@ -16,20 +16,28 @@ describe('ExportView', () => {
       <ExportView selectedDate={new Date(2026, 6, 20)} enabledServerIds={enabledServerIds} />,
     )
 
-    expect(screen.getByRole('heading', { name: 'July' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'July 2026' })).toBeInTheDocument()
     expect(container.querySelector('.rdp-weekday')).toHaveTextContent('Mo')
     expect(screen.queryByRole('button')).not.toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Servers:' })).toBeInTheDocument()
 
-    const groupARow = screen.getByText('A:').closest('tr')
-    const groupBRow = screen.getByText('B:').closest('tr')
-    const groupCRow = screen.getByText('C:').closest('tr')
+    const serversSection = screen.getByRole('heading', { name: 'Servers:' }).closest('section')
+    const groupRows = within(serversSection!).getAllByRole('row')
+    const [groupARow, groupBRow, groupCRow] = groupRows
 
-    expect(groupARow).not.toBeNull()
-    expect(groupBRow).not.toBeNull()
-    expect(groupCRow).not.toBeNull()
+    expect(groupRows).toHaveLength(3)
+    expect(screen.queryByText('A:')).not.toBeInTheDocument()
+    expect(screen.queryByText('B:')).not.toBeInTheDocument()
+    expect(screen.queryByText('C:')).not.toBeInTheDocument()
+    expect(within(groupARow).getAllByRole('cell')).toHaveLength(1)
+    expect(within(groupBRow).getAllByRole('cell')).toHaveLength(1)
+    expect(within(groupCRow).getAllByRole('cell')).toHaveLength(1)
     expect(within(groupARow!).getByRole('list')).toHaveTextContent(`${groupA[0]}${groupA[2]}`)
     expect(within(groupARow!).getAllByRole('listitem')).toHaveLength(2)
+    expect(within(groupARow!).getByRole('list')).toHaveClass(
+      'grid',
+      'grid-cols-[repeat(auto-fill,minmax(46px,1fr))]',
+    )
     expect(within(groupARow!).queryByText(String(groupA[1]))).not.toBeInTheDocument()
     expect(within(groupBRow!).getByRole('cell')).toHaveTextContent('—')
     expect(within(groupCRow!).getByRole('cell')).toHaveTextContent(String(groupC[0]))
@@ -50,7 +58,7 @@ describe('ExportView', () => {
       />,
     )
 
-    expect(screen.getByRole('heading', { name: 'Juli' })).toBeInTheDocument()
-    expect(screen.getByText('A:')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Juli 2026' })).toBeInTheDocument()
+    expect(screen.getByRole('table')).toBeInTheDocument()
   })
 })

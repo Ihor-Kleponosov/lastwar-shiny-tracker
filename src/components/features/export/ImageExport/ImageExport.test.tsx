@@ -75,7 +75,7 @@ describe('ImageExport', () => {
     await user.click(screen.getByRole('button', { name: 'Proceed' }))
 
     const preview = screen.getByRole('dialog', { name: 'Server list preview' })
-    expect(within(preview).getByRole('heading', { name: 'July' })).toBeInTheDocument()
+    expect(within(preview).getByRole('heading', { name: 'July 2026' })).toBeInTheDocument()
     const exportView = screen.getByTestId('export-view')
     expect(within(exportView).getByText('1639')).toBeInTheDocument()
     expect(within(exportView).queryByText('1638')).not.toBeInTheDocument()
