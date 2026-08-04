@@ -78,7 +78,15 @@
     "editTitle": "Edit preset",
     "nameLabel": "Preset name",
     "namePlaceholder": "Enter a preset name",
+    "nameMaxLength": "Max 20 characters",
+    "nameDuplicate": "A preset with this name already exists.",
     "saved": "Preset saved",
+    "limitReached": "You can't create more than {{count}} presets.",
+    "defaultNotice": {
+      "label": "Default preset applied",
+      "close": "Close default preset notification",
+      "message": "No saved presets found, so we applied the default preset. This only happens once to help you get started."
+    },
     "title": "Presets",
     "placeholder": "Choose groups",
     "group": "Group {{label}}",

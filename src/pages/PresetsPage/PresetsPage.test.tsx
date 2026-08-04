@@ -24,7 +24,45 @@ describe('PresetsPage', () => {
     expect(screen.getByText('Manage your saved server lists.')).toBeInTheDocument()
     expect(await screen.findByText('Default preset')).toBeInTheDocument()
     expect(localStorage.getItem('last-war-shiny-tracker-presets')).toContain('Default preset')
+    expect(screen.getByRole('status', { name: 'Default preset applied' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Back' })).toBeEnabled()
+  })
+
+  it('does not show the default notice for an explicitly stored empty list', async () => {
+    localStorage.setItem('last-war-shiny-tracker-presets', JSON.stringify([]))
+
+    render(<PresetsPage onBack={vi.fn()} onNavigateHome={vi.fn()} />)
+
+    expect(await screen.findByText('No presets created yet.')).toBeInTheDocument()
+    expect(screen.queryByRole('status', { name: 'Default preset applied' })).not.toBeInTheDocument()
+  })
+
+  it('closes the default preset notice manually', async () => {
+    const user = userEvent.setup()
+    render(<PresetsPage onBack={vi.fn()} onNavigateHome={vi.fn()} />)
+
+    await user.click(screen.getByRole('button', { name: 'Close default preset notification' }))
+    expect(screen.queryByRole('status', { name: 'Default preset applied' })).not.toBeInTheDocument()
+  })
+
+  it('shows a limit toast instead of opening the add modal at five presets', async () => {
+    localStorage.setItem(
+      'last-war-shiny-tracker-presets',
+      JSON.stringify(
+        Array.from({ length: 5 }, (_, index) => ({
+          id: `preset-${index}`,
+          name: `Preset ${index}`,
+          enabledServerIds: [],
+        })),
+      ),
+    )
+    const user = userEvent.setup()
+    render(<PresetsPage onBack={vi.fn()} onNavigateHome={vi.fn()} />)
+
+    await user.click(await screen.findByRole('button', { name: 'Add new preset' }))
+
+    expect(toastError).toHaveBeenCalledWith("You can't create more than 5 presets.")
+    expect(screen.queryByRole('dialog', { name: 'Add preset' })).not.toBeInTheDocument()
   })
 
   it('uses stored presets and persists changes', async () => {

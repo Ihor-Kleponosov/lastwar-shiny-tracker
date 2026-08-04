@@ -1,6 +1,6 @@
 import { X } from 'lucide-react'
 import { motion, useReducedMotion } from 'motion/react'
-import { useCallback, useId, useRef, useState, type RefObject } from 'react'
+import { useCallback, useEffect, useId, useRef, useState, type RefObject } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { useModalAccessibility } from '@/hooks/useModalAccessibility'
@@ -16,14 +16,16 @@ import { MAX_ENABLED_SERVERS } from '@/utils/serverPreferences'
 
 type PresetConfigurationModalProps = {
   preset: Preset | null
+  presets: readonly Preset[]
   onClose: () => void
-  onSave: (preset: Preset) => void
+  onSave: (preset: Preset) => boolean
   returnFocusRef: RefObject<HTMLButtonElement | null>
   serverIds: readonly ServerId[]
 }
 
 export function PresetConfigurationModal({
   preset,
+  presets,
   onClose,
   onSave,
   returnFocusRef,
@@ -31,6 +33,7 @@ export function PresetConfigurationModal({
 }: PresetConfigurationModalProps) {
   const { t } = useTranslation('common')
   const dialogRef = useRef<HTMLDivElement>(null)
+  const nameInputRef = useRef<HTMLInputElement>(null)
   const discardConfirmationTriggerRef = useRef<HTMLElement>(null)
   const titleId = useId()
   const initialPreset = useRef<Preset>(
@@ -41,6 +44,7 @@ export function PresetConfigurationModal({
     () => new Set(initialPreset.current.enabledServerIds),
   )
   const [isDiscardConfirmationOpen, setIsDiscardConfirmationOpen] = useState(false)
+  const [nameError, setNameError] = useState<string | null>(null)
   const prefersReducedMotion = useReducedMotion() ?? false
   const transition = {
     duration: prefersReducedMotion ? 0 : 0.2,
@@ -53,6 +57,32 @@ export function PresetConfigurationModal({
     [...draftEnabledServerIds].some(
       (serverId) => !initialPreset.current.enabledServerIds.includes(serverId),
     )
+
+  const getNameError = useCallback(
+    (value: string): string | null => {
+      const normalizedName = value.trim().toLowerCase()
+      if (!normalizedName) return null
+
+      const hasDuplicateName = presets.some(
+        (currentPreset) =>
+          currentPreset.id !== initialPreset.current.id &&
+          currentPreset.name.trim().toLowerCase() === normalizedName,
+      )
+
+      return hasDuplicateName ? t('presets.nameDuplicate') : null
+    },
+    [presets, t],
+  )
+
+  useEffect(() => {
+    if (!draftName.trim()) {
+      setNameError(null)
+      return
+    }
+
+    const timeoutId = window.setTimeout(() => setNameError(getNameError(draftName)), 2000)
+    return () => window.clearTimeout(timeoutId)
+  }, [draftName, getNameError])
 
   const handleCloseRequest = useCallback(() => {
     if (isDiscardConfirmationOpen) return
@@ -116,10 +146,22 @@ export function PresetConfigurationModal({
     const name = draftName.trim()
     if (!name) return
 
-    onSave({ ...initialPreset.current, name, enabledServerIds: [...draftEnabledServerIds] })
+    const nextNameError = getNameError(name)
+    if (nextNameError) {
+      setNameError(nextNameError)
+      nameInputRef.current?.scrollIntoView({
+        block: 'center',
+        behavior: prefersReducedMotion ? 'auto' : 'smooth',
+      })
+      nameInputRef.current?.focus()
+      return
+    }
+
+    if (!onSave({ ...initialPreset.current, name, enabledServerIds: [...draftEnabledServerIds] }))
+      return
     toast.success(t('presets.saved'))
     onClose()
-  }, [draftEnabledServerIds, draftName, onClose, onSave, t])
+  }, [draftEnabledServerIds, draftName, getNameError, onClose, onSave, prefersReducedMotion, t])
 
   const handleReturnToSettings = useCallback(() => {
     setIsDiscardConfirmationOpen(false)
@@ -173,11 +215,25 @@ export function PresetConfigurationModal({
             </label>
             <input
               id="preset-name"
+              ref={nameInputRef}
               value={draftName}
               onChange={(event) => setDraftName(event.target.value)}
+              maxLength={20}
               placeholder={t('presets.namePlaceholder')}
+              aria-describedby={
+                nameError ? 'preset-name-helper preset-name-error' : 'preset-name-helper'
+              }
+              aria-invalid={nameError !== null}
               className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2.5 text-sm outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus)]"
             />
+            <p id="preset-name-helper" className="mt-1 text-xs text-[var(--color-text-secondary)]">
+              {t('presets.nameMaxLength')}
+            </p>
+            {nameError ? (
+              <p id="preset-name-error" className="mt-1 text-xs text-[var(--color-danger-text)]">
+                {nameError}
+              </p>
+            ) : null}
           </div>
           <ServerListConfiguration
             enabledServerIds={draftEnabledServerIds}

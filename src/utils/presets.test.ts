@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { getPresets, loadPresets, PRESETS_STORAGE_KEY, savePresets } from './presets'
+import { getPresets, loadPresets, MAX_PRESETS, PRESETS_STORAGE_KEY, savePresets } from './presets'
 
 vi.mock('@/config', () => ({
   shinyTasksConfiguration: {
@@ -56,6 +56,7 @@ describe('presets storage', () => {
     expect(loadPresets({ id: 'default', name: 'Default', enabledServerIds: [] })).toEqual({
       presets: [],
       hasInvalidStoredData: true,
+      wasDefaultPresetApplied: false,
     })
     expect(localStorage.getItem(PRESETS_STORAGE_KEY)).toBe(storedPresets)
   })
@@ -68,5 +69,25 @@ describe('presets storage', () => {
     expect(() => savePresets([])).not.toThrow()
 
     setItemSpy.mockRestore()
+  })
+
+  it('truncates stored and saved preset collections to the maximum', () => {
+    const presets = Array.from({ length: MAX_PRESETS + 1 }, (_, index) => ({
+      id: `preset-${index}`,
+      name: `Preset ${index}`,
+      enabledServerIds: [],
+    }))
+
+    savePresets(presets)
+
+    expect(getPresets()).toEqual(presets.slice(0, MAX_PRESETS))
+  })
+
+  it('reports when it applies the default preset for missing storage', () => {
+    expect(loadPresets({ id: 'default', name: 'Default', enabledServerIds: [] })).toEqual({
+      presets: [{ id: 'default', name: 'Default', enabledServerIds: [] }],
+      hasInvalidStoredData: false,
+      wasDefaultPresetApplied: true,
+    })
   })
 })
