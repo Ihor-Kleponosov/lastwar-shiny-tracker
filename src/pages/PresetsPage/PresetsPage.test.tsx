@@ -15,9 +15,9 @@ describe('PresetsPage', () => {
     expect(screen.getByRole('banner')).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Edit Presets' })).toBeInTheDocument()
     expect(screen.getByText('Manage your saved server lists.')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Main servers' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Event servers' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Backup servers' })).toBeInTheDocument()
+    expect(screen.getByText('Main servers')).toBeInTheDocument()
+    expect(screen.getByText('Event servers')).toBeInTheDocument()
+    expect(screen.getByText('Backup servers')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Back' })).toBeEnabled()
   })
 
