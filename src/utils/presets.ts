@@ -2,8 +2,8 @@ import { shinyTasksConfiguration } from '@/config'
 import type { Preset, ServerId } from '@/types'
 
 export const PRESETS_STORAGE_KEY = 'last-war-shiny-tracker-presets'
-export const MAX_PRESET_SERVERS = 75
-export const MAX_PRESETS = 5
+export const MAX_PRESET_SERVERS = 100
+export const MAX_PRESETS = 30
 
 export type PresetsLoadResult = {
   readonly presets: Preset[]

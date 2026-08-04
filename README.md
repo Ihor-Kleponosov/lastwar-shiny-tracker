@@ -17,7 +17,7 @@ An installable, offline-capable tracker for Last War shiny-task server rotations
 
 ## How it works
 
-The configured server groups repeat from the ISO anchor date in `src/config/index.ts`. The selected date determines the current group; only servers enabled in local preferences are displayed. Preferences are saved under the `last-war-shiny-tracker-server-preferences` localStorage key and are never synced to a server. Presets are saved under the `last-war-shiny-tracker-presets` localStorage key as objects containing `id`, `name`, and `enabledServerIds`; up to five can be saved. The Presets page creates and saves an all-servers default preset on first launch when no stored presets exist and shows a dismissible notice. Invalid stored preset data is preserved and reported with an error toast; an existing stored list, including an empty list, is preserved.
+The configured server groups repeat from the ISO anchor date in `src/config/index.ts`. The selected date determines the current group; only servers enabled in local preferences are displayed. Preferences are saved under the `last-war-shiny-tracker-server-preferences` localStorage key and are never synced to a server. Presets are saved under the `last-war-shiny-tracker-presets` localStorage key as objects containing `id`, `name`, and `enabledServerIds`; up to 30 can be saved. The Presets page creates and saves an all-servers default preset on first launch when no stored presets exist and shows a dismissible notice. Invalid stored preset data is preserved and reported with an error toast; an existing stored list, including an empty list, is preserved.
 
 Open settings from the active-server card. Changes are kept as a draft until **Save**; closing a changed draft asks whether to discard it. Search filters server numbers immediately, while range filtering is inclusive and accepts bounds in either order. The server list can be shown as one flat list or separated into the configured A, B, and C rotation groups.
 
@@ -83,7 +83,7 @@ To add a language, register its code and display name in `src/i18n/languages.ts`
 
 `src/config/index.ts` is the source of truth for the cycle anchor date and server groups. Keep group order intentional: the group index is calculated from the calendar-day difference relative to the anchor date. Server IDs are deduplicated and sorted before they are presented or persisted.
 
-Stored preferences contain only enabled server IDs, capped at 75 selections. Unknown, duplicate, and over-limit IDs are discarded on read; malformed or unavailable storage falls back to no servers enabled without blocking use of the app. Preset server IDs use the same configured-server normalization and 75-server limit.
+Stored preferences contain only enabled server IDs, capped at 75 selections. Unknown, duplicate, and over-limit IDs are discarded on read; malformed or unavailable storage falls back to no servers enabled without blocking use of the app. Preset server IDs use the same configured-server normalization and are capped at 100 servers per preset.
 
 ## Offline and deployment
 
