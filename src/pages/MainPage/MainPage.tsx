@@ -6,15 +6,16 @@ import { Header } from '@/components/app-shell/Header'
 import { PresetSelector } from '@/components/features/presets/PresetSelector'
 import { ConfigurationModal } from '@/components/features/settings/ConfigurationModal'
 import { ServerList } from '@/components/features/servers/ServerList'
-import { shinyTasksConfiguration } from '@/config'
+import type { Preset } from '@/types'
 import { useServerPreferences } from '@/hooks/useServerPreferences'
 
 type MainPageProps = {
   onOpenPresets: () => void
   onNavigateHome: () => void
+  presets: readonly Preset[]
 }
 
-export function MainPage({ onOpenPresets, onNavigateHome }: MainPageProps) {
+export function MainPage({ onOpenPresets, onNavigateHome, presets }: MainPageProps) {
   const [selectedDate, setSelectedDate] = useState(() => new Date())
   const [isCalendarVisible, setIsCalendarVisible] = useState(false)
   const [isConfigurationOpen, setIsConfigurationOpen] = useState(false)
@@ -54,10 +55,7 @@ export function MainPage({ onOpenPresets, onNavigateHome }: MainPageProps) {
             ) : null}
           </AnimatePresence>
         </div>
-        <PresetSelector
-          serverGroups={shinyTasksConfiguration.serverGroups}
-          onEditPresets={onOpenPresets}
-        />
+        <PresetSelector presets={presets} onEditPresets={onOpenPresets} />
         <ServerList
           selectedDate={selectedDate}
           enabledServerIds={enabledServerIds}

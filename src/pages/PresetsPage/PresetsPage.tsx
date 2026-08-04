@@ -1,5 +1,5 @@
 import { AnimatePresence } from 'motion/react'
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { Header } from '@/components/app-shell/Header'
@@ -7,39 +7,32 @@ import { PresetList } from '@/components/features/presets/PresetList'
 import { PresetConfigurationModal } from '@/components/features/settings/PresetConfigurationModal'
 import { ActionFooter } from '@/components/shared/ui/ActionFooter'
 import { Button } from '@/components/shared/ui/Button'
-import { Notification } from '@/components/shared/ui/Notification'
 import type { Preset } from '@/types'
-import { defaultPreset } from '@/config'
-import { generateUniqueId } from '@/utils'
-import { loadPresets, MAX_PRESETS, savePresets } from '@/utils/presets'
+import { MAX_PRESETS } from '@/utils/presets'
 import { getConfiguredServerIds } from '@/utils/serverPreferences'
 
 type PresetsPageProps = {
   onBack: () => void
   onNavigateHome: () => void
+  presets: readonly Preset[]
+  onDeletePreset: (preset: Preset) => void
+  onSavePreset: (preset: Preset, editingPreset: Preset | null) => boolean
 }
 
-export function PresetsPage({ onBack, onNavigateHome }: PresetsPageProps) {
+export function PresetsPage({
+  onBack,
+  onNavigateHome,
+  presets,
+  onDeletePreset,
+  onSavePreset,
+}: PresetsPageProps) {
   const { t } = useTranslation('common')
-  const [presets, setPresets] = useState<readonly Preset[] | null>(null)
   const [editingPreset, setEditingPreset] = useState<Preset | null>(null)
   const [isPresetModalOpen, setIsPresetModalOpen] = useState(false)
-  const [isDefaultPresetNoticeOpen, setIsDefaultPresetNoticeOpen] = useState(false)
   const presetTriggerRef = useRef<HTMLButtonElement>(null)
 
-  useEffect(() => {
-    const result = loadPresets(defaultPreset)
-
-    if (result.hasInvalidStoredData) {
-      toast.error(t('presets.invalidStorage'))
-    }
-
-    setPresets(result.presets)
-    setIsDefaultPresetNoticeOpen(result.wasDefaultPresetApplied)
-  }, [t])
-
   function handleAddPreset(trigger: HTMLButtonElement) {
-    if (presets !== null && presets.length >= MAX_PRESETS) {
+    if (presets.length >= MAX_PRESETS) {
       toast.error(t('presets.limitReached', { count: MAX_PRESETS }))
       return
     }
@@ -60,30 +53,11 @@ export function PresetsPage({ onBack, onNavigateHome }: PresetsPageProps) {
   }
 
   function handleDeletePreset(preset: Preset) {
-    setPresets((currentPresets) => {
-      if (currentPresets === null) {
-        return currentPresets
-      }
-
-      const nextPresets = currentPresets.filter((currentPreset) => currentPreset.id !== preset.id)
-      savePresets(nextPresets)
-      return nextPresets
-    })
+    onDeletePreset(preset)
   }
 
   function handleSavePreset(nextPreset: Preset): boolean {
-    if (presets === null) return false
-
-    const nextPresets =
-      editingPreset !== null
-        ? presets.map((preset) =>
-            preset.id === editingPreset.id ? { ...nextPreset, id: editingPreset.id } : preset,
-          )
-        : [...presets, { ...nextPreset, id: generateUniqueId() }]
-    const limitedPresets = nextPresets.slice(0, MAX_PRESETS)
-    savePresets(limitedPresets)
-    setPresets(limitedPresets)
-    return true
+    return onSavePreset(nextPreset, editingPreset)
   }
 
   return (
@@ -103,14 +77,12 @@ export function PresetsPage({ onBack, onNavigateHome }: PresetsPageProps) {
           <p className="text-sm text-[var(--color-text-secondary)]">
             {t('presets.pageDescription')}
           </p>
-          {presets === null ? null : (
-            <PresetList
-              presets={presets}
-              onAdd={handleAddPreset}
-              onDelete={handleDeletePreset}
-              onEdit={handleEditPreset}
-            />
-          )}
+          <PresetList
+            presets={presets}
+            onAdd={handleAddPreset}
+            onDelete={handleDeletePreset}
+            onEdit={handleEditPreset}
+          />
         </section>
         <ActionFooter className="mt-auto">
           <Button variant="secondary" className="w-full sm:w-auto" onClick={onBack}>
@@ -122,7 +94,7 @@ export function PresetsPage({ onBack, onNavigateHome }: PresetsPageProps) {
         {isPresetModalOpen ? (
           <PresetConfigurationModal
             preset={editingPreset}
-            presets={presets ?? []}
+            presets={presets}
             onClose={handleModalClose}
             onSave={handleSavePreset}
             returnFocusRef={presetTriggerRef}
@@ -130,16 +102,6 @@ export function PresetsPage({ onBack, onNavigateHome }: PresetsPageProps) {
           />
         ) : null}
       </AnimatePresence>
-      <Notification
-        closeLabel={t('presets.defaultNotice.close')}
-        label={t('presets.defaultNotice.label')}
-        onClose={() => setIsDefaultPresetNoticeOpen(false)}
-        open={isDefaultPresetNoticeOpen}
-      >
-        <p className="text-sm text-[var(--color-text-secondary)]">
-          {t('presets.defaultNotice.message')}
-        </p>
-      </Notification>
     </main>
   )
 }

@@ -1,16 +1,85 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { toast } from 'sonner'
 import { MainPage } from '@/pages/MainPage'
 import { PresetsPage } from '@/pages/PresetsPage'
+import { Notification } from '@/components/shared/ui/Notification'
+import { defaultPreset } from '@/config'
+import type { Preset } from '@/types'
+import { generateUniqueId } from '@/utils'
+import { loadPresets, MAX_PRESETS, savePresets } from '@/utils/presets'
 
 type AppRoute = 'main' | 'presets'
 
 export default function App() {
+  const { t } = useTranslation('common')
   const [route, setRoute] = useState<AppRoute>('main')
+  const [presets, setPresets] = useState<readonly Preset[]>([])
+  const [isDefaultPresetNoticeOpen, setIsDefaultPresetNoticeOpen] = useState(false)
   const navigateToMain = () => setRoute('main')
 
-  if (route === 'presets') {
-    return <PresetsPage onBack={navigateToMain} onNavigateHome={navigateToMain} />
+  useEffect(() => {
+    const result = loadPresets(defaultPreset)
+
+    setPresets(result.presets)
+    setIsDefaultPresetNoticeOpen(result.wasDefaultPresetApplied)
+
+    if (result.hasInvalidStoredData) {
+      toast.error(t('presets.invalidStorage'))
+    }
+  }, [t])
+
+  function handleDeletePreset(preset: Preset) {
+    setPresets((currentPresets) => {
+      const nextPresets = currentPresets.filter((currentPreset) => currentPreset.id !== preset.id)
+      savePresets(nextPresets)
+      return nextPresets
+    })
   }
 
-  return <MainPage onOpenPresets={() => setRoute('presets')} onNavigateHome={navigateToMain} />
+  function handleSavePreset(nextPreset: Preset, editingPreset: Preset | null): boolean {
+    const nextPresets =
+      editingPreset !== null
+        ? presets.map((preset) =>
+            preset.id === editingPreset.id ? { ...nextPreset, id: editingPreset.id } : preset,
+          )
+        : [...presets, { ...nextPreset, id: generateUniqueId() }]
+    const limitedPresets = nextPresets.slice(0, MAX_PRESETS)
+    savePresets(limitedPresets)
+    setPresets(limitedPresets)
+    return true
+  }
+
+  const page =
+    route === 'presets' ? (
+      <PresetsPage
+        onBack={navigateToMain}
+        onNavigateHome={navigateToMain}
+        presets={presets}
+        onDeletePreset={handleDeletePreset}
+        onSavePreset={handleSavePreset}
+      />
+    ) : (
+      <MainPage
+        onOpenPresets={() => setRoute('presets')}
+        onNavigateHome={navigateToMain}
+        presets={presets}
+      />
+    )
+
+  return (
+    <>
+      {page}
+      <Notification
+        closeLabel={t('presets.defaultNotice.close')}
+        label={t('presets.defaultNotice.label')}
+        onClose={() => setIsDefaultPresetNoticeOpen(false)}
+        open={isDefaultPresetNoticeOpen}
+      >
+        <p className="text-sm text-[var(--color-text-secondary)]">
+          {t('presets.defaultNotice.message')}
+        </p>
+      </Notification>
+    </>
+  )
 }

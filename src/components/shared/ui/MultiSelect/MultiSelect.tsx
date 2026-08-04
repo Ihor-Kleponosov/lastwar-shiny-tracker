@@ -12,9 +12,18 @@ type MultiSelectProps = {
   ariaLabel: string
   options: readonly MultiSelectOption[]
   placeholder: string
+  checkedValues: ReadonlySet<string>
+  onOptionToggle: (value: string) => void
 }
 
-export function MultiSelect({ ariaLabel, describedBy, options, placeholder }: MultiSelectProps) {
+export function MultiSelect({
+  ariaLabel,
+  describedBy,
+  options,
+  placeholder,
+  checkedValues,
+  onOptionToggle,
+}: MultiSelectProps) {
   const [isOpen, setIsOpen] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
   const selectId = useId()
@@ -74,10 +83,14 @@ export function MultiSelect({ ariaLabel, describedBy, options, placeholder }: Mu
             <div
               key={option.value}
               role="option"
-              aria-selected="false"
+              aria-selected={checkedValues.has(option.value)}
               className="rounded-sm hover:bg-[var(--color-surface)]"
             >
-              <Checkbox checked={false} label={option.label} readOnly />
+              <Checkbox
+                checked={checkedValues.has(option.value)}
+                label={option.label}
+                onChange={() => onOptionToggle(option.value)}
+              />
             </div>
           ))}
         </div>
