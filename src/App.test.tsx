@@ -1,11 +1,15 @@
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { addDays, format } from 'date-fns'
-import { beforeEach, describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { shinyTasksConfiguration } from '@/config'
 import i18n from '@/i18n'
 import { getServerGroupIndexForDate, getServersForIndex } from '@/utils'
 import App from './App'
+
+const { toastError } = vi.hoisted(() => ({ toastError: vi.fn() }))
+
+vi.mock('sonner', () => ({ toast: { error: toastError, success: vi.fn() } }))
 
 describe('App', () => {
   beforeEach(async () => {
@@ -15,6 +19,7 @@ describe('App', () => {
       configurable: true,
       value: { ready: Promise.resolve() },
     })
+    toastError.mockClear()
   })
 
   it('shows the selected date and closes the calendar after selecting a day', async () => {
@@ -101,5 +106,34 @@ describe('App', () => {
     })
     expect(within(serverList!).getByText(String(serverId))).toBeInTheDocument()
     expect(settingsButton).toHaveFocus()
+  })
+
+  it('creates the default preset and shows its notice on the main page on first visit', () => {
+    render(<App />)
+
+    expect(screen.getByRole('status', { name: 'Default preset applied' })).toBeInTheDocument()
+    expect(localStorage.getItem('last-war-shiny-tracker-presets')).toContain('Default preset')
+  })
+
+  it('preserves an explicitly stored empty preset list without showing the default notice', async () => {
+    localStorage.setItem('last-war-shiny-tracker-presets', JSON.stringify([]))
+
+    render(<App />)
+
+    expect(screen.queryByRole('status', { name: 'Default preset applied' })).not.toBeInTheDocument()
+    const user = userEvent.setup()
+    await user.click(screen.getByRole('button', { name: 'Presets' }))
+    expect(screen.queryByRole('option', { name: 'Default preset' })).not.toBeInTheDocument()
+  })
+
+  it('reports invalid storage without overwriting it', async () => {
+    const storedPresets = '{invalid JSON'
+    localStorage.setItem('last-war-shiny-tracker-presets', storedPresets)
+
+    render(<App />)
+
+    expect(await screen.findByRole('heading', { name: 'Presets' })).toBeInTheDocument()
+    expect(toastError).toHaveBeenCalledWith('Saved presets could not be loaded.')
+    expect(localStorage.getItem('last-war-shiny-tracker-presets')).toBe(storedPresets)
   })
 })

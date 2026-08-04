@@ -1,15 +1,27 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/shared/ui/Button'
 import { MultiSelect } from '@/components/shared/ui/MultiSelect'
-import type { ServerId } from '@/types'
+import type { Preset } from '@/types'
 
 type PresetSelectorProps = {
   onEditPresets: () => void
-  serverGroups: readonly (readonly ServerId[])[]
+  presets: readonly Preset[]
 }
 
-export function PresetSelector({ onEditPresets, serverGroups }: PresetSelectorProps) {
+export function PresetSelector({ onEditPresets, presets }: PresetSelectorProps) {
   const { t } = useTranslation('common')
+  const [checkedPresetIds, setCheckedPresetIds] = useState<ReadonlySet<string>>(() => new Set())
+
+  function handleOptionToggle(value: string) {
+    setCheckedPresetIds((currentValues) => {
+      const nextValues = new Set(currentValues)
+
+      return nextValues.has(value)
+        ? new Set([...nextValues].filter((presetId) => presetId !== value))
+        : new Set([...nextValues, value])
+    })
+  }
 
   return (
     <section
@@ -24,10 +36,12 @@ export function PresetSelector({ onEditPresets, serverGroups }: PresetSelectorPr
           ariaLabel={t('presets.title')}
           placeholder={t('presets.placeholder')}
           describedBy="preset-selector-help"
-          options={serverGroups.map((_, index) => ({
-            value: String(index),
-            label: t('presets.group', { label: String.fromCharCode(65 + index) }),
+          options={presets.map((preset) => ({
+            value: preset.id,
+            label: preset.name,
           }))}
+          checkedValues={checkedPresetIds}
+          onOptionToggle={handleOptionToggle}
         />
         <Button variant="secondary" onClick={onEditPresets}>
           {t('presets.button')}
