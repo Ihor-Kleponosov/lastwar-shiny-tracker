@@ -75,13 +75,13 @@ describe('MainPage', () => {
     expect(within(exportView).queryByText('1639')).not.toBeInTheDocument()
   })
 
-  it('passes an empty server set to export when no presets are selected', async () => {
+  it('keeps export disabled when no preset is selected', async () => {
     const user = userEvent.setup()
     render(<MainPage onNavigateHome={vi.fn()} onOpenPresets={vi.fn()} presets={presets} />)
 
     await user.click(screen.getByRole('button', { name: 'Download image' }))
-    await user.click(screen.getByRole('button', { name: 'Proceed' }))
 
-    expect(within(screen.getByTestId('export-view')).queryByRole('list')).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Proceed' })).toBeDisabled()
+    expect(screen.getByRole('dialog', { name: 'Save server list' })).toBeInTheDocument()
   })
 })

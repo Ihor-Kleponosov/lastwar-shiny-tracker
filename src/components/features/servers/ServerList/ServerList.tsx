@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { shinyTasksConfiguration } from '@/config'
+import { ImageExport } from '@/components/features/export/ImageExport'
 import type { Preset, ServerId } from '@/types'
 import { getServerGroupIndexForDate, getServersForIndex } from '@/utils'
 import { ServerChip } from './ServerChip'
@@ -33,9 +34,16 @@ export function ServerList({ preset, selectedDate }: ServerListProps) {
     >
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
         <h2 className="text-base font-semibold text-[var(--color-text-primary)]">{preset.name}</h2>
-        <p className="text-sm text-[var(--color-text-secondary)]" aria-live="polite">
-          {t('servers.count', { count: activeServers.length })}
-        </p>
+        <div className="flex items-center gap-2">
+          <p className="text-sm text-[var(--color-text-secondary)]" aria-live="polite">
+            {t('servers.count', { count: activeServers.length })}
+          </p>
+          <ImageExport
+            presets={[preset]}
+            presetId={preset.id}
+            triggerLabel={t('export.downloadPreset', { name: preset.name })}
+          />
+        </div>
       </div>
       {activeServers.length === 0 ? (
         <div className="mt-3 flex flex-col items-center gap-3 text-center">

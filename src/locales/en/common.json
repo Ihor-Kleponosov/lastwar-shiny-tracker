@@ -16,7 +16,7 @@
   },
   "export": {
     "presetLabel": "Preset",
-    "noPreset": "No preset",
+    "noPreset": "Select preset",
     "title": "Save server list",
     "description": "Choose the month for which you want to save the server list",
     "monthLabel": "Month",
@@ -25,6 +25,7 @@
     "previewTitle": "Server list preview",
     "closePreview": "Close export preview",
     "download": "Download image",
+    "downloadPreset": "Download image for {{name}}",
     "useLightTheme": "Use light export theme",
     "useDarkTheme": "Use dark export theme",
     "loading": "Exporting image",
