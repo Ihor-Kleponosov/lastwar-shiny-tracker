@@ -14,9 +14,9 @@ type PresetsPageProps = {
 export function PresetsPage({ onBack, onNavigateHome }: PresetsPageProps) {
   const { t } = useTranslation('common')
   const [presets] = useState<readonly Preset[]>(() => [
-    { id: generateUniqueId(), name: 'Main servers' },
-    { id: generateUniqueId(), name: 'Event servers' },
-    { id: generateUniqueId(), name: 'Backup servers' },
+    { id: generateUniqueId(), name: 'Main servers', enabledServerIds: [] },
+    { id: generateUniqueId(), name: 'Event servers', enabledServerIds: [] },
+    { id: generateUniqueId(), name: 'Backup servers', enabledServerIds: [] },
   ])
 
   return (

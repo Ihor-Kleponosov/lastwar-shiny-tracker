@@ -18,7 +18,9 @@ describe('PresetList', () => {
   })
 
   it('renders preset names and icon actions', () => {
-    const presets: readonly Preset[] = [{ id: 'preset-1', name: 'Weekly servers' }]
+    const presets: readonly Preset[] = [
+      { id: 'preset-1', name: 'Weekly servers', enabledServerIds: [] },
+    ]
 
     render(<PresetList presets={presets} />)
 
