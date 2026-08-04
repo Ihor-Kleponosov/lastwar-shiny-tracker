@@ -109,7 +109,7 @@ describe('ServerList', () => {
     )
 
     expect(screen.getByRole('heading', { name: 'Empty preset' })).toBeInTheDocument()
-    expect(screen.getByText('No enabled servers for this date.')).toBeInTheDocument()
+    expect(screen.getByText('No enabled servers for this date')).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Open settings' })).not.toBeInTheDocument()
   })
 })

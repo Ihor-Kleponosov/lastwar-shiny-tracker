@@ -35,7 +35,7 @@ describe('PresetsPage', () => {
 
     expect(screen.getByRole('banner')).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Edit Presets' })).toBeInTheDocument()
-    expect(screen.getByText('Manage your saved server lists.')).toBeInTheDocument()
+    expect(screen.getByText('Manage your saved server lists')).toBeInTheDocument()
     expect(screen.getByText('Default preset')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Back' })).toBeEnabled()
   })
@@ -62,7 +62,7 @@ describe('PresetsPage', () => {
 
     await user.click(await screen.findByRole('button', { name: 'Add new preset' }))
 
-    expect(toastError).toHaveBeenCalledWith("You can't create more than 30 presets.")
+    expect(toastError).toHaveBeenCalledWith("You can't create more than 30 presets")
     expect(screen.queryByRole('dialog', { name: 'Add preset' })).not.toBeInTheDocument()
   })
 

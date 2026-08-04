@@ -1,5 +1,14 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { getPresets, loadPresets, MAX_PRESETS, PRESETS_STORAGE_KEY, savePresets } from './presets'
+import {
+  getPresets,
+  getSelectedPresetIds,
+  loadPresets,
+  MAX_PRESETS,
+  PRESETS_STORAGE_KEY,
+  savePresets,
+  saveSelectedPresetIds,
+  SELECTED_PRESET_IDS_STORAGE_KEY,
+} from './presets'
 
 vi.mock('@/config', () => ({
   shinyTasksConfiguration: {
@@ -89,5 +98,56 @@ describe('presets storage', () => {
       hasInvalidStoredData: false,
       wasDefaultPresetApplied: true,
     })
+  })
+})
+
+describe('selected preset storage', () => {
+  const presets = [
+    { id: 'first', name: 'First', enabledServerIds: [] },
+    { id: 'second', name: 'Second', enabledServerIds: [] },
+  ]
+
+  beforeEach(() => {
+    localStorage.clear()
+  })
+
+  it('returns an empty selection when storage is absent', () => {
+    expect(getSelectedPresetIds(presets)).toEqual([])
+  })
+
+  it('loads unique IDs that exist in the available presets', () => {
+    localStorage.setItem(
+      SELECTED_PRESET_IDS_STORAGE_KEY,
+      JSON.stringify(['second', 'stale', 'second']),
+    )
+
+    expect(getSelectedPresetIds(presets)).toEqual(['second'])
+  })
+
+  it.each(['{invalid JSON', JSON.stringify({ ids: ['first'] }), JSON.stringify(['first', 1])])(
+    'returns an empty selection for invalid stored data: %s',
+    (storedValue) => {
+      localStorage.setItem(SELECTED_PRESET_IDS_STORAGE_KEY, storedValue)
+
+      expect(getSelectedPresetIds(presets)).toEqual([])
+    },
+  )
+
+  it('saves selected IDs as a JSON array', () => {
+    saveSelectedPresetIds(new Set(['first', 'first', 'second']))
+
+    expect(localStorage.getItem(SELECTED_PRESET_IDS_STORAGE_KEY)).toBe(
+      JSON.stringify(['first', 'second']),
+    )
+  })
+
+  it('does not throw when storage is unavailable', () => {
+    const setItemSpy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('Storage unavailable')
+    })
+
+    expect(() => saveSelectedPresetIds(['first'])).not.toThrow()
+
+    setItemSpy.mockRestore()
   })
 })

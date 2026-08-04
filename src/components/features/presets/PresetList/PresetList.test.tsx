@@ -14,7 +14,7 @@ describe('PresetList', () => {
     render(<PresetList presets={[]} onAdd={vi.fn()} onDelete={vi.fn()} onEdit={vi.fn()} />)
 
     expect(screen.getByRole('heading', { name: 'Created presets' })).toBeInTheDocument()
-    expect(screen.getByText('No presets created yet.')).toBeInTheDocument()
+    expect(screen.getByText('No presets created yet')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Add new preset' })).toBeEnabled()
   })
 

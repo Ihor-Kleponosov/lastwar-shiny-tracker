@@ -84,7 +84,7 @@ describe('PresetConfigurationModal', () => {
     expect(screen.queryByText('A preset with this name already exists.')).not.toBeInTheDocument()
 
     act(() => vi.advanceTimersByTime(2000))
-    expect(screen.getByText('A preset with this name already exists.')).toBeInTheDocument()
+    expect(screen.getByText('A preset with this name already exists')).toBeInTheDocument()
   })
 
   it('validates duplicate names immediately on save and scrolls to the input', async () => {
@@ -108,7 +108,7 @@ describe('PresetConfigurationModal', () => {
     await user.type(input, 'WEEKLY')
     await user.click(screen.getByRole('button', { name: 'Save' }))
 
-    expect(screen.getByText('A preset with this name already exists.')).toBeInTheDocument()
+    expect(screen.getByText('A preset with this name already exists')).toBeInTheDocument()
     expect(onSave).not.toHaveBeenCalled()
     expect(scrollIntoView).toHaveBeenCalledWith({ block: 'center', behavior: 'smooth' })
     expect(input).toHaveFocus()

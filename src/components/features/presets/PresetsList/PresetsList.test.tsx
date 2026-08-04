@@ -22,11 +22,12 @@ describe('PresetsList', () => {
     ).toEqual(['First preset', 'Second preset'])
     expect(screen.getByText('1638')).toBeInTheDocument()
     expect(screen.queryByText('1639')).not.toBeInTheDocument()
+    expect(screen.queryByText('Select one or more presets to display')).not.toBeInTheDocument()
   })
 
-  it('renders nothing without selected presets', () => {
-    const { container } = render(<PresetsList presets={[]} selectedDate={new Date(2026, 6, 15)} />)
+  it('renders the selector help without selected presets', () => {
+    render(<PresetsList presets={[]} selectedDate={new Date(2026, 6, 15)} />)
 
-    expect(container).toBeEmptyDOMElement()
+    expect(screen.getByText('Select one or more presets to display')).toBeInTheDocument()
   })
 })

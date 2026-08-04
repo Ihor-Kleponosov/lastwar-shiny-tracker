@@ -1,11 +1,12 @@
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Calendar } from '@/components/features/calendar/Calendar'
 import { DateSummary } from '@/components/features/date/DateSummary'
 import { Header } from '@/components/app-shell/Header'
 import { PresetsList } from '@/components/features/presets/PresetsList'
 import { PresetSelector } from '@/components/features/presets/PresetSelector'
 import type { Preset } from '@/types'
+import { getSelectedPresetIds, saveSelectedPresetIds } from '@/utils/presets'
 
 type MainPageProps = {
   onOpenPresets: () => void
@@ -17,9 +18,49 @@ export function MainPage({ onOpenPresets, onNavigateHome, presets }: MainPagePro
   const [selectedDate, setSelectedDate] = useState(() => new Date())
   const [isCalendarVisible, setIsCalendarVisible] = useState(false)
   const [selectedPresetIds, setSelectedPresetIds] = useState<ReadonlySet<string>>(() => new Set())
+  const [hasLoadedSelectedPresetIds, setHasLoadedSelectedPresetIds] = useState(false)
   const prefersReducedMotion = useReducedMotion() ?? false
   const selectedPresets = presets.filter((preset) => selectedPresetIds.has(preset.id))
   const exportServerIds = new Set(selectedPresets[0]?.enabledServerIds ?? [])
+
+  useEffect(() => {
+    const availablePresetIds = new Set(presets.map((preset) => preset.id))
+
+    if (!hasLoadedSelectedPresetIds) {
+      setSelectedPresetIds(
+        new Set(
+          getSelectedPresetIds(presets).filter((presetId) => availablePresetIds.has(presetId)),
+        ),
+      )
+      setHasLoadedSelectedPresetIds(true)
+      return
+    }
+
+    setSelectedPresetIds((currentPresetIds) => {
+      const nextPresetIds = new Set(
+        [...currentPresetIds].filter((presetId) => availablePresetIds.has(presetId)),
+      )
+
+      if (
+        nextPresetIds.size === currentPresetIds.size &&
+        [...nextPresetIds].every((presetId) => currentPresetIds.has(presetId))
+      ) {
+        return currentPresetIds
+      }
+
+      return nextPresetIds
+    })
+  }, [hasLoadedSelectedPresetIds, presets])
+
+  useEffect(() => {
+    if (!hasLoadedSelectedPresetIds) return
+
+    saveSelectedPresetIds(selectedPresetIds)
+  }, [hasLoadedSelectedPresetIds, selectedPresetIds])
+
+  if (!hasLoadedSelectedPresetIds) {
+    return null
+  }
 
   return (
     <main className="min-h-screen bg-[var(--color-background)] px-4 py-6 text-[var(--color-text-primary)] sm:px-6">

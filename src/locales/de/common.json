@@ -16,7 +16,7 @@
   },
   "export": {
     "title": "Serverliste speichern",
-    "description": "Wählen Sie den Monat, für den Sie die Serverliste speichern möchten.",
+    "description": "Wählen Sie den Monat, für den Sie die Serverliste speichern möchten",
     "monthLabel": "Monat",
     "proceed": "Fortfahren",
     "close": "Schließen",
@@ -41,7 +41,7 @@
     },
     "serverList": {
       "selectedCount": "Ausgewählt: {{count}} / {{maximum}}",
-      "selectionLimitReached": "Du kannst bis zu {{count}} Server auswählen.",
+      "selectionLimitReached": "Du kannst bis zu {{count}} Server auswählen",
       "searchLabel": "Server suchen",
       "searchPlaceholder": "Server filtern",
       "clearSearch": "Serverfilter löschen",
@@ -58,42 +58,43 @@
       "viewAll": "Alle Server in einer Liste anzeigen",
       "viewGroups": "Server nach Gruppen anzeigen",
       "groupLabel": "Gruppe {{label}}",
-      "noGroupResults": "Keine Server in dieser Gruppe.",
-      "noResults": "Keine Server gefunden.",
+      "noGroupResults": "Keine Server in dieser Gruppe",
+      "noResults": "Keine Server gefunden",
       "title": "Serverliste",
-      "description": "Wähle die Server aus, die im Kalender angezeigt werden sollen. Du kannst Server deaktivieren, die du nicht verwendest oder für die du keine Links hast. Klicke auf einen Server, um seinen Status zu ändern. Diese Einstellungen werden in deinem Browser gespeichert und nicht mit anderen Geräten synchronisiert."
+      "description": "Wähle die Server aus, die im Kalender angezeigt werden sollen. Du kannst Server deaktivieren, die du nicht verwendest oder für die du keine Links hast. Klicke auf einen Server, um seinen Status zu ändern. Diese Einstellungen werden in deinem Browser gespeichert und nicht mit anderen Geräten synchronisiert"
     }
   },
   "servers": {
-    "empty": "Keine aktivierten Server für dieses Datum.",
+    "empty": "Keine aktivierten Server für dieses Datum",
     "count_one": "{{count}} Server",
     "count_other": "{{count}} Server"
   },
   "presets": {
-    "invalidStorage": "Die gespeicherten Presets konnten nicht geladen werden.",
+    "invalidStorage": "Die gespeicherten Presets konnten nicht geladen werden",
     "addTitle": "Preset hinzufügen",
     "editTitle": "Preset bearbeiten",
     "nameLabel": "Preset-Name",
     "namePlaceholder": "Preset-Namen eingeben",
     "nameMaxLength": "Maximal 20 Zeichen",
-    "nameDuplicate": "Ein Preset mit diesem Namen existiert bereits.",
+    "nameDuplicate": "Ein Preset mit diesem Namen existiert bereits",
     "saved": "Preset gespeichert",
-    "limitReached": "Du kannst nicht mehr als {{count}} Presets erstellen.",
+    "limitReached": "Du kannst nicht mehr als {{count}} Presets erstellen",
     "defaultNotice": {
       "label": "Standard-Preset angewendet",
       "close": "Benachrichtigung zum Standard-Preset schließen",
-      "message": "Es wurden keine gespeicherten Presets gefunden, daher haben wir das Standard-Preset angewendet. Das geschieht nur einmal, um dir den Einstieg zu erleichtern."
+      "message": "Es wurden keine gespeicherten Presets gefunden, daher haben wir das Standard-Preset angewendet. Das geschieht nur einmal, um dir den Einstieg zu erleichtern"
     },
     "title": "Voreinstellungen",
-    "placeholder": "Gruppen auswählen",
+    "placeholder": "Presets auswählen",
+    "noOptions": "Keine Presets verfügbar. Erstellen Sie eines, um es hier zu sehen",
     "group": "Gruppe {{label}}",
-    "help": "Wählen Sie eine oder mehrere anzuzeigende Voreinstellungen.",
+    "help": "Wählen Sie eine oder mehrere anzuzeigende Voreinstellungen",
     "button": "Voreinstellungen bearbeiten",
     "pageTitle": "Voreinstellungen bearbeiten",
-    "pageDescription": "Verwalten Sie Ihre gespeicherten Serverlisten.",
+    "pageDescription": "Verwalten Sie Ihre gespeicherten Serverlisten",
     "back": "Zurück",
     "listTitle": "Erstellte Voreinstellungen",
-    "empty": "Noch keine Voreinstellungen erstellt.",
+    "empty": "Noch keine Voreinstellungen erstellt",
     "add": "Neue Voreinstellung hinzufügen",
     "edit": "Voreinstellung {{name}} bearbeiten",
     "delete": "Voreinstellung {{name}} löschen"

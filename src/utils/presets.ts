@@ -2,6 +2,7 @@ import { shinyTasksConfiguration } from '@/config'
 import type { Preset, ServerId } from '@/types'
 
 export const PRESETS_STORAGE_KEY = 'last-war-shiny-tracker-presets'
+export const SELECTED_PRESET_IDS_STORAGE_KEY = 'last-war-shiny-tracker-selected-preset-ids'
 export const MAX_PRESET_SERVERS = 100
 export const MAX_PRESETS = 30
 
@@ -29,6 +30,10 @@ function isPreset(value: unknown): value is Preset {
   )
 }
 
+function isString(value: unknown): value is string {
+  return typeof value === 'string'
+}
+
 function normalizeEnabledServerIds(enabledServerIds: Iterable<ServerId>): ServerId[] {
   const selectedServerIds = new Set(enabledServerIds)
 
@@ -49,6 +54,40 @@ export function savePresets(presets: readonly Preset[]): void {
     localStorage.setItem(PRESETS_STORAGE_KEY, JSON.stringify(normalizePresets(presets)))
   } catch {
     // Storage is optional; the in-memory presets state remains usable.
+  }
+}
+
+export function saveSelectedPresetIds(selectedPresetIds: Iterable<string>): void {
+  try {
+    localStorage.setItem(
+      SELECTED_PRESET_IDS_STORAGE_KEY,
+      JSON.stringify([...new Set(selectedPresetIds)]),
+    )
+  } catch {
+    // Storage is optional; the in-memory selection state remains usable.
+  }
+}
+
+export function getSelectedPresetIds(presets: readonly Preset[]): string[] {
+  try {
+    const storedSelectedPresetIds = localStorage.getItem(SELECTED_PRESET_IDS_STORAGE_KEY)
+
+    if (storedSelectedPresetIds === null) {
+      return []
+    }
+
+    const parsedSelectedPresetIds: unknown = JSON.parse(storedSelectedPresetIds)
+
+    if (!Array.isArray(parsedSelectedPresetIds) || !parsedSelectedPresetIds.every(isString)) {
+      return []
+    }
+
+    const availablePresetIds = new Set(presets.map((preset) => preset.id))
+    return [...new Set(parsedSelectedPresetIds)].filter((presetId) =>
+      availablePresetIds.has(presetId),
+    )
+  } catch {
+    return []
   }
 }
 
