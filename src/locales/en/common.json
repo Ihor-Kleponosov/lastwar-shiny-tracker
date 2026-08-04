@@ -73,6 +73,11 @@
     "count_other": "{{count}} servers"
   },
   "presets": {
+    "addTitle": "Add preset",
+    "editTitle": "Edit preset",
+    "nameLabel": "Preset name",
+    "namePlaceholder": "Enter a preset name",
+    "saved": "Preset saved",
     "title": "Presets",
     "placeholder": "Choose groups",
     "group": "Group {{label}}",

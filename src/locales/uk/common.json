@@ -78,6 +78,11 @@
     "count_other": "{{count}} серверів"
   },
   "presets": {
+    "addTitle": "Додати пресет",
+    "editTitle": "Редагувати пресет",
+    "nameLabel": "Назва пресету",
+    "namePlaceholder": "Введіть назву пресету",
+    "saved": "Пресет збережено",
     "title": "Пресети",
     "placeholder": "Виберіть групи",
     "group": "Група {{label}}",

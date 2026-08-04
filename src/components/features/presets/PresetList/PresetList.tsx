@@ -5,9 +5,12 @@ import type { Preset } from '@/types'
 
 type PresetListProps = {
   presets: readonly Preset[]
+  onAdd: (trigger: HTMLButtonElement) => void
+  onDelete: (preset: Preset) => void
+  onEdit: (preset: Preset, trigger: HTMLButtonElement) => void
 }
 
-export function PresetList({ presets }: PresetListProps) {
+export function PresetList({ presets, onAdd, onDelete, onEdit }: PresetListProps) {
   const { t } = useTranslation('common')
 
   return (
@@ -17,6 +20,7 @@ export function PresetList({ presets }: PresetListProps) {
           {t('presets.listTitle')}
         </h2>
         <IconButton
+          onClick={(event) => onAdd(event.currentTarget)}
           className="border-[var(--color-accent)] bg-[var(--color-accent)] text-[var(--color-accent-contrast)] shadow-[0_2px_3px_rgb(0_0_0_/_20%)] hover:bg-[var(--color-accent-hover)]"
           aria-label={t('presets.add')}
         >
@@ -35,21 +39,20 @@ export function PresetList({ presets }: PresetListProps) {
               key={preset.id}
               className="flex min-w-0 items-center gap-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-elevated)]/70 p-1.5"
             >
-              <button
-                type="button"
-                className="min-w-0 flex-1 rounded-lg px-2.5 py-2.5 text-left text-sm font-medium text-[var(--color-text-primary)] hover:bg-[var(--color-surface)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus)]"
-              >
+              <div className="min-w-0 flex-1 rounded-lg px-2.5 py-2.5 text-left text-sm font-medium text-[var(--color-text-primary)]">
                 <span className="block truncate">{preset.name}</span>
-              </button>
+              </div>
               <IconButton
                 className="bg-transparent shadow-none hover:bg-[var(--color-surface)]"
                 aria-label={t('presets.edit', { name: preset.name })}
+                onClick={(event) => onEdit(preset, event.currentTarget)}
               >
                 <Pencil aria-hidden="true" className="size-5" />
               </IconButton>
               <IconButton
                 className="bg-transparent text-[var(--color-text-secondary)] shadow-none hover:bg-[var(--color-danger)] hover:text-white focus-visible:ring-[var(--color-danger)]"
                 aria-label={t('presets.delete', { name: preset.name })}
+                onClick={() => onDelete(preset)}
               >
                 <Trash2 aria-hidden="true" className="size-5" />
               </IconButton>

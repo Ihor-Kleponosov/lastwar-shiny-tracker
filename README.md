@@ -8,7 +8,7 @@ An installable, offline-capable tracker for Last War shiny-task server rotations
 - Local server preferences with safe recovery from missing or invalid stored data
 - Active-server list for the selected date, with an empty-state shortcut to settings
 - Localized UI, dates, calendar labels, and accessible names in English, French, German, and Ukrainian
-- Two-page navigation with a Presets page showing a presentation-only list of saved presets
+- Two-page navigation with a Presets page for creating and editing in-memory server-list presets
 - Calendar picker with Monday as the first day of the week
 - Full-screen server configuration with search, inclusive range filtering, flat and grouped list views, bulk selection, draft saving, and unsaved-change confirmation
 - PNG export: choose a month, preview the export, select a light or dark export theme, and download the generated image

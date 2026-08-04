@@ -30,4 +30,14 @@ describe('PresetsPage', () => {
 
     expect(onBack).toHaveBeenCalledOnce()
   })
+
+  it('opens the preset configuration modal for a new preset', async () => {
+    const user = userEvent.setup()
+
+    render(<PresetsPage onBack={vi.fn()} onNavigateHome={vi.fn()} />)
+    await user.click(screen.getByRole('button', { name: 'Add new preset' }))
+
+    expect(screen.getByRole('dialog', { name: 'Add preset' })).toBeInTheDocument()
+    expect(screen.getByRole('textbox', { name: 'Preset name' })).toHaveValue('')
+  })
 })
