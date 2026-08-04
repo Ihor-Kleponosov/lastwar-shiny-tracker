@@ -10,7 +10,7 @@ An installable, offline-capable tracker for Last War shiny-task server rotations
 - Two-page navigation with a Presets page for creating and editing in-memory server-list presets
 - Calendar picker with Monday as the first day of the week
 - Full-screen preset configuration with search, inclusive range filtering, flat and grouped list views, bulk selection, draft saving, and unsaved-change confirmation
-- PNG export: choose a month, preview the export, select a light or dark export theme, and download the generated image
+- PNG export: choose a month and preset, preview the export, select a light or dark export theme, and download the generated image
 - PWA manifest, service worker, and precached production assets for offline use
 - Error boundary and concise success feedback for saved preferences
 
@@ -18,7 +18,7 @@ An installable, offline-capable tracker for Last War shiny-task server rotations
 
 The configured server groups repeat from the ISO anchor date in `src/config/index.ts`. The selected date determines the current group. Select one or more presets on the main page to show one active-server list per preset. Presets are saved under the `last-war-shiny-tracker-presets` localStorage key as objects containing `id`, `name`, and `enabledServerIds`; up to 30 can be saved. The Presets page creates and saves an all-servers default preset on first launch when no stored presets exist and shows a dismissible notice. Invalid stored preset data is preserved and reported with an error toast; an existing stored list, including an empty list, is preserved.
 
-Use **Edit Presets** to create or change server lists. Changes are kept as a draft until **Save**; closing a changed draft asks whether to discard it. Search filters server numbers immediately, while range filtering is inclusive and accepts bounds in either order. The server list can be shown as one flat list or separated into the configured A, B, and C rotation groups. PNG export uses the first selected preset.
+Use **Edit Presets** to create or change server lists. Changes are kept as a draft until **Save**; closing a changed draft asks whether to discard it. Search filters server numbers immediately, while range filtering is inclusive and accepts bounds in either order. The server list can be shown as one flat list or separated into the configured A, B, and C rotation groups. PNG export allows choosing any existing preset for each export. When no preset is selected, it exports an empty server list.
 
 ## Tech stack
 

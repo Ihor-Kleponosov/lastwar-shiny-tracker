@@ -3,11 +3,11 @@ import { CalendarDays, LocateFixed } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { ImageExport } from '@/components/features/export/ImageExport'
 import { IconButton } from '@/components/shared/ui/IconButton'
-import type { ServerId } from '@/types'
+import type { Preset } from '@/types'
 import { getDateLocale } from '@/utils/date'
 
 type DateSummaryProps = {
-  enabledServerIds: ReadonlySet<ServerId>
+  presets: readonly Preset[]
   isCalendarVisible: boolean
   onSelectToday: () => void
   onToggleCalendar: () => void
@@ -15,7 +15,7 @@ type DateSummaryProps = {
 }
 
 export function DateSummary({
-  enabledServerIds,
+  presets,
   isCalendarVisible,
   onSelectToday,
   onToggleCalendar,
@@ -31,7 +31,7 @@ export function DateSummary({
         {selectedDateLabel}
       </p>
       <div className="flex shrink-0 items-center gap-1">
-        <ImageExport enabledServerIds={enabledServerIds} />
+        <ImageExport presets={presets} />
         <span aria-hidden="true" className="mx-1 h-8 w-px bg-[var(--color-border)]" />
         <IconButton
           aria-label={t('calendar.today')}

@@ -54,7 +54,7 @@ describe('MainPage', () => {
     })
   })
 
-  it('renders selected presets and exports the first rendered preset', async () => {
+  it('renders selected presets and exports the chosen preset', async () => {
     const user = userEvent.setup()
     render(<MainPage onNavigateHome={vi.fn()} onOpenPresets={vi.fn()} presets={presets} />)
 
@@ -67,6 +67,7 @@ describe('MainPage', () => {
     ).toEqual(['Presets', 'First preset', 'Second preset'])
 
     await user.click(screen.getByRole('button', { name: 'Download image' }))
+    await user.selectOptions(screen.getByLabelText('Preset'), 'first')
     await user.click(screen.getByRole('button', { name: 'Proceed' }))
 
     const exportView = screen.getByTestId('export-view')

@@ -15,6 +15,8 @@
     "nextMonth": "Mois suivant"
   },
   "export": {
+    "presetLabel": "Préréglage",
+    "noPreset": "Aucun préréglage",
     "title": "Enregistrer la liste des serveurs",
     "description": "Choisissez le mois pour lequel vous souhaitez enregistrer la liste des serveurs",
     "monthLabel": "Mois",

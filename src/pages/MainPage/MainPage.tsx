@@ -21,7 +21,6 @@ export function MainPage({ onOpenPresets, onNavigateHome, presets }: MainPagePro
   const [hasLoadedSelectedPresetIds, setHasLoadedSelectedPresetIds] = useState(false)
   const prefersReducedMotion = useReducedMotion() ?? false
   const selectedPresets = presets.filter((preset) => selectedPresetIds.has(preset.id))
-  const exportServerIds = new Set(selectedPresets[0]?.enabledServerIds ?? [])
 
   useEffect(() => {
     const availablePresetIds = new Set(presets.map((preset) => preset.id))
@@ -68,7 +67,7 @@ export function MainPage({ onOpenPresets, onNavigateHome, presets }: MainPagePro
         <Header onNavigateHome={onNavigateHome} />
         <div className="relative">
           <DateSummary
-            enabledServerIds={exportServerIds}
+            presets={presets}
             selectedDate={selectedDate}
             isCalendarVisible={isCalendarVisible}
             onSelectToday={() => setSelectedDate(new Date())}
