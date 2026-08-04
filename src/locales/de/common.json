@@ -73,6 +73,11 @@
     "count_other": "{{count}} Server"
   },
   "presets": {
+    "addTitle": "Preset hinzufügen",
+    "editTitle": "Preset bearbeiten",
+    "nameLabel": "Preset-Name",
+    "namePlaceholder": "Preset-Namen eingeben",
+    "saved": "Preset gespeichert",
     "title": "Voreinstellungen",
     "placeholder": "Gruppen auswählen",
     "group": "Gruppe {{label}}",

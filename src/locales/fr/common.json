@@ -73,6 +73,11 @@
     "count_other": "{{count}} serveurs"
   },
   "presets": {
+    "addTitle": "Ajouter un preset",
+    "editTitle": "Modifier le preset",
+    "nameLabel": "Nom du preset",
+    "namePlaceholder": "Saisissez un nom de preset",
+    "saved": "Preset enregistré",
     "title": "Préréglages",
     "placeholder": "Choisir des groupes",
     "group": "Groupe {{label}}",

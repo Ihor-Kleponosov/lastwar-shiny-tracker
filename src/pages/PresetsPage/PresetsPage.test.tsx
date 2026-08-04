@@ -15,9 +15,9 @@ describe('PresetsPage', () => {
     expect(screen.getByRole('banner')).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Edit Presets' })).toBeInTheDocument()
     expect(screen.getByText('Manage your saved server lists.')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Main servers' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Event servers' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Backup servers' })).toBeInTheDocument()
+    expect(screen.getByText('Main servers')).toBeInTheDocument()
+    expect(screen.getByText('Event servers')).toBeInTheDocument()
+    expect(screen.getByText('Backup servers')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Back' })).toBeEnabled()
   })
 
@@ -29,5 +29,15 @@ describe('PresetsPage', () => {
     await user.click(screen.getByRole('button', { name: 'Back' }))
 
     expect(onBack).toHaveBeenCalledOnce()
+  })
+
+  it('opens the preset configuration modal for a new preset', async () => {
+    const user = userEvent.setup()
+
+    render(<PresetsPage onBack={vi.fn()} onNavigateHome={vi.fn()} />)
+    await user.click(screen.getByRole('button', { name: 'Add new preset' }))
+
+    expect(screen.getByRole('dialog', { name: 'Add preset' })).toBeInTheDocument()
+    expect(screen.getByRole('textbox', { name: 'Preset name' })).toHaveValue('')
   })
 })

@@ -10,32 +10,35 @@ import { ActionFooter } from '@/components/shared/ui/ActionFooter'
 import { Button } from '@/components/shared/ui/Button'
 import { HelpPopover } from '@/components/shared/ui/HelpPopover'
 import { IconButton } from '@/components/shared/ui/IconButton'
-import type { ServerId } from '@/types'
+import type { Preset, ServerId } from '@/types'
+import { generateUniqueId } from '@/utils'
 import { MAX_ENABLED_SERVERS } from '@/utils/serverPreferences'
 
-type ConfigurationModalProps = {
-  enabledServerIds: ReadonlySet<ServerId>
+type PresetConfigurationModalProps = {
+  preset: Preset | null
   onClose: () => void
-  onSave: (serverIds: ReadonlySet<ServerId>) => void
+  onSave: (preset: Preset) => void
   returnFocusRef: RefObject<HTMLButtonElement | null>
   serverIds: readonly ServerId[]
 }
 
-export function ConfigurationModal({
-  enabledServerIds,
+export function PresetConfigurationModal({
+  preset,
   onClose,
   onSave,
   returnFocusRef,
   serverIds,
-}: ConfigurationModalProps) {
+}: PresetConfigurationModalProps) {
   const { t } = useTranslation('common')
   const dialogRef = useRef<HTMLDivElement>(null)
-  const closeButtonRef = useRef<HTMLButtonElement>(null)
   const discardConfirmationTriggerRef = useRef<HTMLElement>(null)
   const titleId = useId()
-  const initialEnabledServerIds = useRef(new Set(enabledServerIds))
+  const initialPreset = useRef<Preset>(
+    preset ?? { id: generateUniqueId(), name: '', enabledServerIds: [] },
+  )
+  const [draftName, setDraftName] = useState(initialPreset.current.name)
   const [draftEnabledServerIds, setDraftEnabledServerIds] = useState(
-    () => new Set(enabledServerIds),
+    () => new Set(initialPreset.current.enabledServerIds),
   )
   const [isDiscardConfirmationOpen, setIsDiscardConfirmationOpen] = useState(false)
   const prefersReducedMotion = useReducedMotion() ?? false
@@ -45,8 +48,11 @@ export function ConfigurationModal({
   }
 
   const hasUnsavedChanges =
-    draftEnabledServerIds.size !== initialEnabledServerIds.current.size ||
-    [...draftEnabledServerIds].some((serverId) => !initialEnabledServerIds.current.has(serverId))
+    draftName !== initialPreset.current.name ||
+    draftEnabledServerIds.size !== initialPreset.current.enabledServerIds.length ||
+    [...draftEnabledServerIds].some(
+      (serverId) => !initialPreset.current.enabledServerIds.includes(serverId),
+    )
 
   const handleCloseRequest = useCallback(() => {
     if (isDiscardConfirmationOpen) return
@@ -66,15 +72,12 @@ export function ConfigurationModal({
       setDraftEnabledServerIds((currentEnabledServerIds) => {
         const nextEnabledServerIds = new Set(currentEnabledServerIds)
 
-        if (nextEnabledServerIds.has(serverId)) {
-          nextEnabledServerIds.delete(serverId)
-        } else if (nextEnabledServerIds.size >= MAX_ENABLED_SERVERS) {
+        if (nextEnabledServerIds.has(serverId)) nextEnabledServerIds.delete(serverId)
+        else if (nextEnabledServerIds.size >= MAX_ENABLED_SERVERS) {
           toast.error(
             t('settings.serverList.selectionLimitReached', { count: MAX_ENABLED_SERVERS }),
           )
-        } else {
-          nextEnabledServerIds.add(serverId)
-        }
+        } else nextEnabledServerIds.add(serverId)
 
         return nextEnabledServerIds
       })
@@ -110,10 +113,13 @@ export function ConfigurationModal({
   )
 
   const handleSave = useCallback(() => {
-    onSave(draftEnabledServerIds)
-    toast.success(t('settings.saved'))
+    const name = draftName.trim()
+    if (!name) return
+
+    onSave({ ...initialPreset.current, name, enabledServerIds: [...draftEnabledServerIds] })
+    toast.success(t('presets.saved'))
     onClose()
-  }, [draftEnabledServerIds, onClose, onSave, t])
+  }, [draftEnabledServerIds, draftName, onClose, onSave, t])
 
   const handleReturnToSettings = useCallback(() => {
     setIsDiscardConfirmationOpen(false)
@@ -143,14 +149,10 @@ export function ConfigurationModal({
       >
         <header className="flex min-h-16 shrink-0 items-center justify-between border-b border-[var(--color-border)]">
           <h2 id={titleId} className="text-xl font-semibold">
-            {t('settings.title')}
+            {t(preset ? 'presets.editTitle' : 'presets.addTitle')}
           </h2>
           <div className="relative flex items-center gap-1">
-            <IconButton
-              ref={closeButtonRef}
-              aria-label={t('settings.close')}
-              onClick={handleCloseRequest}
-            >
+            <IconButton aria-label={t('settings.close')} onClick={handleCloseRequest}>
               <X aria-hidden="true" size={20} />
             </IconButton>
             <HelpPopover
@@ -165,6 +167,18 @@ export function ConfigurationModal({
           </div>
         </header>
         <div className="min-h-0 flex-1 overflow-y-auto py-6">
+          <div className="mb-6">
+            <label htmlFor="preset-name" className="mb-2 block text-sm font-medium">
+              {t('presets.nameLabel')}
+            </label>
+            <input
+              id="preset-name"
+              value={draftName}
+              onChange={(event) => setDraftName(event.target.value)}
+              placeholder={t('presets.namePlaceholder')}
+              className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2.5 text-sm outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-focus)]"
+            />
+          </div>
           <ServerListConfiguration
             enabledServerIds={draftEnabledServerIds}
             serverIds={serverIds}
@@ -176,7 +190,11 @@ export function ConfigurationModal({
           <Button className="flex-1" variant="secondary" onClick={handleCloseRequest}>
             {t('settings.cancel')}
           </Button>
-          <Button className="flex-1" disabled={!hasUnsavedChanges} onClick={handleSave}>
+          <Button
+            className="flex-1"
+            disabled={!hasUnsavedChanges || !draftName.trim()}
+            onClick={handleSave}
+          >
             {t('settings.save')}
           </Button>
         </ActionFooter>
