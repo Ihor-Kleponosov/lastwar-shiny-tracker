@@ -6,7 +6,7 @@ import type { Preset } from '@/types'
 type PresetListProps = {
   presets: readonly Preset[]
   onAdd: (trigger: HTMLButtonElement) => void
-  onDelete: (preset: Preset) => void
+  onDelete: (preset: Preset, trigger: HTMLButtonElement) => void
   onEdit: (preset: Preset, trigger: HTMLButtonElement) => void
 }
 
@@ -52,7 +52,7 @@ export function PresetList({ presets, onAdd, onDelete, onEdit }: PresetListProps
               <IconButton
                 className="bg-transparent text-[var(--color-text-secondary)] shadow-none hover:bg-[var(--color-danger)] hover:text-white focus-visible:ring-[var(--color-danger)]"
                 aria-label={t('presets.delete', { name: preset.name })}
-                onClick={() => onDelete(preset)}
+                onClick={(event) => onDelete(preset, event.currentTarget)}
               >
                 <Trash2 aria-hidden="true" className="size-5" />
               </IconButton>

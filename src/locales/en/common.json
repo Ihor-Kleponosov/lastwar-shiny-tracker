@@ -80,6 +80,12 @@
     "count_other": "{{count}} servers"
   },
   "presets": {
+    "deleteConfirmation": {
+      "title": "Delete preset?",
+      "description": "Are you sure you want to delete “{{name}}”?",
+      "cancel": "Cancel",
+      "confirm": "Delete preset"
+    },
     "invalidStorage": "Saved presets could not be loaded",
     "addTitle": "Add preset",
     "editTitle": "Edit preset",

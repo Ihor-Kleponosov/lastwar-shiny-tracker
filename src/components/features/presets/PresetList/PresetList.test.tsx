@@ -31,14 +31,15 @@ describe('PresetList', () => {
     expect(screen.getByRole('button', { name: 'Delete preset Weekly servers' })).toBeEnabled()
   })
 
-  it('calls onDelete with the selected preset', async () => {
+  it('calls onDelete with the selected preset and delete trigger', async () => {
     const user = userEvent.setup()
     const onDelete = vi.fn()
     const preset: Preset = { id: 'preset-1', name: 'Weekly servers', enabledServerIds: [] }
 
     render(<PresetList presets={[preset]} onAdd={vi.fn()} onDelete={onDelete} onEdit={vi.fn()} />)
-    await user.click(screen.getByRole('button', { name: 'Delete preset Weekly servers' }))
+    const deleteButton = screen.getByRole('button', { name: 'Delete preset Weekly servers' })
+    await user.click(deleteButton)
 
-    expect(onDelete).toHaveBeenCalledWith(preset)
+    expect(onDelete).toHaveBeenCalledWith(preset, deleteButton)
   })
 })
