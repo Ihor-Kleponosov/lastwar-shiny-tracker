@@ -23,6 +23,33 @@ type PresetConfigurationModalProps = {
   serverIds: readonly ServerId[]
 }
 
+type ServerSelectionResult = {
+  enabledServerIds: Set<ServerId>
+  limitReached: boolean
+}
+
+function toggleServerSelection(
+  currentEnabledServerIds: ReadonlySet<ServerId>,
+  targetServerIds: readonly ServerId[],
+): ServerSelectionResult {
+  const nextEnabledServerIds = new Set(currentEnabledServerIds)
+  const areAllTargetServersSelected = targetServerIds.every((serverId) =>
+    currentEnabledServerIds.has(serverId),
+  )
+  let limitReached = false
+
+  for (const serverId of targetServerIds) {
+    if (areAllTargetServersSelected) nextEnabledServerIds.delete(serverId)
+    else if (nextEnabledServerIds.has(serverId)) continue
+    else if (nextEnabledServerIds.size >= MAX_ENABLED_SERVERS) {
+      limitReached = true
+      break
+    } else nextEnabledServerIds.add(serverId)
+  }
+
+  return { enabledServerIds: nextEnabledServerIds, limitReached }
+}
+
 export function PresetConfigurationModal({
   preset,
   presets,
@@ -100,47 +127,35 @@ export function PresetConfigurationModal({
 
   const handleToggleServer = useCallback(
     (serverId: ServerId) => {
-      setDraftEnabledServerIds((currentEnabledServerIds) => {
-        const nextEnabledServerIds = new Set(currentEnabledServerIds)
+      const { enabledServerIds, limitReached } = toggleServerSelection(draftEnabledServerIds, [
+        serverId,
+      ])
+      setDraftEnabledServerIds(enabledServerIds)
 
-        if (nextEnabledServerIds.has(serverId)) nextEnabledServerIds.delete(serverId)
-        else if (nextEnabledServerIds.size >= MAX_ENABLED_SERVERS) {
-          toast.error(
-            t('settings.serverList.selectionLimitReached', { count: MAX_ENABLED_SERVERS }),
-          )
-        } else nextEnabledServerIds.add(serverId)
-
-        return nextEnabledServerIds
-      })
+      if (limitReached) {
+        toast.error(t('settings.serverList.selectionLimitReached', { count: MAX_ENABLED_SERVERS }))
+      }
     },
-    [t],
+    [draftEnabledServerIds, t],
   )
 
   const handleToggleServers = useCallback(
     (targetServerIds: readonly ServerId[]) => {
       if (targetServerIds.length === 0) return
 
-      setDraftEnabledServerIds((currentEnabledServerIds) => {
-        const nextEnabledServerIds = new Set(currentEnabledServerIds)
-        const areAllTargetServersSelected = targetServerIds.every((serverId) =>
-          currentEnabledServerIds.has(serverId),
+      const { enabledServerIds, limitReached } = toggleServerSelection(
+        draftEnabledServerIds,
+        targetServerIds,
+      )
+      setDraftEnabledServerIds(enabledServerIds)
+
+      if (limitReached) {
+        toast.error(
+          t('settings.serverList.bulkSelectionLimitReached', { count: MAX_ENABLED_SERVERS }),
         )
-
-        for (const serverId of targetServerIds) {
-          if (areAllTargetServersSelected) nextEnabledServerIds.delete(serverId)
-          else if (nextEnabledServerIds.has(serverId)) continue
-          else if (nextEnabledServerIds.size >= MAX_ENABLED_SERVERS) {
-            toast.error(
-              t('settings.serverList.selectionLimitReached', { count: MAX_ENABLED_SERVERS }),
-            )
-            break
-          } else nextEnabledServerIds.add(serverId)
-        }
-
-        return nextEnabledServerIds
-      })
+      }
     },
-    [t],
+    [draftEnabledServerIds, t],
   )
 
   const handleSave = useCallback(() => {

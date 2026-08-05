@@ -13,7 +13,10 @@ export function PresetsList({ presets, selectedDate }: PresetsListProps) {
   return (
     <div className="flex flex-col gap-4 sm:gap-5">
       {presets.length === 0 ? (
-        <p id="preset-selector-help" className="text-xs text-[var(--color-text-secondary)]">
+        <p
+          id="preset-selector-help"
+          className="text-center text-xs text-[var(--color-text-secondary)]"
+        >
           {t('presets.help')}
         </p>
       ) : null}
