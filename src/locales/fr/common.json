@@ -62,6 +62,7 @@
       "resetFilter": "Réinitialiser le filtre",
       "showDescription": "À propos de la liste des serveurs",
       "closeDescription": "Fermer la description de la liste des serveurs",
+      "closeStorageNotice": "Fermer les informations de stockage",
       "allDisplayed": "Tous affichés",
       "clearSelection": "Effacer la sélection",
       "viewLabel": "Vue de la liste des serveurs",
@@ -71,7 +72,12 @@
       "noGroupResults": "Aucun serveur dans ce groupe",
       "noResults": "Aucun serveur trouvé",
       "title": "Liste des serveurs",
-      "description": "Sélectionnez les serveurs à afficher dans le calendrier. Vous pouvez désactiver ceux que vous n’utilisez pas ou pour lesquels vous n’avez pas de liens. Cliquez sur un serveur pour modifier son état. Ces préférences sont stockées dans votre navigateur et ne sont pas synchronisées avec d’autres appareils"
+      "storageNotice": {
+        "title": "Vos données restent sur votre appareil.",
+        "introduction": "Cette application stocke tous les préréglages localement au lieu de les envoyer vers un serveur. Vos paramètres sont disponibles uniquement dans ce navigateur, sur cet appareil.",
+        "transfer": "Si vous utilisez un autre navigateur ou appareil, vous devrez configurer à nouveau vos préréglages ou les transférer avec <strong>Exporter</strong> et <strong>Importer</strong>.",
+        "backup": "Vous pouvez aussi utiliser <strong>Exporter</strong> et <strong>Importer</strong> pour sauvegarder vos préréglages ou les partager avec d’autres joueurs."
+      }
     }
   },
   "servers": {

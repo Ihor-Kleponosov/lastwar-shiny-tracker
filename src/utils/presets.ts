@@ -3,6 +3,7 @@ import type { Preset, ServerId } from '@/types'
 
 export const PRESETS_STORAGE_KEY = 'last-war-shiny-tracker-presets'
 export const SELECTED_PRESET_IDS_STORAGE_KEY = 'last-war-shiny-tracker-selected-preset-ids'
+export const STORAGE_NOTICE_SHOWN_KEY = 'last-war-shiny-tracker-storage-notice-shown'
 export const MAX_PRESET_SERVERS = 100
 export const MAX_PRESETS = 30
 
@@ -65,6 +66,22 @@ export function saveSelectedPresetIds(selectedPresetIds: Iterable<string>): void
     )
   } catch {
     // Storage is optional; the in-memory selection state remains usable.
+  }
+}
+
+export function wasStorageNoticeShown(): boolean {
+  try {
+    return localStorage.getItem(STORAGE_NOTICE_SHOWN_KEY) === 'true'
+  } catch {
+    return false
+  }
+}
+
+export function markStorageNoticeShown(): void {
+  try {
+    localStorage.setItem(STORAGE_NOTICE_SHOWN_KEY, 'true')
+  } catch {
+    // Storage is optional; the notice can be shown again on a later visit.
   }
 }
 

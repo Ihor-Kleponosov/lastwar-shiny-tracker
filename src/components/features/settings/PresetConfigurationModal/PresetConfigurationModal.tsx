@@ -8,7 +8,6 @@ import { ServerListConfiguration } from '@/components/features/settings/ServerLi
 import { UnsavedChangesDialog } from '@/components/features/settings/UnsavedChangesDialog'
 import { ActionFooter } from '@/components/shared/ui/ActionFooter'
 import { Button } from '@/components/shared/ui/Button'
-import { HelpPopover } from '@/components/shared/ui/HelpPopover'
 import { IconButton } from '@/components/shared/ui/IconButton'
 import type { Preset, ServerId } from '@/types'
 import { generateUniqueId } from '@/utils'
@@ -217,20 +216,9 @@ export function PresetConfigurationModal({
           <h2 id={titleId} className="text-xl font-semibold">
             {t(preset ? 'presets.editTitle' : 'presets.addTitle')}
           </h2>
-          <div className="relative flex items-center gap-1">
-            <IconButton aria-label={t('settings.close')} onClick={handleCloseRequest}>
-              <X aria-hidden="true" size={20} />
-            </IconButton>
-            <HelpPopover
-              className="order-first"
-              label={t('settings.serverList.showDescription')}
-              closeLabel={t('settings.serverList.closeDescription')}
-            >
-              <p className="text-sm text-[var(--color-text-secondary)]">
-                {t('settings.serverList.description')}
-              </p>
-            </HelpPopover>
-          </div>
+          <IconButton aria-label={t('settings.close')} onClick={handleCloseRequest}>
+            <X aria-hidden="true" size={20} />
+          </IconButton>
         </header>
         <div ref={contentRef} className="min-h-0 flex-1 overflow-y-auto py-6">
           <div className="mb-6">
