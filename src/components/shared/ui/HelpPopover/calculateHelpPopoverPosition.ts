@@ -6,6 +6,7 @@ type PopoverRect = Pick<DOMRect, 'bottom' | 'height' | 'left' | 'right' | 'top'>
 
 type CalculateHelpPopoverPositionOptions = {
   containerRect: PopoverRect
+  maxWidth?: number
   popoverRect: PopoverRect
   triggerRect: PopoverRect
   viewportHeight: number
@@ -26,13 +27,14 @@ function clamp(value: number, minimum: number, maximum: number): number {
 
 export function calculateHelpPopoverPosition({
   containerRect,
+  maxWidth = POPOVER_MAX_WIDTH,
   popoverRect,
   triggerRect,
   viewportHeight,
   viewportWidth,
 }: CalculateHelpPopoverPositionOptions): HelpPopoverPosition {
   const horizontalGutter = Math.min(VIEWPORT_GUTTER, viewportWidth / 2)
-  const width = Math.min(POPOVER_MAX_WIDTH, Math.max(viewportWidth - horizontalGutter * 2, 0))
+  const width = Math.min(maxWidth, Math.max(viewportWidth - horizontalGutter * 2, 0))
   const preferredLeft = triggerRect.right - width
   const absoluteLeft = clamp(
     preferredLeft,

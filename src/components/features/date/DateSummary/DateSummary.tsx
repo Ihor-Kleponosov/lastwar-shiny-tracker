@@ -4,6 +4,7 @@ import { useEffect, useId, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ImageExport } from '@/components/features/export/ImageExport'
 import { IconButton } from '@/components/shared/ui/IconButton'
+import { useHelpPopoverPosition } from '@/components/shared/ui/HelpPopover/useHelpPopoverPosition'
 import type { Preset } from '@/types'
 import { shinyTasksConfiguration } from '@/config'
 import { getDateLocale } from '@/utils/date'
@@ -26,9 +27,22 @@ export function DateSummary({
   selectedDate,
   serverNow,
 }: DateSummaryProps) {
-  const [isInfoOpen, setIsInfoOpen] = useState(false)
+  const [isInfoFocused, setIsInfoFocused] = useState(false)
+  const [isInfoHovered, setIsInfoHovered] = useState(false)
+  const [isInfoPinned, setIsInfoPinned] = useState(false)
   const infoContainerRef = useRef<HTMLSpanElement>(null)
+  const infoButtonRef = useRef<HTMLButtonElement>(null)
+  const infoTooltipRef = useRef<HTMLSpanElement>(null)
+  const shouldSuppressNextInfoFocusRef = useRef(false)
   const infoTooltipId = useId()
+  const isInfoOpen = isInfoFocused || isInfoHovered || isInfoPinned
+  const infoTooltipStyle = useHelpPopoverPosition({
+    containerRef: infoContainerRef,
+    isOpen: isInfoOpen,
+    maxWidth: 256,
+    popoverRef: infoTooltipRef,
+    triggerRef: infoButtonRef,
+  })
   const { i18n, t } = useTranslation('common')
   const locale = getDateLocale(i18n.resolvedLanguage ?? i18n.language)
   const selectedDateLabel = format(selectedDate, 'P', { locale })
@@ -42,11 +56,30 @@ export function DateSummary({
     if (!isInfoOpen) return
 
     function handlePointerDown(event: MouseEvent) {
-      if (!infoContainerRef.current?.contains(event.target as Node)) setIsInfoOpen(false)
+      if (!infoContainerRef.current?.contains(event.target as Node)) {
+        setIsInfoFocused(false)
+        setIsInfoHovered(false)
+        setIsInfoPinned(false)
+      }
+    }
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key !== 'Escape') return
+
+      event.preventDefault()
+      shouldSuppressNextInfoFocusRef.current = true
+      setIsInfoFocused(false)
+      setIsInfoHovered(false)
+      setIsInfoPinned(false)
+      infoButtonRef.current?.focus()
     }
 
     document.addEventListener('mousedown', handlePointerDown)
-    return () => document.removeEventListener('mousedown', handlePointerDown)
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown)
+      document.removeEventListener('keydown', handleKeyDown)
+    }
   }, [isInfoOpen])
 
   return (
@@ -63,26 +96,48 @@ export function DateSummary({
             <p className="text-base leading-5 font-medium tabular-nums text-[var(--color-text-secondary)]">
               {serverTimeLabel}
             </p>
-            <span ref={infoContainerRef} className="group relative inline-flex">
+            <span
+              ref={infoContainerRef}
+              className="group relative inline-flex"
+              onMouseEnter={() => setIsInfoHovered(true)}
+              onMouseLeave={() => setIsInfoHovered(false)}
+            >
               <button
+                ref={infoButtonRef}
                 type="button"
                 aria-label={t('serverTime.infoLabel')}
-                aria-describedby={infoTooltipId}
+                aria-describedby={isInfoOpen ? infoTooltipId : undefined}
                 aria-expanded={isInfoOpen}
-                onClick={() => setIsInfoOpen((isOpen) => !isOpen)}
+                onBlur={() => setIsInfoFocused(false)}
+                onClick={() => setIsInfoPinned((isPinned) => !isPinned)}
+                onFocus={() => {
+                  if (shouldSuppressNextInfoFocusRef.current) {
+                    shouldSuppressNextInfoFocusRef.current = false
+                    return
+                  }
+
+                  setIsInfoFocused(true)
+                }}
                 className="inline-flex cursor-pointer items-center text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text-primary)] focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus)] motion-reduce:transition-none"
               >
                 <Info aria-hidden="true" size={18} />
               </button>
-              <span
-                id={infoTooltipId}
-                role="tooltip"
-                className={`pointer-events-none absolute top-full left-1/2 z-30 mt-2 w-64 -translate-x-1/2 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-elevated)] p-3 text-sm font-normal leading-6 text-[var(--color-text-primary)] shadow-[0_8px_24px_rgb(0_0_0_/_24%)] transition-opacity group-hover:opacity-100 group-focus-within:opacity-100 motion-reduce:transition-none ${
-                  isInfoOpen ? 'opacity-100' : 'opacity-0'
-                }`}
-              >
-                {t('serverTime.info')}
-              </span>
+              {isInfoOpen ? (
+                <span
+                  ref={infoTooltipRef}
+                  id={infoTooltipId}
+                  role="tooltip"
+                  style={
+                    infoTooltipStyle ?? {
+                      visibility: 'hidden',
+                      width: 'min(16rem, calc(100vw - 2rem))',
+                    }
+                  }
+                  className="pointer-events-none absolute z-30 box-border overflow-y-auto rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-elevated)] p-3 text-sm font-normal leading-6 text-[var(--color-text-primary)] shadow-[0_8px_24px_rgb(0_0_0_/_24%)]"
+                >
+                  {t('serverTime.info')}
+                </span>
+              ) : null}
             </span>
           </div>
         </div>
