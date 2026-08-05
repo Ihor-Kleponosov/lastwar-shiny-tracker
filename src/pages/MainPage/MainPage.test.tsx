@@ -1,9 +1,12 @@
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { format } from 'date-fns'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { shinyTasksConfiguration } from '@/config'
 import i18n from '@/i18n'
 import type { Preset } from '@/types'
 import { SELECTED_PRESET_IDS_STORAGE_KEY } from '@/utils/presets'
+import { getServerDate } from '@/utils/serverTime'
 import { MainPage } from '.'
 
 const presets: readonly Preset[] = [
@@ -12,6 +15,10 @@ const presets: readonly Preset[] = [
 ]
 
 describe('MainPage', () => {
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
   beforeEach(async () => {
     await i18n.changeLanguage('en')
     localStorage.clear()
@@ -104,6 +111,28 @@ describe('MainPage', () => {
 
     expect(screen.getByRole('button', { name: 'Proceed' })).toBeDisabled()
     expect(screen.getByRole('dialog', { name: 'Save server list' })).toBeInTheDocument()
+  })
+
+  it('advances today and the active servers when the server day changes', () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-08-05T01:59:59.000Z'))
+    localStorage.setItem(SELECTED_PRESET_IDS_STORAGE_KEY, JSON.stringify(['first']))
+
+    const previousServerDate = getServerDate(new Date(), shinyTasksConfiguration.serverTimeZone)
+
+    render(<MainPage onNavigateHome={vi.fn()} onOpenPresets={vi.fn()} presets={presets} />)
+
+    expect(screen.getByText(format(previousServerDate, 'P'))).toBeInTheDocument()
+    expect(screen.queryByText('1638')).not.toBeInTheDocument()
+
+    act(() => {
+      vi.advanceTimersByTime(1000)
+    })
+
+    const nextServerDate = getServerDate(new Date(), shinyTasksConfiguration.serverTimeZone)
+
+    expect(screen.getByText(format(nextServerDate, 'P'))).toBeInTheDocument()
+    expect(screen.getByText('1638')).toBeInTheDocument()
   })
 
   it('closes the calendar when clicking outside its toggle and overlay', async () => {
