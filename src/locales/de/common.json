@@ -45,6 +45,7 @@
     "serverList": {
       "selectedCount": "Ausgewählt: {{count}} / {{maximum}}",
       "selectionLimitReached": "Du kannst bis zu {{count}} Server auswählen",
+      "bulkSelectionLimitReached": "Die ersten {{count}} Server wurden ausgewählt",
       "searchLabel": "Server suchen",
       "searchPlaceholder": "Server filtern",
       "clearSearch": "Serverfilter löschen",

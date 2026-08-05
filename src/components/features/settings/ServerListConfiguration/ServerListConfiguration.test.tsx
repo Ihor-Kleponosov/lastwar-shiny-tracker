@@ -168,7 +168,7 @@ describe('ServerListConfiguration', () => {
     expect(visibleServerIds.length).toBeLessThan(configuredServerIds.length)
     expect(serverCheckboxes.every((checkbox) => !(checkbox as HTMLInputElement).checked)).toBe(true)
     const allDisplayedCheckbox = screen.getByRole('checkbox', { name: 'All displayed' })
-    const selectedCount = screen.getByText('Selected: 0 / 75')
+    const selectedCount = screen.getByText('Selected: 0 / 100')
 
     expect(allDisplayedCheckbox).not.toBeChecked()
     expect(selectedCount.parentElement).toContainElement(allDisplayedCheckbox)

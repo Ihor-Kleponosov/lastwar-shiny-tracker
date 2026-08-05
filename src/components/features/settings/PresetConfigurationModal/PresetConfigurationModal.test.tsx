@@ -1,4 +1,4 @@
-import { createRef } from 'react'
+import { StrictMode, createRef } from 'react'
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
@@ -7,11 +7,18 @@ import type { Preset } from '@/types'
 import { getConfiguredServerIds } from '@/utils/serverPreferences'
 import { PresetConfigurationModal } from '.'
 
+const { toastError } = vi.hoisted(() => ({ toastError: vi.fn() }))
+
+vi.mock('sonner', () => ({
+  toast: { error: toastError, success: vi.fn() },
+}))
+
 const presets: readonly Preset[] = [{ id: 'preset-1', name: 'Weekly', enabledServerIds: [1638] }]
 
 describe('PresetConfigurationModal', () => {
   beforeEach(async () => {
     await i18n.changeLanguage('en')
+    toastError.mockClear()
   })
 
   afterEach(() => {
@@ -136,5 +143,42 @@ describe('PresetConfigurationModal', () => {
     await user.click(screen.getByRole('button', { name: 'Save' }))
 
     expect(onSave).toHaveBeenCalledWith({ ...preset, name: 'weekly' })
+  })
+
+  it('selects the first 100 servers and shows the bulk-selection toast once in StrictMode', async () => {
+    const user = userEvent.setup()
+    const onSave = vi.fn(() => true)
+    const serverIds = Array.from({ length: 101 }, (_, index) => index + 1)
+
+    render(
+      <StrictMode>
+        <PresetConfigurationModal
+          preset={null}
+          presets={presets}
+          onClose={vi.fn()}
+          onSave={onSave}
+          returnFocusRef={createRef<HTMLButtonElement>()}
+          serverIds={serverIds}
+        />
+      </StrictMode>,
+    )
+
+    await user.click(screen.getByRole('checkbox', { name: 'All displayed' }))
+
+    expect(screen.getByText('Selected: 100 / 100')).toBeInTheDocument()
+    expect(toastError).toHaveBeenCalledTimes(1)
+    expect(toastError).toHaveBeenCalledWith('First 100 servers selected')
+
+    await user.type(screen.getByRole('textbox', { name: 'Preset name' }), 'All servers')
+    await user.click(screen.getByRole('button', { name: 'Save' }))
+
+    expect(onSave).toHaveBeenCalledWith({
+      id: expect.any(String),
+      name: 'All servers',
+      enabledServerIds: serverIds.slice(0, 100),
+    })
+
+    await user.click(screen.getByRole('checkbox', { name: 'All displayed' }))
+    expect(toastError).toHaveBeenCalledTimes(2)
   })
 })

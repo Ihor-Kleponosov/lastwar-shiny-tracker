@@ -15,7 +15,7 @@ describe('server configuration', () => {
     )
   })
 
-  it('defines a 75-server selection limit', () => {
-    expect(MAX_ENABLED_SERVERS).toBe(75)
+  it('defines a 100-server selection limit', () => {
+    expect(MAX_ENABLED_SERVERS).toBe(100)
   })
 })

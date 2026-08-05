@@ -14,6 +14,6 @@ createRoot(document.getElementById('root')!).render(
     <ErrorBoundary>
       <App />
     </ErrorBoundary>
-    <Toaster position="bottom-center" theme="dark" richColors />
+    <Toaster position="top-right" theme="dark" richColors expand={true} />
   </StrictMode>,
 )
