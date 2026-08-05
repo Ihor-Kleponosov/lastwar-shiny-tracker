@@ -116,6 +116,7 @@ export function MainPage({ onOpenPresets, onNavigateHome, presets }: MainPagePro
             calendarToggleRef={calendarToggleRef}
             presets={presets}
             selectedDate={selectedDate}
+            serverDate={serverDate}
             serverNow={serverNow}
             isCalendarVisible={isCalendarVisible}
             onSelectToday={() => setSelectedDate(serverDate)}

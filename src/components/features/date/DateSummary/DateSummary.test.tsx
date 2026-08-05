@@ -32,6 +32,7 @@ describe('DateSummary', () => {
       <DateSummary
         presets={[]}
         selectedDate={new Date(2026, 7, 5)}
+        serverDate={new Date(2026, 7, 5)}
         serverNow={new Date('2026-08-05T11:00:00.000Z')}
         isCalendarVisible={false}
         onSelectToday={vi.fn()}
@@ -55,6 +56,7 @@ describe('DateSummary', () => {
       <DateSummary
         presets={[]}
         selectedDate={new Date(2026, 7, 5)}
+        serverDate={new Date(2026, 7, 5)}
         serverNow={new Date('2026-08-05T11:00:00.000Z')}
         isCalendarVisible={false}
         onSelectToday={vi.fn()}
@@ -91,6 +93,7 @@ describe('DateSummary', () => {
       <DateSummary
         presets={[]}
         selectedDate={new Date(2026, 7, 5)}
+        serverDate={new Date(2026, 7, 5)}
         serverNow={new Date('2026-08-05T11:00:00.000Z')}
         isCalendarVisible={false}
         onSelectToday={vi.fn()}
@@ -115,6 +118,7 @@ describe('DateSummary', () => {
       <DateSummary
         presets={[]}
         selectedDate={new Date(2026, 7, 5)}
+        serverDate={new Date(2026, 7, 5)}
         serverNow={new Date('2026-08-05T11:00:00.000Z')}
         isCalendarVisible={false}
         onSelectToday={vi.fn()}
@@ -134,5 +138,21 @@ describe('DateSummary', () => {
     expect(screen.getByRole('button', { name: 'Download image' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Today' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Show calendar' })).toBeInTheDocument()
+  })
+
+  it('keeps Today active when the server date differs from the device date', () => {
+    render(
+      <DateSummary
+        presets={[]}
+        selectedDate={new Date(2026, 7, 5)}
+        serverDate={new Date(2026, 7, 5)}
+        serverNow={new Date('2026-08-06T01:00:00.000Z')}
+        isCalendarVisible={false}
+        onSelectToday={vi.fn()}
+        onToggleCalendar={vi.fn()}
+      />,
+    )
+
+    expect(screen.getByRole('button', { name: 'Today' })).toHaveClass('bg-[var(--color-surface)]')
   })
 })

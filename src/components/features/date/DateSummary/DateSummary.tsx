@@ -17,6 +17,7 @@ type DateSummaryProps = {
   onSelectToday: () => void
   onToggleCalendar: () => void
   selectedDate: Date
+  serverDate: Date
   serverNow: Date
 }
 
@@ -27,6 +28,7 @@ export function DateSummary({
   onSelectToday,
   onToggleCalendar,
   selectedDate,
+  serverDate,
   serverNow,
 }: DateSummaryProps) {
   const [isInfoFocused, setIsInfoFocused] = useState(false)
@@ -53,7 +55,6 @@ export function DateSummary({
     shinyTasksConfiguration.serverTimeZone,
     'HH:mm:ss',
   )
-
   useEffect(() => {
     if (!isInfoOpen) return
 
@@ -148,7 +149,7 @@ export function DateSummary({
           <span aria-hidden="true" className="mx-1 h-8 w-px bg-[var(--color-border)]" />
           <IconButton
             aria-label={t('calendar.today')}
-            isActive={isSameDay(selectedDate, serverNow)}
+            isActive={isSameDay(selectedDate, serverDate)}
             onClick={onSelectToday}
           >
             <LocateFixed aria-hidden="true" size={20} />
