@@ -1,16 +1,80 @@
-import { useState } from 'react'
-import { render, screen, within } from '@testing-library/react'
+import { useRef, useState } from 'react'
+import { act, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { shinyTasksConfiguration } from '@/config'
 import i18n from '@/i18n'
 import { getConfiguredServerIds } from '@/utils/serverPreferences'
 import { ServerListConfiguration } from '.'
 
 const configuredServerIds = getConfiguredServerIds()
+let gridWidth = 400
+let scrollViewportHeight = 300
+
+function calculateGridHeight(serverCount: number, columnCount: number): number {
+  const rowCount = Math.ceil(serverCount / columnCount)
+  return rowCount * 44 + Math.max(rowCount - 1, 0) * 8
+}
+
+function createRect(width: number, height: number): DOMRect {
+  return {
+    bottom: height,
+    height,
+    left: 0,
+    right: width,
+    top: 0,
+    width,
+    x: 0,
+    y: 0,
+    toJSON: () => ({}),
+  } as DOMRect
+}
+
+class ResizeObserverMock {
+  static instances = new Set<ResizeObserverMock>()
+  private readonly targets = new Set<Element>()
+
+  constructor(private readonly callback: ResizeObserverCallback) {
+    ResizeObserverMock.instances.add(this)
+  }
+
+  observe(target: Element) {
+    this.targets.add(target)
+    this.notify()
+  }
+
+  disconnect() {
+    ResizeObserverMock.instances.delete(this)
+    this.targets.clear()
+  }
+
+  unobserve(target: Element) {
+    this.targets.delete(target)
+  }
+
+  notify() {
+    const entries = [...this.targets].map(
+      (target) =>
+        ({
+          contentRect:
+            target.tagName === 'UL' && target.getAttribute('aria-label')
+              ? createRect(gridWidth, 0)
+              : createRect(400, scrollViewportHeight),
+          target,
+        }) as ResizeObserverEntry,
+    )
+
+    this.callback(entries, this as unknown as ResizeObserver)
+  }
+
+  static notifyAll() {
+    for (const instance of ResizeObserverMock.instances) instance.notify()
+  }
+}
 
 function ServerListConfigurationHarness() {
   const [enabledServerIds, setEnabledServerIds] = useState<Set<number>>(() => new Set())
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
   const serverIds = getConfiguredServerIds()
 
   function toggleServer(serverId: number) {
@@ -37,12 +101,15 @@ function ServerListConfigurationHarness() {
   }
 
   return (
-    <ServerListConfiguration
-      enabledServerIds={enabledServerIds}
-      serverIds={serverIds}
-      onToggleServer={toggleServer}
-      onToggleServers={toggleServers}
-    />
+    <div ref={scrollContainerRef} className="h-96 overflow-y-auto">
+      <ServerListConfiguration
+        enabledServerIds={enabledServerIds}
+        scrollContainerRef={scrollContainerRef}
+        serverIds={serverIds}
+        onToggleServer={toggleServer}
+        onToggleServers={toggleServers}
+      />
+    </div>
   )
 }
 
@@ -64,16 +131,41 @@ describe('ServerListConfiguration', () => {
   beforeEach(async () => {
     localStorage.clear()
     await i18n.changeLanguage('en')
+    gridWidth = 400
+    scrollViewportHeight = 300
+    vi.stubGlobal('ResizeObserver', ResizeObserverMock)
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function (
+      this: HTMLElement,
+    ) {
+      return this.tagName === 'UL' && this.getAttribute('aria-label')
+        ? createRect(gridWidth, 0)
+        : createRect(400, scrollViewportHeight)
+    })
+    vi.spyOn(HTMLElement.prototype, 'offsetWidth', 'get').mockImplementation(function (
+      this: HTMLElement,
+    ) {
+      return this.tagName === 'UL' && this.getAttribute('aria-label') ? gridWidth : 400
+    })
+    vi.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockImplementation(function (
+      this: HTMLElement,
+    ) {
+      return this.tagName === 'UL' && this.getAttribute('aria-label') ? 0 : scrollViewportHeight
+    })
   })
 
-  it('displays every configured server in numerical order with none selected by default', () => {
+  afterEach(() => {
+    ResizeObserverMock.instances.clear()
+    vi.restoreAllMocks()
+  })
+
+  it('displays visible configured servers in numerical order with none selected by default', () => {
     renderConfiguration()
 
     const serverCheckboxes = getServerCheckboxes()
 
-    expect(serverCheckboxes.map(({ id }) => Number(id.replace('server-', '')))).toEqual(
-      configuredServerIds,
-    )
+    const visibleServerIds = serverCheckboxes.map(({ id }) => Number(id.replace('server-', '')))
+    expect(visibleServerIds).toEqual(configuredServerIds.slice(0, visibleServerIds.length))
+    expect(visibleServerIds.length).toBeLessThan(configuredServerIds.length)
     expect(serverCheckboxes.every((checkbox) => !(checkbox as HTMLInputElement).checked)).toBe(true)
     const allDisplayedCheckbox = screen.getByRole('checkbox', { name: 'All displayed' })
     const selectedCount = screen.getByText('Selected: 0 / 75')
@@ -82,6 +174,31 @@ describe('ServerListConfiguration', () => {
     expect(selectedCount.parentElement).toContainElement(allDisplayedCheckbox)
     expect(screen.getByRole('tab', { name: 'By range' })).toHaveAttribute('aria-selected', 'true')
     expect(screen.getByRole('button', { name: 'Apply' })).toBeDisabled()
+  })
+
+  it('reflows virtual rows after the available grid width changes', () => {
+    scrollViewportHeight = 120
+    renderConfiguration()
+
+    const serverList = screen.getByRole('list', { name: 'Server list' })
+    const initialRowCount = Math.ceil(configuredServerIds.length / 4)
+    expect(within(serverList).getAllByRole('list').length).toBeLessThan(initialRowCount)
+    expect(serverList).toHaveStyle({
+      height: `${calculateGridHeight(configuredServerIds.length, 4)}px`,
+    })
+
+    gridWidth = 200
+    act(() => ResizeObserverMock.notifyAll())
+
+    const resizedRowCount = Math.ceil(configuredServerIds.length / 2)
+    expect(within(serverList).getAllByRole('list').length).toBeLessThan(resizedRowCount)
+    expect(serverList).toHaveStyle({
+      height: `${calculateGridHeight(configuredServerIds.length, 2)}px`,
+    })
+    const visibleServerIds = getServerCheckboxes().map(({ id }) =>
+      Number(id.replace('server-', '')),
+    )
+    expect(new Set(visibleServerIds)).toHaveLength(visibleServerIds.length)
   })
 
   it('switches between flat and grouped views with radio-button keyboard behavior', async () => {
@@ -105,11 +222,14 @@ describe('ServerListConfiguration', () => {
 
     for (const [groupIndex, groupLabel] of ['A', 'B', 'C'].entries()) {
       const groupList = screen.getByRole('list', { name: `Group ${groupLabel}` })
+      expect(groupList.parentElement).toHaveClass('max-h-[300px]', 'overflow-y-auto')
       const groupServerIds = within(groupList)
         .getAllByRole('checkbox')
         .map((checkbox) => Number(checkbox.id.replace('server-', '')))
 
-      expect(groupServerIds).toEqual(shinyTasksConfiguration.serverGroups[groupIndex])
+      expect(groupServerIds).toEqual(
+        shinyTasksConfiguration.serverGroups[groupIndex]?.slice(0, groupServerIds.length),
+      )
     }
 
     await user.click(flatView)
@@ -177,7 +297,7 @@ describe('ServerListConfiguration', () => {
     await user.click(screen.getByRole('tab', { name: 'By range' }))
     expect(screen.getByRole('textbox', { name: 'From' })).toHaveValue('')
     expect(screen.getByRole('textbox', { name: 'To' })).toHaveValue('')
-    expect(getServerCheckboxes()).toHaveLength(configuredServerIds.length)
+    expect(getServerCheckboxes().length).toBeLessThan(configuredServerIds.length)
   })
 
   it('resets the applied range with the reset filter action', async () => {
@@ -199,7 +319,7 @@ describe('ServerListConfiguration', () => {
 
     expect(screen.getByRole('textbox', { name: 'From' })).toHaveValue('')
     expect(screen.getByRole('textbox', { name: 'To' })).toHaveValue('')
-    expect(getServerCheckboxes()).toHaveLength(configuredServerIds.length)
+    expect(getServerCheckboxes().length).toBeLessThan(configuredServerIds.length)
     expect(screen.queryByRole('button', { name: 'Reset filter' })).not.toBeInTheDocument()
   })
 
@@ -207,6 +327,9 @@ describe('ServerListConfiguration', () => {
     const user = userEvent.setup()
 
     renderConfiguration()
+
+    await selectSearchFilter(user)
+    await user.type(screen.getByRole('searchbox', { name: 'Search servers' }), '1638')
 
     const serverCheckbox = screen.getByRole('checkbox', { name: '1638' })
     await user.click(serverCheckbox)
@@ -231,7 +354,7 @@ describe('ServerListConfiguration', () => {
 
     await user.click(screen.getByRole('button', { name: 'Clear server filter' }))
 
-    expect(getServerCheckboxes()).toHaveLength(configuredServerIds.length)
+    expect(getServerCheckboxes().length).toBeLessThan(configuredServerIds.length)
   })
 
   it('keeps the displayed-selection control visible when a filter matches the full list', async () => {
@@ -279,7 +402,7 @@ describe('ServerListConfiguration', () => {
     expect(screen.getByRole('checkbox', { name: 'All displayed' })).toBeChecked()
 
     await user.click(screen.getByRole('button', { name: 'Clear server filter' }))
-    expect(screen.getByRole('checkbox', { name: '1639' })).not.toBeChecked()
+    expect(screen.getByRole('checkbox', { name: 'All displayed' })).not.toBeChecked()
 
     await user.type(filter, '1638')
     const selectDisplayedAfterRefilter = screen.getByRole('checkbox', { name: 'All displayed' })

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, type RefObject } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { ServerId } from '@/types'
 import { ServerListConfigurationControls } from './ServerListConfigurationControls'
@@ -16,6 +16,7 @@ type ServerListConfigurationProps = {
   enabledServerIds: ReadonlySet<ServerId>
   onToggleServer: (serverId: ServerId) => void
   onToggleServers: (serverIds: readonly ServerId[]) => void
+  scrollContainerRef: RefObject<HTMLElement | null>
   serverIds: readonly ServerId[]
 }
 
@@ -23,6 +24,7 @@ export function ServerListConfiguration({
   enabledServerIds,
   onToggleServer,
   onToggleServers,
+  scrollContainerRef,
   serverIds,
 }: ServerListConfigurationProps) {
   const { t } = useTranslation('common')
@@ -97,6 +99,7 @@ export function ServerListConfiguration({
             accessibleName={t('settings.serverList.title')}
             enabledServerIds={enabledServerIds}
             onToggleServer={onToggleServer}
+            scrollContainerRef={scrollContainerRef}
             serverIds={displayedServerIds}
           />
         ) : (

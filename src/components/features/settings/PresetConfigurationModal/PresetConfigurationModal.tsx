@@ -33,6 +33,7 @@ export function PresetConfigurationModal({
 }: PresetConfigurationModalProps) {
   const { t } = useTranslation('common')
   const dialogRef = useRef<HTMLDivElement>(null)
+  const contentRef = useRef<HTMLDivElement>(null)
   const nameInputRef = useRef<HTMLInputElement>(null)
   const discardConfirmationTriggerRef = useRef<HTMLElement>(null)
   const titleId = useId()
@@ -208,7 +209,7 @@ export function PresetConfigurationModal({
             </HelpPopover>
           </div>
         </header>
-        <div className="min-h-0 flex-1 overflow-y-auto py-6">
+        <div ref={contentRef} className="min-h-0 flex-1 overflow-y-auto py-6">
           <div className="mb-6">
             <label htmlFor="preset-name" className="mb-2 block text-sm font-medium">
               {t('presets.nameLabel')}
@@ -237,6 +238,7 @@ export function PresetConfigurationModal({
           </div>
           <ServerListConfiguration
             enabledServerIds={draftEnabledServerIds}
+            scrollContainerRef={contentRef}
             serverIds={serverIds}
             onToggleServer={handleToggleServer}
             onToggleServers={handleToggleServers}
