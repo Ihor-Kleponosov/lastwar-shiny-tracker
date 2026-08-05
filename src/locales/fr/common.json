@@ -92,7 +92,7 @@
     "placeholder": "Sélectionner des préréglages",
     "noOptions": "Aucun preset disponible. Créez-en un pour le voir ici",
     "group": "Groupe {{label}}",
-    "help": "Sélectionnez un ou plusieurs préréglages à afficher",
+    "help": "Sélectionnez un ou plusieurs préréglages à afficher. Les blocs de préréglages apparaissent dans l’ordre où vous les sélectionnez.",
     "button": "Modifier les préréglages",
     "pageTitle": "Modifier les préréglages",
     "pageDescription": "Gérez vos listes de serveurs enregistrées",

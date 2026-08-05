@@ -92,7 +92,7 @@
     "placeholder": "Presets auswählen",
     "noOptions": "Keine Presets verfügbar. Erstellen Sie eines, um es hier zu sehen",
     "group": "Gruppe {{label}}",
-    "help": "Wählen Sie eine oder mehrere anzuzeigende Voreinstellungen",
+    "help": "Wählen Sie eine oder mehrere anzuzeigende Voreinstellungen. Die Preset-Blöcke erscheinen in der Reihenfolge, in der Sie sie auswählen.",
     "button": "Voreinstellungen bearbeiten",
     "pageTitle": "Voreinstellungen bearbeiten",
     "pageDescription": "Verwalten Sie Ihre gespeicherten Serverlisten",

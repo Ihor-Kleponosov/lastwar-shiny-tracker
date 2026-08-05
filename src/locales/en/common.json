@@ -92,7 +92,7 @@
     "placeholder": "Select presets",
     "noOptions": "No presets available. Create one to see it here",
     "group": "Group {{label}}",
-    "help": "Select one or more presets to display",
+    "help": "Select one or more presets to display. Preset blocks appear in the order you select them.",
     "button": "Edit Presets",
     "pageTitle": "Edit Presets",
     "pageDescription": "Manage your saved server lists",
