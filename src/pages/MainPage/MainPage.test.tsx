@@ -54,7 +54,7 @@ describe('MainPage', () => {
     })
   })
 
-  it('renders selected presets and exports the chosen preset', async () => {
+  it('renders selected presets in selection order and exports the chosen preset', async () => {
     const user = userEvent.setup()
     render(<MainPage onNavigateHome={vi.fn()} onOpenPresets={vi.fn()} presets={presets} />)
 
@@ -64,7 +64,7 @@ describe('MainPage', () => {
 
     expect(
       screen.getAllByRole('heading', { level: 2 }).map(({ textContent }) => textContent),
-    ).toEqual(['Presets', 'First preset', 'Second preset'])
+    ).toEqual(['Presets', 'Second preset', 'First preset'])
 
     await user.click(screen.getByRole('button', { name: 'Download image' }))
     await user.selectOptions(screen.getByLabelText('Preset'), 'first')
@@ -73,6 +73,27 @@ describe('MainPage', () => {
     const exportView = screen.getByTestId('export-view')
     expect(within(exportView).getByText('1638')).toBeInTheDocument()
     expect(within(exportView).queryByText('1639')).not.toBeInTheDocument()
+  })
+
+  it('moves a reselected preset block to the end', async () => {
+    const user = userEvent.setup()
+    render(<MainPage onNavigateHome={vi.fn()} onOpenPresets={vi.fn()} presets={presets} />)
+
+    await user.click(screen.getByRole('button', { name: 'Presets' }))
+    await user.click(screen.getByRole('checkbox', { name: 'First preset' }))
+    await user.click(screen.getByRole('checkbox', { name: 'Second preset' }))
+    await user.click(screen.getByRole('checkbox', { name: 'First preset' }))
+
+    expect(screen.queryByRole('heading', { name: 'First preset' })).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole('checkbox', { name: 'First preset' }))
+
+    expect(
+      screen.getAllByRole('heading', { level: 2 }).map(({ textContent }) => textContent),
+    ).toEqual(['Presets', 'Second preset', 'First preset'])
+    expect(localStorage.getItem(SELECTED_PRESET_IDS_STORAGE_KEY)).toBe(
+      JSON.stringify(['second', 'first']),
+    )
   })
 
   it('keeps export disabled when no preset is selected', async () => {

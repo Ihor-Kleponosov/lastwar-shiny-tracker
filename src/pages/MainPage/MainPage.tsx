@@ -20,7 +20,11 @@ export function MainPage({ onOpenPresets, onNavigateHome, presets }: MainPagePro
   const [selectedPresetIds, setSelectedPresetIds] = useState<ReadonlySet<string>>(() => new Set())
   const [hasLoadedSelectedPresetIds, setHasLoadedSelectedPresetIds] = useState(false)
   const prefersReducedMotion = useReducedMotion() ?? false
-  const selectedPresets = presets.filter((preset) => selectedPresetIds.has(preset.id))
+  const presetsById = new Map(presets.map((preset) => [preset.id, preset]))
+  const selectedPresets = [...selectedPresetIds].flatMap((presetId) => {
+    const preset = presetsById.get(presetId)
+    return preset ? [preset] : []
+  })
 
   useEffect(() => {
     const availablePresetIds = new Set(presets.map((preset) => preset.id))

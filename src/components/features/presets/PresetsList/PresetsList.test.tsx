@@ -25,9 +25,13 @@ describe('PresetsList', () => {
     expect(screen.queryByText('Select one or more presets to display')).not.toBeInTheDocument()
   })
 
-  it('renders the selector help without selected presets', () => {
+  it('explains selection ordering without selected presets', () => {
     render(<PresetsList presets={[]} selectedDate={new Date(2026, 6, 15)} />)
 
-    expect(screen.getByText('Select one or more presets to display')).toBeInTheDocument()
+    expect(
+      screen.getByText(
+        'Select one or more presets to display. Preset blocks appear in the order you select them.',
+      ),
+    ).toBeInTheDocument()
   })
 })
