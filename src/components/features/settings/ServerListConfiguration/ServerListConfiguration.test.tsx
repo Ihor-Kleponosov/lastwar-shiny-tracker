@@ -100,12 +100,21 @@ function ServerListConfigurationHarness() {
     })
   }
 
+  function clearServers(targetServerIds: readonly number[]) {
+    setEnabledServerIds((currentEnabledServerIds) => {
+      const nextEnabledServerIds = new Set(currentEnabledServerIds)
+      for (const serverId of targetServerIds) nextEnabledServerIds.delete(serverId)
+      return nextEnabledServerIds
+    })
+  }
+
   return (
     <div ref={scrollContainerRef} className="h-96 overflow-y-auto">
       <ServerListConfiguration
         enabledServerIds={enabledServerIds}
         scrollContainerRef={scrollContainerRef}
         serverIds={serverIds}
+        onClearServers={clearServers}
         onToggleServer={toggleServer}
         onToggleServers={toggleServers}
       />
@@ -171,7 +180,8 @@ describe('ServerListConfiguration', () => {
     const selectedCount = screen.getByText('Selected: 0 / 100')
 
     expect(allDisplayedCheckbox).not.toBeChecked()
-    expect(selectedCount.parentElement).toContainElement(allDisplayedCheckbox)
+    expect(selectedCount).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Clear selection' })).toBeDisabled()
     expect(screen.getByRole('tab', { name: 'By range' })).toHaveAttribute('aria-selected', 'true')
     expect(screen.getByRole('button', { name: 'Apply' })).toBeDisabled()
   })
@@ -312,8 +322,9 @@ describe('ServerListConfiguration', () => {
     const resetFilter = screen.getByRole('button', { name: 'Reset filter' })
     const viewSwitcher = screen.getByRole('radiogroup', { name: 'Server list view' })
 
-    expect(resetFilter.parentElement?.firstElementChild).toBe(viewSwitcher)
-    expect(resetFilter.parentElement?.lastElementChild).toBe(resetFilter)
+    const toolbar = resetFilter.parentElement?.parentElement
+    expect(toolbar?.firstElementChild).toBe(viewSwitcher)
+    expect(toolbar).toContainElement(resetFilter)
 
     await user.click(resetFilter)
 
@@ -413,5 +424,29 @@ describe('ServerListConfiguration', () => {
 
     await user.click(screen.getByRole('checkbox', { name: '1638' }))
     expect(screen.getByRole('checkbox', { name: 'All displayed' })).toBeChecked()
+  })
+
+  it('clears only selected servers currently shown', async () => {
+    const user = userEvent.setup()
+
+    renderConfiguration()
+    await selectSearchFilter(user)
+    await user.type(screen.getByRole('searchbox', { name: 'Search servers' }), '1638')
+    await user.click(screen.getByRole('checkbox', { name: 'All displayed' }))
+    await user.click(screen.getByRole('button', { name: 'Clear server filter' }))
+    await user.type(screen.getByRole('searchbox', { name: 'Search servers' }), '1639')
+    await user.click(screen.getByRole('checkbox', { name: 'All displayed' }))
+    await user.click(screen.getByRole('button', { name: 'Clear server filter' }))
+    await user.type(screen.getByRole('searchbox', { name: 'Search servers' }), '1638')
+
+    await user.click(screen.getByRole('button', { name: 'Clear selection' }))
+
+    expect(screen.getByRole('checkbox', { name: '1638' })).not.toBeChecked()
+    expect(screen.getByText('Selected: 1 / 100')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Clear selection' })).toBeDisabled()
+
+    await user.click(screen.getByRole('button', { name: 'Clear server filter' }))
+    await user.type(screen.getByRole('searchbox', { name: 'Search servers' }), '1639')
+    expect(screen.getByRole('checkbox', { name: '1639' })).toBeChecked()
   })
 })

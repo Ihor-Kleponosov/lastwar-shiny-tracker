@@ -158,6 +158,14 @@ export function PresetConfigurationModal({
     [draftEnabledServerIds, t],
   )
 
+  const handleClearServers = useCallback((serverIds: readonly ServerId[]) => {
+    setDraftEnabledServerIds((currentEnabledServerIds) => {
+      const nextEnabledServerIds = new Set(currentEnabledServerIds)
+      for (const serverId of serverIds) nextEnabledServerIds.delete(serverId)
+      return nextEnabledServerIds
+    })
+  }, [])
+
   const handleSave = useCallback(() => {
     const name = draftName.trim()
     if (!name) return
@@ -255,6 +263,7 @@ export function PresetConfigurationModal({
             enabledServerIds={draftEnabledServerIds}
             scrollContainerRef={contentRef}
             serverIds={serverIds}
+            onClearServers={handleClearServers}
             onToggleServer={handleToggleServer}
             onToggleServers={handleToggleServers}
           />

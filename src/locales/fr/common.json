@@ -44,8 +44,8 @@
     },
     "serverList": {
       "selectedCount": "Sélectionnés : {{count}} / {{maximum}}",
-      "selectionLimitReached": "Vous pouvez sélectionner jusqu’à {{count}} serveurs",
-      "bulkSelectionLimitReached": "Les {{count}} premiers serveurs ont été sélectionnés",
+      "selectionLimitReached": "Vous ne pouvez pas sélectionner plus de {{count}} serveurs",
+      "bulkSelectionLimitReached": "Limite de sélection atteinte. Seuls les {{count}} premiers serveurs ont été sélectionnés",
       "searchLabel": "Rechercher des serveurs",
       "searchPlaceholder": "Filtrer les serveurs",
       "clearSearch": "Effacer le filtre des serveurs",
@@ -58,6 +58,7 @@
       "showDescription": "À propos de la liste des serveurs",
       "closeDescription": "Fermer la description de la liste des serveurs",
       "allDisplayed": "Tous affichés",
+      "clearSelection": "Effacer la sélection",
       "viewLabel": "Vue de la liste des serveurs",
       "viewAll": "Afficher tous les serveurs dans une liste",
       "viewGroups": "Afficher les serveurs par groupes",
