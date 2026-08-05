@@ -1,6 +1,6 @@
 import { format, isSameDay } from 'date-fns'
 import { CalendarDays, Info, LocateFixed } from 'lucide-react'
-import { useEffect, useId, useRef, useState } from 'react'
+import { type RefObject, useEffect, useId, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ImageExport } from '@/components/features/export/ImageExport'
 import { IconButton } from '@/components/shared/ui/IconButton'
@@ -11,6 +11,7 @@ import { getDateLocale } from '@/utils/date'
 import { formatServerDateTime } from '@/utils/serverTime'
 
 type DateSummaryProps = {
+  calendarToggleRef?: RefObject<HTMLButtonElement | null>
   presets: readonly Preset[]
   isCalendarVisible: boolean
   onSelectToday: () => void
@@ -20,6 +21,7 @@ type DateSummaryProps = {
 }
 
 export function DateSummary({
+  calendarToggleRef,
   presets,
   isCalendarVisible,
   onSelectToday,
@@ -152,6 +154,7 @@ export function DateSummary({
             <LocateFixed aria-hidden="true" size={20} />
           </IconButton>
           <IconButton
+            ref={calendarToggleRef}
             aria-label={t(isCalendarVisible ? 'calendar.hide' : 'calendar.show')}
             aria-expanded={isCalendarVisible}
             isActive={isCalendarVisible}
