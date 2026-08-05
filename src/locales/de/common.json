@@ -80,6 +80,12 @@
     "count_other": "{{count}} Server"
   },
   "presets": {
+    "deleteConfirmation": {
+      "title": "Voreinstellung löschen?",
+      "description": "Möchtest du „{{name}}“ wirklich löschen?",
+      "cancel": "Abbrechen",
+      "confirm": "Voreinstellung löschen"
+    },
     "invalidStorage": "Die gespeicherten Presets konnten nicht geladen werden",
     "addTitle": "Preset hinzufügen",
     "editTitle": "Preset bearbeiten",

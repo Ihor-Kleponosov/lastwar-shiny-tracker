@@ -3,6 +3,7 @@ import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { Header } from '@/components/app-shell/Header'
+import { DeletePresetDialog } from '@/components/features/presets/DeletePresetDialog'
 import { PresetList } from '@/components/features/presets/PresetList'
 import { PresetConfigurationModal } from '@/components/features/settings/PresetConfigurationModal'
 import { ActionFooter } from '@/components/shared/ui/ActionFooter'
@@ -28,7 +29,9 @@ export function PresetsPage({
 }: PresetsPageProps) {
   const { t } = useTranslation('common')
   const [editingPreset, setEditingPreset] = useState<Preset | null>(null)
+  const [presetPendingDeletion, setPresetPendingDeletion] = useState<Preset | null>(null)
   const [isPresetModalOpen, setIsPresetModalOpen] = useState(false)
+  const deleteTriggerRef = useRef<HTMLButtonElement>(null)
   const presetTriggerRef = useRef<HTMLButtonElement>(null)
 
   function handleAddPreset(trigger: HTMLButtonElement) {
@@ -52,8 +55,16 @@ export function PresetsPage({
     setIsPresetModalOpen(true)
   }
 
-  function handleDeletePreset(preset: Preset) {
-    onDeletePreset(preset)
+  function handleDeletePreset(preset: Preset, trigger: HTMLButtonElement) {
+    deleteTriggerRef.current = trigger
+    setPresetPendingDeletion(preset)
+  }
+
+  function handleDeleteConfirmation() {
+    if (presetPendingDeletion === null) return
+
+    onDeletePreset(presetPendingDeletion)
+    setPresetPendingDeletion(null)
   }
 
   function handleSavePreset(nextPreset: Preset): boolean {
@@ -91,6 +102,14 @@ export function PresetsPage({
         </ActionFooter>
       </div>
       <AnimatePresence>
+        {presetPendingDeletion ? (
+          <DeletePresetDialog
+            preset={presetPendingDeletion}
+            onCancel={() => setPresetPendingDeletion(null)}
+            onConfirm={handleDeleteConfirmation}
+            returnFocusRef={deleteTriggerRef}
+          />
+        ) : null}
         {isPresetModalOpen ? (
           <PresetConfigurationModal
             preset={editingPreset}

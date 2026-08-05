@@ -80,6 +80,12 @@
     "count_other": "{{count}} serveurs"
   },
   "presets": {
+    "deleteConfirmation": {
+      "title": "Supprimer le préréglage ?",
+      "description": "Voulez-vous vraiment supprimer « {{name}} » ?",
+      "cancel": "Annuler",
+      "confirm": "Supprimer le préréglage"
+    },
     "invalidStorage": "Les presets enregistrés n’ont pas pu être chargés",
     "addTitle": "Ajouter un preset",
     "editTitle": "Modifier le preset",

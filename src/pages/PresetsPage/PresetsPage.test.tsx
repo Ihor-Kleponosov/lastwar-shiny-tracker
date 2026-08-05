@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import i18n from '@/i18n'
@@ -66,7 +66,33 @@ describe('PresetsPage', () => {
     expect(screen.queryByRole('dialog', { name: 'Add preset' })).not.toBeInTheDocument()
   })
 
-  it('uses stored presets and persists changes', async () => {
+  it('confirms before deleting a preset and returns focus to its delete button', async () => {
+    const user = userEvent.setup()
+    const onDeletePreset = vi.fn()
+    const preset = { id: 'stored', name: 'Stored servers', enabledServerIds: [1638] }
+    renderPage({
+      presets: [preset],
+      onDeletePreset,
+    })
+
+    expect(screen.getByText('Stored servers')).toBeInTheDocument()
+    const deleteButton = screen.getByRole('button', { name: 'Delete preset Stored servers' })
+    await user.click(deleteButton)
+
+    expect(screen.getByRole('alertdialog', { name: 'Delete preset?' })).toBeInTheDocument()
+    expect(
+      screen.getByText('Are you sure you want to delete “Stored servers”?'),
+    ).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Cancel' })).toHaveFocus()
+    expect(onDeletePreset).not.toHaveBeenCalled()
+
+    await user.click(screen.getByRole('button', { name: 'Delete preset' }))
+
+    expect(onDeletePreset).toHaveBeenCalledWith(preset)
+    expect(deleteButton).toHaveFocus()
+  })
+
+  it('cancels preset deletion with Cancel, Escape, or a backdrop click', async () => {
     const user = userEvent.setup()
     const onDeletePreset = vi.fn()
     renderPage({
@@ -74,13 +100,24 @@ describe('PresetsPage', () => {
       onDeletePreset,
     })
 
-    expect(screen.getByText('Stored servers')).toBeInTheDocument()
-    await user.click(screen.getByRole('button', { name: 'Delete preset Stored servers' }))
-    expect(onDeletePreset).toHaveBeenCalledWith({
-      id: 'stored',
-      name: 'Stored servers',
-      enabledServerIds: [1638],
-    })
+    const deleteButton = screen.getByRole('button', { name: 'Delete preset Stored servers' })
+    await user.click(deleteButton)
+    await user.click(screen.getByRole('button', { name: 'Cancel' }))
+    expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument()
+    expect(deleteButton).toHaveFocus()
+
+    await user.click(deleteButton)
+    await user.keyboard('{Escape}')
+    expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument()
+    expect(deleteButton).toHaveFocus()
+
+    await user.click(deleteButton)
+    const dialog = screen.getByRole('alertdialog')
+    fireEvent.mouseDown(dialog.parentElement as HTMLElement)
+
+    expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument()
+    expect(onDeletePreset).not.toHaveBeenCalled()
+    expect(deleteButton).toHaveFocus()
   })
 
   it('calls onBack when the back button is clicked', async () => {
