@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/shared/ui/Button'
 import { Checkbox } from '@/components/shared/ui/Checkbox'
 import type { ServerId } from '@/types'
-import { MAX_ENABLED_SERVERS } from '@/utils/serverPreferences'
 
 type ServerListConfigurationControlsProps = {
   displayedServerIds: readonly ServerId[]
@@ -13,6 +12,7 @@ type ServerListConfigurationControlsProps = {
   filterMode: 'range' | 'search'
   isRangeApplyDisabled: boolean
   onApplyRange: () => void
+  onClearSelection: () => void
   onFilterModeChange: (mode: 'range' | 'search') => void
   onRangeFromChange: (value: string) => void
   onRangeToChange: (value: string) => void
@@ -29,6 +29,7 @@ export function ServerListConfigurationControls({
   filterMode,
   isRangeApplyDisabled,
   onApplyRange,
+  onClearSelection,
   onFilterModeChange,
   onRangeFromChange,
   onRangeToChange,
@@ -42,6 +43,9 @@ export function ServerListConfigurationControls({
   const areDisplayedServersSelected =
     displayedServerIds.length > 0 &&
     displayedServerIds.every((serverId) => enabledServerIds.has(serverId))
+  const hasDisplayedSelectedServer = displayedServerIds.some((serverId) =>
+    enabledServerIds.has(serverId),
+  )
 
   function handleFilterChange(event: ChangeEvent<HTMLInputElement>) {
     onSearchFilterChange(event.target.value)
@@ -165,12 +169,14 @@ export function ServerListConfigurationControls({
           label={t('settings.serverList.allDisplayed')}
           onChange={() => onToggleServers(displayedServerIds)}
         />
-        <p className="text-right text-sm font-medium tabular-nums text-[var(--color-text-secondary)]">
-          {t('settings.serverList.selectedCount', {
-            count: enabledServerIds.size,
-            maximum: MAX_ENABLED_SERVERS,
-          })}
-        </p>
+        <button
+          type="button"
+          disabled={!hasDisplayedSelectedServer}
+          onClick={onClearSelection}
+          className="min-h-11 whitespace-nowrap text-sm font-medium text-[var(--color-text-primary)] focus-visible:rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-focus)] disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {t('settings.serverList.clearSelection')}
+        </button>
       </div>
     </div>
   )

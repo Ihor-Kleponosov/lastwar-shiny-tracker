@@ -58,6 +58,7 @@
       "showDescription": "À propos de la liste des serveurs",
       "closeDescription": "Fermer la description de la liste des serveurs",
       "allDisplayed": "Tous affichés",
+      "clearSelection": "Effacer la sélection",
       "viewLabel": "Vue de la liste des serveurs",
       "viewAll": "Afficher tous les serveurs dans une liste",
       "viewGroups": "Afficher les serveurs par groupes",

@@ -58,6 +58,7 @@
       "showDescription": "About the server list",
       "closeDescription": "Close server-list description",
       "allDisplayed": "All displayed",
+      "clearSelection": "Clear selection",
       "viewLabel": "Server list view",
       "viewAll": "Show all servers in one list",
       "viewGroups": "Show servers grouped",

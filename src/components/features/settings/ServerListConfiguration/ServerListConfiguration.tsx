@@ -14,6 +14,7 @@ type AppliedRange = {
 
 type ServerListConfigurationProps = {
   enabledServerIds: ReadonlySet<ServerId>
+  onClearServers: (serverIds: readonly ServerId[]) => void
   onToggleServer: (serverId: ServerId) => void
   onToggleServers: (serverIds: readonly ServerId[]) => void
   scrollContainerRef: RefObject<HTMLElement | null>
@@ -22,6 +23,7 @@ type ServerListConfigurationProps = {
 
 export function ServerListConfiguration({
   enabledServerIds,
+  onClearServers,
   onToggleServer,
   onToggleServers,
   scrollContainerRef,
@@ -84,10 +86,12 @@ export function ServerListConfiguration({
         onRangeFromChange={setRangeFrom}
         onRangeToChange={setRangeTo}
         onApplyRange={handleApplyRange}
+        onClearSelection={() => onClearServers(displayedServerIds)}
         onToggleServers={onToggleServers}
         displayedServerIds={displayedServerIds}
       />
       <ServerListConfigurationToolbar
+        enabledServerCount={enabledServerIds.size}
         isFilterActive={isFilterActive}
         onResetFilter={handleResetFilter}
         onViewChange={setView}
