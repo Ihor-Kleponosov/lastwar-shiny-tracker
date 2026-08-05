@@ -13,7 +13,13 @@ describe('Calendar', () => {
     const user = userEvent.setup()
     const onSelectDate = vi.fn()
 
-    render(<Calendar selectedDate={new Date(2026, 0, 15)} onSelectDate={onSelectDate} />)
+    render(
+      <Calendar
+        selectedDate={new Date(2026, 0, 15)}
+        serverDate={new Date(2026, 0, 15)}
+        onSelectDate={onSelectDate}
+      />,
+    )
 
     expect(screen.getAllByText('Mo')[0]).toBeInTheDocument()
 
@@ -25,7 +31,13 @@ describe('Calendar', () => {
   it('updates calendar labels for the active application language', async () => {
     await i18n.changeLanguage('de')
 
-    render(<Calendar selectedDate={new Date(2026, 0, 15)} onSelectDate={vi.fn()} />)
+    render(
+      <Calendar
+        selectedDate={new Date(2026, 0, 15)}
+        serverDate={new Date(2026, 0, 15)}
+        onSelectDate={vi.fn()}
+      />,
+    )
 
     expect(screen.getByText('Januar 2026')).toBeInTheDocument()
     expect(screen.getAllByText('Mo')[0]).toBeInTheDocument()
@@ -35,7 +47,13 @@ describe('Calendar', () => {
     const user = userEvent.setup()
     const onSelectDate = vi.fn()
 
-    render(<Calendar selectedDate={new Date(2026, 0, 15)} onSelectDate={onSelectDate} />)
+    render(
+      <Calendar
+        selectedDate={new Date(2026, 0, 15)}
+        serverDate={new Date(2026, 0, 15)}
+        onSelectDate={onSelectDate}
+      />,
+    )
 
     await user.click(screen.getByRole('button', { name: 'Next month' }))
 

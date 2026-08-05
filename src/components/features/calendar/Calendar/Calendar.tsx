@@ -13,10 +13,11 @@ function HiddenMonthCaption() {
 
 type CalendarProps = {
   selectedDate: Date
+  serverDate: Date
   onSelectDate: (date: Date) => void
 }
 
-export function Calendar({ selectedDate, onSelectDate }: CalendarProps) {
+export function Calendar({ selectedDate, serverDate, onSelectDate }: CalendarProps) {
   const { i18n, t } = useTranslation('common')
   const [month, setMonth] = useState(() => startOfMonth(selectedDate))
   const locale = getDateLocale(i18n.resolvedLanguage ?? i18n.language)
@@ -62,6 +63,7 @@ export function Calendar({ selectedDate, onSelectDate }: CalendarProps) {
         month={month}
         onMonthChange={setMonth}
         selected={selectedDate}
+        today={serverDate}
         onSelect={handleSelect}
         locale={locale}
         weekStartsOn={1}

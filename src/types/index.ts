@@ -10,5 +10,6 @@ export interface Preset {
 
 export interface ShinyTasksConfiguration {
   readonly anchorDate: string
+  readonly serverTimeZone: string
   readonly serverGroups: readonly ServerGroup[]
 }

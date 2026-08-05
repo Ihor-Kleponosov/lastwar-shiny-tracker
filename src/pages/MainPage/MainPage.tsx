@@ -1,12 +1,15 @@
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
-import { useEffect, useState } from 'react'
+import { isSameDay } from 'date-fns'
+import { useEffect, useRef, useState } from 'react'
 import { Calendar } from '@/components/features/calendar/Calendar'
 import { DateSummary } from '@/components/features/date/DateSummary'
 import { Header } from '@/components/app-shell/Header'
 import { PresetsList } from '@/components/features/presets/PresetsList'
 import { PresetSelector } from '@/components/features/presets/PresetSelector'
 import type { Preset } from '@/types'
+import { shinyTasksConfiguration } from '@/config'
 import { getSelectedPresetIds, saveSelectedPresetIds } from '@/utils/presets'
+import { getServerDate } from '@/utils/serverTime'
 
 type MainPageProps = {
   onOpenPresets: () => void
@@ -15,7 +18,12 @@ type MainPageProps = {
 }
 
 export function MainPage({ onOpenPresets, onNavigateHome, presets }: MainPageProps) {
-  const [selectedDate, setSelectedDate] = useState(() => new Date())
+  const [serverNow, setServerNow] = useState(() => new Date())
+  const serverDate = getServerDate(serverNow, shinyTasksConfiguration.serverTimeZone)
+  const [selectedDate, setSelectedDate] = useState(() =>
+    getServerDate(new Date(), shinyTasksConfiguration.serverTimeZone),
+  )
+  const previousServerDateRef = useRef(serverDate)
   const [isCalendarVisible, setIsCalendarVisible] = useState(false)
   const [selectedPresetIds, setSelectedPresetIds] = useState<ReadonlySet<string>>(() => new Set())
   const [hasLoadedSelectedPresetIds, setHasLoadedSelectedPresetIds] = useState(false)
@@ -25,6 +33,21 @@ export function MainPage({ onOpenPresets, onNavigateHome, presets }: MainPagePro
     const preset = presetsById.get(presetId)
     return preset ? [preset] : []
   })
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => setServerNow(new Date()), 1000)
+    return () => window.clearInterval(intervalId)
+  }, [])
+
+  useEffect(() => {
+    const previousServerDate = previousServerDateRef.current
+    if (isSameDay(previousServerDate, serverDate)) return
+
+    previousServerDateRef.current = serverDate
+    setSelectedDate((currentSelectedDate) =>
+      isSameDay(currentSelectedDate, previousServerDate) ? serverDate : currentSelectedDate,
+    )
+  }, [serverDate])
 
   useEffect(() => {
     const availablePresetIds = new Set(presets.map((preset) => preset.id))
@@ -73,8 +96,9 @@ export function MainPage({ onOpenPresets, onNavigateHome, presets }: MainPagePro
           <DateSummary
             presets={presets}
             selectedDate={selectedDate}
+            serverNow={serverNow}
             isCalendarVisible={isCalendarVisible}
-            onSelectToday={() => setSelectedDate(new Date())}
+            onSelectToday={() => setSelectedDate(serverDate)}
             onToggleCalendar={() => setIsCalendarVisible((isVisible) => !isVisible)}
           />
           <AnimatePresence initial={false}>
@@ -88,6 +112,7 @@ export function MainPage({ onOpenPresets, onNavigateHome, presets }: MainPagePro
               >
                 <Calendar
                   selectedDate={selectedDate}
+                  serverDate={serverDate}
                   onSelectDate={(date) => {
                     setSelectedDate(date)
                     setIsCalendarVisible(false)

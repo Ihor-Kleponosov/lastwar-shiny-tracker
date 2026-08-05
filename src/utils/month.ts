@@ -1,7 +1,9 @@
-export function getCurrentMonthValue() {
-  const now = new Date()
+import { getServerDate } from '@/utils/serverTime'
 
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
+export function getCurrentMonthValue(timeZone: string, now = new Date()) {
+  const serverDate = getServerDate(now, timeZone)
+
+  return `${serverDate.getFullYear()}-${String(serverDate.getMonth() + 1).padStart(2, '0')}`
 }
 
 export function getDateFromMonthValue(monthValue: string) {
