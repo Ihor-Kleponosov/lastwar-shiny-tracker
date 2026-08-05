@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import i18n from '@/i18n'
 import type { Preset } from '@/types'
+import { STORAGE_NOTICE_SHOWN_KEY } from '@/utils/presets'
 import { PresetsPage } from '.'
 
 const { toastError } = vi.hoisted(() => ({ toastError: vi.fn() }))
@@ -138,5 +139,32 @@ describe('PresetsPage', () => {
 
     expect(screen.getByRole('dialog', { name: 'Add preset' })).toBeInTheDocument()
     expect(screen.getByRole('textbox', { name: 'Preset name' })).toHaveValue('')
+  })
+
+  it('shows the storage notice once when the page is first opened', async () => {
+    const user = userEvent.setup()
+
+    const { unmount } = renderPage()
+
+    expect(
+      await screen.findByRole('status', { name: 'Your data stays on your device.' }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(
+        'This app stores all presets locally instead of uploading them to a server. Your settings are available only in this browser on this device.',
+      ),
+    ).toBeInTheDocument()
+    expect(localStorage.getItem(STORAGE_NOTICE_SHOWN_KEY)).toBe('true')
+
+    await user.click(screen.getByRole('button', { name: 'Close storage information' }))
+    await user.click(screen.getByRole('button', { name: 'About the server list' }))
+    expect(screen.getByText('Your data stays on your device.')).toBeInTheDocument()
+
+    unmount()
+    renderPage()
+
+    expect(
+      screen.queryByRole('status', { name: 'Your data stays on your device.' }),
+    ).not.toBeInTheDocument()
   })
 })

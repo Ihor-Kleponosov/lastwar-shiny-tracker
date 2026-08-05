@@ -22,6 +22,7 @@ describe('Notification', () => {
     expect(
       screen.getByRole('status', { name: 'Default preset applied' }).parentElement,
     ).toHaveClass('fixed')
+    expect(screen.getByTestId('notification-attention-icon')).toHaveAttribute('aria-hidden', 'true')
     await user.click(screen.getByRole('button', { name: 'Close notification' }))
     expect(onClose).toHaveBeenCalledOnce()
   })

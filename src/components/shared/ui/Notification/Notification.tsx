@@ -1,4 +1,4 @@
-import { X } from 'lucide-react'
+import { CircleAlert, X } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { IconButton } from '@/components/shared/ui/IconButton'
 
@@ -21,6 +21,12 @@ export function Notification({ children, closeLabel, label, onClose, open }: Not
         role="status"
       >
         <div className="flex items-start justify-between gap-3">
+          <CircleAlert
+            aria-hidden="true"
+            className="mt-0.5 shrink-0 text-[var(--color-accent)]"
+            data-testid="notification-attention-icon"
+            size={20}
+          />
           <div className="min-w-0 flex-1">{children}</div>
           <IconButton aria-label={closeLabel} onClick={onClose}>
             <X aria-hidden="true" size={20} />

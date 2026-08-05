@@ -1,15 +1,18 @@
 import { AnimatePresence } from 'motion/react'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { Header } from '@/components/app-shell/Header'
 import { DeletePresetDialog } from '@/components/features/presets/DeletePresetDialog'
 import { PresetList } from '@/components/features/presets/PresetList'
 import { PresetConfigurationModal } from '@/components/features/settings/PresetConfigurationModal'
+import { StorageNoticeContent } from '@/components/features/settings/StorageNoticeContent'
 import { ActionFooter } from '@/components/shared/ui/ActionFooter'
 import { Button } from '@/components/shared/ui/Button'
+import { HelpPopover } from '@/components/shared/ui/HelpPopover'
+import { Notification } from '@/components/shared/ui/Notification'
 import type { Preset } from '@/types'
-import { MAX_PRESETS } from '@/utils/presets'
+import { markStorageNoticeShown, MAX_PRESETS, wasStorageNoticeShown } from '@/utils/presets'
 import { getConfiguredServerIds } from '@/utils/serverPreferences'
 
 type PresetsPageProps = {
@@ -31,8 +34,16 @@ export function PresetsPage({
   const [editingPreset, setEditingPreset] = useState<Preset | null>(null)
   const [presetPendingDeletion, setPresetPendingDeletion] = useState<Preset | null>(null)
   const [isPresetModalOpen, setIsPresetModalOpen] = useState(false)
+  const [isStorageNoticeOpen, setIsStorageNoticeOpen] = useState(false)
   const deleteTriggerRef = useRef<HTMLButtonElement>(null)
   const presetTriggerRef = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    if (wasStorageNoticeShown()) return
+
+    markStorageNoticeShown()
+    setIsStorageNoticeOpen(true)
+  }, [])
 
   function handleAddPreset(trigger: HTMLButtonElement) {
     if (presets.length >= MAX_PRESETS) {
@@ -79,12 +90,20 @@ export function PresetsPage({
           className="flex flex-col gap-3 rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-[0_8px_24px_rgb(0_0_0_/_14%)] sm:gap-4 sm:p-5"
           aria-labelledby="presets-page-title"
         >
-          <h1
-            id="presets-page-title"
-            className="text-xl font-semibold text-[var(--color-text-primary)]"
-          >
-            {t('presets.pageTitle')}
-          </h1>
+          <div className="flex items-start justify-between gap-3">
+            <h1
+              id="presets-page-title"
+              className="text-xl font-semibold text-[var(--color-text-primary)]"
+            >
+              {t('presets.pageTitle')}
+            </h1>
+            <HelpPopover
+              label={t('settings.serverList.showDescription')}
+              closeLabel={t('settings.serverList.closeDescription')}
+            >
+              <StorageNoticeContent />
+            </HelpPopover>
+          </div>
           <p className="text-sm text-[var(--color-text-secondary)]">
             {t('presets.pageDescription')}
           </p>
@@ -121,6 +140,14 @@ export function PresetsPage({
           />
         ) : null}
       </AnimatePresence>
+      <Notification
+        closeLabel={t('settings.serverList.closeStorageNotice')}
+        label={t('settings.serverList.storageNotice.title')}
+        onClose={() => setIsStorageNoticeOpen(false)}
+        open={isStorageNoticeOpen}
+      >
+        <StorageNoticeContent />
+      </Notification>
     </main>
   )
 }

@@ -62,6 +62,7 @@
       "resetFilter": "Reset filter",
       "showDescription": "About the server list",
       "closeDescription": "Close server-list description",
+      "closeStorageNotice": "Close storage information",
       "allDisplayed": "All displayed",
       "clearSelection": "Clear selection",
       "viewLabel": "Server list view",
@@ -71,7 +72,12 @@
       "noGroupResults": "No servers in this group",
       "noResults": "No servers found",
       "title": "Server list",
-      "description": "Select the servers to display in the calendar. You can disable servers you do not use or do not have links for. Click a server to change its state. These preferences are stored in your browser and are not synced to other devices"
+      "storageNotice": {
+        "title": "Your data stays on your device.",
+        "introduction": "This app stores all presets locally instead of uploading them to a server. Your settings are available only in this browser on this device.",
+        "transfer": "If you use another browser or device, you'll need to configure your presets again or transfer them using <strong>Export</strong> and <strong>Import</strong>.",
+        "backup": "You can also use <strong>Export</strong> and <strong>Import</strong> to back up your presets or share them with other players."
+      }
     }
   },
   "servers": {

@@ -4,10 +4,13 @@ import {
   getSelectedPresetIds,
   loadPresets,
   MAX_PRESETS,
+  markStorageNoticeShown,
   PRESETS_STORAGE_KEY,
   savePresets,
   saveSelectedPresetIds,
   SELECTED_PRESET_IDS_STORAGE_KEY,
+  STORAGE_NOTICE_SHOWN_KEY,
+  wasStorageNoticeShown,
 } from './presets'
 
 vi.mock('@/config', () => ({
@@ -149,5 +152,20 @@ describe('selected preset storage', () => {
     expect(() => saveSelectedPresetIds(['first'])).not.toThrow()
 
     setItemSpy.mockRestore()
+  })
+})
+
+describe('storage notice preference', () => {
+  beforeEach(() => {
+    localStorage.clear()
+  })
+
+  it('records when the storage notice has been shown', () => {
+    expect(wasStorageNoticeShown()).toBe(false)
+
+    markStorageNoticeShown()
+
+    expect(localStorage.getItem(STORAGE_NOTICE_SHOWN_KEY)).toBe('true')
+    expect(wasStorageNoticeShown()).toBe(true)
   })
 })

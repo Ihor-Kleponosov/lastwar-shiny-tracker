@@ -62,6 +62,7 @@
       "resetFilter": "Filter zurücksetzen",
       "showDescription": "Über die Serverliste",
       "closeDescription": "Beschreibung der Serverliste schließen",
+      "closeStorageNotice": "Speicherinformationen schließen",
       "allDisplayed": "Alle angezeigten",
       "clearSelection": "Auswahl aufheben",
       "viewLabel": "Ansicht der Serverliste",
@@ -71,7 +72,12 @@
       "noGroupResults": "Keine Server in dieser Gruppe",
       "noResults": "Keine Server gefunden",
       "title": "Serverliste",
-      "description": "Wähle die Server aus, die im Kalender angezeigt werden sollen. Du kannst Server deaktivieren, die du nicht verwendest oder für die du keine Links hast. Klicke auf einen Server, um seinen Status zu ändern. Diese Einstellungen werden in deinem Browser gespeichert und nicht mit anderen Geräten synchronisiert"
+      "storageNotice": {
+        "title": "Deine Daten bleiben auf deinem Gerät.",
+        "introduction": "Diese App speichert alle Presets lokal, statt sie auf einen Server hochzuladen. Deine Einstellungen sind nur in diesem Browser auf diesem Gerät verfügbar.",
+        "transfer": "Wenn du einen anderen Browser oder ein anderes Gerät verwendest, musst du deine Presets erneut einrichten oder sie mit <strong>Export</strong> und <strong>Import</strong> übertragen.",
+        "backup": "Du kannst <strong>Export</strong> und <strong>Import</strong> auch verwenden, um deine Presets zu sichern oder sie mit anderen Spielern zu teilen."
+      }
     }
   },
   "servers": {
