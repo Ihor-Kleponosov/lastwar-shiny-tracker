@@ -19,6 +19,7 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@tanstack/react-virtual": "^3.14.8",
     "@vitejs/plugin-react": "^5.0.0",
     "class-names": "^1.0.0",
     "date-fns": "^4.1.0",

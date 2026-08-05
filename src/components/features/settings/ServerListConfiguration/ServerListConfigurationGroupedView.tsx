@@ -2,7 +2,7 @@ import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { shinyTasksConfiguration } from '@/config'
 import type { ServerId } from '@/types'
-import { ServerListConfigurationGrid } from './ServerListConfigurationGrid'
+import { ServerListConfigurationGroupedGrid } from './ServerListConfigurationGroupedGrid'
 
 type ServerListConfigurationGroupedViewProps = {
   displayedServerIds: readonly ServerId[]
@@ -41,7 +41,7 @@ export function ServerListConfigurationGroupedView({
                 {groupLabel}
               </h3>
               {displayedGroupServerIds.length > 0 ? (
-                <ServerListConfigurationGrid
+                <ServerListConfigurationGroupedGrid
                   accessibleName={groupLabel}
                   enabledServerIds={enabledServerIds}
                   onToggleServer={onToggleServer}
