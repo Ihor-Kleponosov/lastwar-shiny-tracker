@@ -47,8 +47,8 @@
     },
     "serverList": {
       "selectedCount": "Вибрано: {{count}} / {{maximum}}",
-      "selectionLimitReached": "Можна вибрати до {{count}} серверів",
-      "bulkSelectionLimitReached": "Вибрано перші {{count}} серверів",
+      "selectionLimitReached": "Не можна вибрати більше ніж {{count}} серверів",
+      "bulkSelectionLimitReached": "Досягнуто ліміту вибору. Вибрано лише перші {{count}} серверів",
       "searchLabel": "Пошук серверів",
       "searchPlaceholder": "Фільтрувати сервери",
       "clearSearch": "Очистити фільтр серверів",

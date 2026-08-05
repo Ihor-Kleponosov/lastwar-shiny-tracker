@@ -44,8 +44,8 @@
     },
     "serverList": {
       "selectedCount": "Selected: {{count}} / {{maximum}}",
-      "selectionLimitReached": "You can select up to {{count}} servers",
-      "bulkSelectionLimitReached": "First {{count}} servers selected",
+      "selectionLimitReached": "You can't select more than {{count}} servers",
+      "bulkSelectionLimitReached": "Selection limit reached. Only the first {{count}} servers were selected",
       "searchLabel": "Search servers",
       "searchPlaceholder": "Filter servers",
       "clearSearch": "Clear server filter",

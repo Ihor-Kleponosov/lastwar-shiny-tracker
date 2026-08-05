@@ -167,7 +167,9 @@ describe('PresetConfigurationModal', () => {
 
     expect(screen.getByText('Selected: 100 / 100')).toBeInTheDocument()
     expect(toastError).toHaveBeenCalledTimes(1)
-    expect(toastError).toHaveBeenCalledWith('First 100 servers selected')
+    expect(toastError).toHaveBeenCalledWith(
+      'Selection limit reached. Only the first 100 servers were selected',
+    )
 
     await user.type(screen.getByRole('textbox', { name: 'Preset name' }), 'All servers')
     await user.click(screen.getByRole('button', { name: 'Save' }))
