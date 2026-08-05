@@ -5,9 +5,10 @@ import {
 } from './calculateHelpPopoverPosition'
 
 type UseHelpPopoverPositionOptions = {
-  containerRef: RefObject<HTMLDivElement | null>
+  containerRef: RefObject<HTMLElement | null>
   isOpen: boolean
-  popoverRef: RefObject<HTMLDivElement | null>
+  maxWidth?: number
+  popoverRef: RefObject<HTMLElement | null>
   triggerRef: RefObject<HTMLButtonElement | null>
 }
 
@@ -27,6 +28,7 @@ function arePositionsEqual(
 export function useHelpPopoverPosition({
   containerRef,
   isOpen,
+  maxWidth,
   popoverRef,
   triggerRef,
 }: UseHelpPopoverPositionOptions): CSSProperties | null {
@@ -51,6 +53,7 @@ export function useHelpPopoverPosition({
 
       const nextPosition = calculateHelpPopoverPosition({
         containerRect: container.getBoundingClientRect(),
+        maxWidth,
         popoverRect: popover.getBoundingClientRect(),
         triggerRect: trigger.getBoundingClientRect(),
         viewportHeight: document.documentElement.clientHeight || window.innerHeight,
@@ -81,7 +84,7 @@ export function useHelpPopoverPosition({
       window.removeEventListener('resize', updatePosition)
       window.removeEventListener('scroll', updatePosition, true)
     }
-  }, [containerRef, isOpen, popoverRef, triggerRef])
+  }, [containerRef, isOpen, maxWidth, popoverRef, triggerRef])
 
   if (!position) return null
 
