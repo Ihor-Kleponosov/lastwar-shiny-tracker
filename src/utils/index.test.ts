@@ -5,6 +5,7 @@ import { getServerGroupIndexForDate, getServersForIndex } from '.'
 
 const configuration: ShinyTasksConfiguration = {
   anchorDate: '2026-07-15',
+  serverTimeZone: 'Etc/GMT+2',
   serverGroups: [
     [30, 10, 20],
     [60, 40, 50],

@@ -13,6 +13,7 @@ export const defaultPreset: Preset = {
 
 export const shinyTasksConfiguration: ShinyTasksConfiguration = {
   anchorDate: '2026-07-15',
+  serverTimeZone: 'Etc/GMT+2',
   serverGroups: [
     [
       5, 10, 14, 24, 29, 33, 36, 39, 43, 44, 47, 48, 61, 62, 67, 68, 69, 75, 76, 81, 82, 88, 89, 90,

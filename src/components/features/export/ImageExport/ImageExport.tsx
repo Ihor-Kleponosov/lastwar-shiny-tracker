@@ -9,6 +9,7 @@ import type { Preset, ServerId } from '@/types'
 import { downloadElementAsPng } from '@/utils/downloadElementAsPng'
 import { getExportFilename } from '@/utils/exportFilename'
 import { getCurrentMonthValue, getDateFromMonthValue } from '@/utils/month'
+import { shinyTasksConfiguration } from '@/config'
 import { ExportMonthPickerDialog } from './ExportMonthPickerDialog'
 import { ExportPreviewDialog } from './ExportPreviewDialog'
 
@@ -23,9 +24,13 @@ type ExportDialogStep = 'closed' | 'month-picker' | 'preview'
 export function ImageExport({ presets, presetId, triggerLabel }: ImageExportProps) {
   const { t } = useTranslation('common')
   const [dialogStep, setDialogStep] = useState<ExportDialogStep>('closed')
-  const [monthValue, setMonthValue] = useState(getCurrentMonthValue)
+  const [monthValue, setMonthValue] = useState(() =>
+    getCurrentMonthValue(shinyTasksConfiguration.serverTimeZone),
+  )
   const [presetValue, setPresetValue] = useState('')
-  const [exportDate, setExportDate] = useState(() => getDateFromMonthValue(getCurrentMonthValue()))
+  const [exportDate, setExportDate] = useState(() =>
+    getDateFromMonthValue(getCurrentMonthValue(shinyTasksConfiguration.serverTimeZone)),
+  )
   const [exportServerIds, setExportServerIds] = useState<ReadonlySet<ServerId>>(() => new Set())
   const [isExporting, setIsExporting] = useState(false)
   const [exportTheme, setExportTheme] = useState<ExportTheme>('dark')
@@ -48,7 +53,7 @@ export function ImageExport({ presets, presetId, triggerLabel }: ImageExportProp
   })
 
   const handleOpen = () => {
-    setMonthValue(getCurrentMonthValue())
+    setMonthValue(getCurrentMonthValue(shinyTasksConfiguration.serverTimeZone))
     setPresetValue(presetId ?? '')
     setDialogStep('month-picker')
   }

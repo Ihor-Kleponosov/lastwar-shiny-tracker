@@ -4,7 +4,7 @@ An installable, offline-capable tracker for Last War shiny-task server rotations
 
 ## Features
 
-- Date-based server rotation using a configurable, anchored three-group cycle
+- Date-based server rotation using a configurable, timezone-aware anchored three-group cycle
 - Select one or more saved presets to show their active server lists for the selected date
 - Localized UI, dates, calendar labels, and accessible names in English, French, German, and Ukrainian
 - Two-page navigation with a Presets page for creating and editing in-memory server-list presets
@@ -17,7 +17,7 @@ An installable, offline-capable tracker for Last War shiny-task server rotations
 
 ## How it works
 
-The configured server groups repeat from the ISO anchor date in `src/config/index.ts`. The selected date determines the current group. Select one or more presets on the main page to show one active-server list per preset. Presets are saved under the `last-war-shiny-tracker-presets` localStorage key as objects containing `id`, `name`, and `enabledServerIds`; up to 30 can be saved. The Presets page creates and saves an all-servers default preset on first launch when no stored presets exist and shows a dismissible notice. Invalid stored preset data is preserved and reported with an error toast; an existing stored list, including an empty list, is preserved.
+The configured server groups repeat from the ISO anchor date in `src/config/index.ts`. The configured IANA server timezone determines the current calendar day and therefore the current group; daylight-saving changes are applied automatically. The selected date determines the current group. Select one or more presets on the main page to show one active-server list per preset. Presets are saved under the `last-war-shiny-tracker-presets` localStorage key as objects containing `id`, `name`, and `enabledServerIds`; up to 30 can be saved. The Presets page creates and saves an all-servers default preset on first launch when no stored presets exist and shows a dismissible notice. Invalid stored preset data is preserved and reported with an error toast; an existing stored list, including an empty list, is preserved.
 
 Use **Edit Presets** to create or change server lists. Changes are kept as a draft until **Save**; closing a changed draft asks whether to discard it. Search filters server numbers immediately, while range filtering is inclusive and accepts bounds in either order. The server list can be shown as one flat list or separated into the configured A, B, and C rotation groups. PNG export allows choosing any existing preset for each export. When no preset is selected, it exports an empty server list.
 
@@ -81,7 +81,7 @@ To add a language, register its code and display name in `src/i18n/languages.ts`
 
 ## Configuration and persistence
 
-`src/config/index.ts` is the source of truth for the cycle anchor date and server groups. Keep group order intentional: the group index is calculated from the calendar-day difference relative to the anchor date. Server IDs are deduplicated and sorted before they are presented or persisted.
+`src/config/index.ts` is the source of truth for the cycle anchor date, IANA server timezone, and server groups. Keep group order intentional: the group index is calculated from the server-calendar-day difference relative to the anchor date. Server IDs are deduplicated and sorted before they are presented or persisted.
 
 Preset server IDs are normalized to configured servers and capped at 100 selections per preset.
 

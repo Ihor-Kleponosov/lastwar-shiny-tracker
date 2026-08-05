@@ -14,6 +14,11 @@
     "previousMonth": "Mois précédent",
     "nextMonth": "Mois suivant"
   },
+  "serverTime": {
+    "label": "Heure du serveur",
+    "infoLabel": "À propos de l’heure du serveur",
+    "info": "Tous les calculs utilisent l’heure actuelle de votre appareil convertie dans le fuseau horaire du serveur. Si l’heure de votre appareil est incorrecte, le calendrier peut ne pas fonctionner correctement."
+  },
   "export": {
     "presetLabel": "Préréglage",
     "noPreset": "Sélectionner un préréglage",

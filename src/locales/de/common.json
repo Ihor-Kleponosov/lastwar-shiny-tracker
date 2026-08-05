@@ -14,6 +14,11 @@
     "previousMonth": "Vorheriger Monat",
     "nextMonth": "Nächster Monat"
   },
+  "serverTime": {
+    "label": "Serverzeit",
+    "infoLabel": "Über die Serverzeit",
+    "info": "Alle Berechnungen verwenden die aktuelle Zeit Ihres Geräts, umgerechnet in die Serverzeitzone. Wenn die Gerätezeit falsch ist, kann sich der Kalender falsch verhalten."
+  },
   "export": {
     "presetLabel": "Preset",
     "noPreset": "Preset auswählen",
