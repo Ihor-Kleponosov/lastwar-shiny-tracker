@@ -24,6 +24,8 @@ export function MainPage({ onOpenPresets, onNavigateHome, presets }: MainPagePro
     getServerDate(new Date(), shinyTasksConfiguration.serverTimeZone),
   )
   const previousServerDateRef = useRef(serverDate)
+  const calendarOverlayRef = useRef<HTMLDivElement>(null)
+  const calendarToggleRef = useRef<HTMLButtonElement>(null)
   const [isCalendarVisible, setIsCalendarVisible] = useState(false)
   const [selectedPresetIds, setSelectedPresetIds] = useState<ReadonlySet<string>>(() => new Set())
   const [hasLoadedSelectedPresetIds, setHasLoadedSelectedPresetIds] = useState(false)
@@ -84,6 +86,23 @@ export function MainPage({ onOpenPresets, onNavigateHome, presets }: MainPagePro
     saveSelectedPresetIds(selectedPresetIds)
   }, [hasLoadedSelectedPresetIds, selectedPresetIds])
 
+  useEffect(() => {
+    if (!isCalendarVisible) return
+
+    function handlePointerDown(event: MouseEvent) {
+      const target = event.target as Node
+      const isCalendarInteraction =
+        calendarOverlayRef.current?.contains(target) || calendarToggleRef.current?.contains(target)
+
+      if (!isCalendarInteraction) {
+        setIsCalendarVisible(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handlePointerDown)
+    return () => document.removeEventListener('mousedown', handlePointerDown)
+  }, [isCalendarVisible])
+
   if (!hasLoadedSelectedPresetIds) {
     return null
   }
@@ -94,6 +113,7 @@ export function MainPage({ onOpenPresets, onNavigateHome, presets }: MainPagePro
         <Header onNavigateHome={onNavigateHome} />
         <div className="relative">
           <DateSummary
+            calendarToggleRef={calendarToggleRef}
             presets={presets}
             selectedDate={selectedDate}
             serverNow={serverNow}
@@ -104,6 +124,7 @@ export function MainPage({ onOpenPresets, onNavigateHome, presets }: MainPagePro
           <AnimatePresence initial={false}>
             {isCalendarVisible ? (
               <motion.div
+                ref={calendarOverlayRef}
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: 'auto', opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}

@@ -1,4 +1,4 @@
-import { render, screen, waitFor, within } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import i18n from '@/i18n'
@@ -104,5 +104,19 @@ describe('MainPage', () => {
 
     expect(screen.getByRole('button', { name: 'Proceed' })).toBeDisabled()
     expect(screen.getByRole('dialog', { name: 'Save server list' })).toBeInTheDocument()
+  })
+
+  it('closes the calendar when clicking outside its toggle and overlay', async () => {
+    const user = userEvent.setup()
+    render(<MainPage onNavigateHome={vi.fn()} onOpenPresets={vi.fn()} presets={presets} />)
+
+    await user.click(screen.getByRole('button', { name: 'Show calendar' }))
+    expect(screen.getByRole('heading', { name: 'Calendar' })).toBeInTheDocument()
+
+    fireEvent.mouseDown(screen.getByText(/^\d{2}\/\d{2}\/\d{4}$/))
+
+    await waitFor(() => {
+      expect(screen.queryByRole('heading', { name: 'Calendar' })).not.toBeInTheDocument()
+    })
   })
 })

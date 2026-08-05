@@ -2,7 +2,9 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { addDays, format } from 'date-fns'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { shinyTasksConfiguration } from '@/config'
 import i18n from '@/i18n'
+import { getServerDate } from '@/utils/serverTime'
 import App from './App'
 
 const { toastError } = vi.hoisted(() => ({ toastError: vi.fn() }))
@@ -21,11 +23,12 @@ describe('App', () => {
   })
 
   it('shows the selected date and closes the calendar after selecting a day', async () => {
-    const nextDate = addDays(new Date(), 1)
+    const serverDate = getServerDate(new Date(), shinyTasksConfiguration.serverTimeZone)
+    const nextDate = addDays(serverDate, 1)
 
     render(<App />)
 
-    expect(screen.getByText(format(new Date(), 'P'))).toBeInTheDocument()
+    expect(screen.getByText(format(serverDate, 'P'))).toBeInTheDocument()
     expect(screen.queryByRole('heading', { name: 'Calendar' })).not.toBeInTheDocument()
 
     const toggle = screen.getByRole('button', { name: 'Show calendar' })
@@ -56,7 +59,7 @@ describe('App', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Today' }))
 
-    expect(screen.getByText(format(new Date(), 'P'))).toBeInTheDocument()
+    expect(screen.getByText(format(serverDate, 'P'))).toBeInTheDocument()
   })
 
   it('navigates between the main page and the presets page', async () => {
