@@ -29,15 +29,21 @@ export function HelpPopover({ children, className, closeLabel, label }: HelpPopo
   })
 
   useEffect(() => {
-    if (!isOpen) return
+    if (!isOpen) {
+      return
+    }
 
     function handlePointerDown(event: MouseEvent) {
       const target = event.target as Node
-      if (!containerRef.current?.contains(target)) setIsOpen(false)
+      if (!containerRef.current?.contains(target)) {
+        setIsOpen(false)
+      }
     }
 
     function handleKeyDown(event: KeyboardEvent) {
-      if (event.key !== 'Escape') return
+      if (event.key !== 'Escape') {
+        return
+      }
 
       event.preventDefault()
       event.stopImmediatePropagation()

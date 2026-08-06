@@ -66,8 +66,12 @@ describe('HelpPopover', () => {
     vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function (
       this: HTMLElement,
     ) {
-      if (this.getAttribute('aria-label') === 'About servers') return triggerRect
-      if (this.getAttribute('role') === 'dialog') return popoverRect
+      if (this.getAttribute('aria-label') === 'About servers') {
+        return triggerRect
+      }
+      if (this.getAttribute('role') === 'dialog') {
+        return popoverRect
+      }
       return containerRect
     })
 

@@ -22,7 +22,9 @@ export function ServerListViewSwitcher({ onChange, value }: ServerListViewSwitch
   function handleKeyDown(event: KeyboardEvent<HTMLButtonElement>, currentIndex: number) {
     const previousKeys = ['ArrowLeft', 'ArrowUp']
     const nextKeys = ['ArrowRight', 'ArrowDown']
-    if (!previousKeys.includes(event.key) && !nextKeys.includes(event.key)) return
+    if (!previousKeys.includes(event.key) && !nextKeys.includes(event.key)) {
+      return
+    }
 
     event.preventDefault()
     const direction = previousKeys.includes(event.key) ? -1 : 1

@@ -25,13 +25,17 @@ export function UnsavedChangesDialog({ onDiscard, onReturn }: UnsavedChangesDial
         return
       }
 
-      if (event.key !== 'Tab') return
+      if (event.key !== 'Tab') {
+        return
+      }
 
       const buttons = Array.from(dialogRef.current?.querySelectorAll('button') ?? [])
       const firstButton = buttons[0]
       const lastButton = buttons.at(-1)
 
-      if (!firstButton || !lastButton) return
+      if (!firstButton || !lastButton) {
+        return
+      }
 
       if (event.shiftKey && document.activeElement === firstButton) {
         event.preventDefault()
@@ -50,7 +54,9 @@ export function UnsavedChangesDialog({ onDiscard, onReturn }: UnsavedChangesDial
     <div
       className="absolute inset-0 z-30 flex items-center justify-center bg-[var(--color-overlay)] p-4"
       onClick={(event) => {
-        if (event.target === event.currentTarget) onReturn()
+        if (event.target === event.currentTarget) {
+          onReturn()
+        }
       }}
     >
       <div

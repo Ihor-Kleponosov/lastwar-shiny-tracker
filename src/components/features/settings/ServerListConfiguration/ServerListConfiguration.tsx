@@ -38,8 +38,12 @@ export function ServerListConfiguration({
   const [view, setView] = useState<ServerListView>('all')
   const isFilterActive = searchFilter.length > 0 || appliedRange !== null
   const displayedServerIds = serverIds.filter((serverId) => {
-    if (filterMode === 'search') return String(serverId).includes(searchFilter)
-    if (!appliedRange) return true
+    if (filterMode === 'search') {
+      return String(serverId).includes(searchFilter)
+    }
+    if (!appliedRange) {
+      return true
+    }
 
     return serverId >= appliedRange.from && serverId <= appliedRange.to
   })

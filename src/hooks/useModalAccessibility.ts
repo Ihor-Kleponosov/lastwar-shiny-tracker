@@ -22,7 +22,9 @@ export function useModalAccessibility({
   onCloseRef.current = onClose
 
   useEffect(() => {
-    if (!isOpen) return
+    if (!isOpen) {
+      return
+    }
 
     const previousOverflow = document.body.style.overflow
     const returnFocusElement = returnFocusRef?.current
@@ -35,7 +37,9 @@ export function useModalAccessibility({
         return
       }
 
-      if (event.key !== 'Tab') return
+      if (event.key !== 'Tab') {
+        return
+      }
 
       const focusableElements = Array.from(
         dialogRef.current?.querySelectorAll<HTMLElement>(focusableSelector) ?? [],
@@ -43,7 +47,9 @@ export function useModalAccessibility({
       const firstElement = focusableElements[0]
       const lastElement = focusableElements.at(-1)
 
-      if (!firstElement || !lastElement) return
+      if (!firstElement || !lastElement) {
+        return
+      }
 
       if (event.shiftKey && document.activeElement === firstElement) {
         event.preventDefault()

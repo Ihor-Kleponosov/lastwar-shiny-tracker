@@ -22,8 +22,11 @@ export function PresetSelector({
   function handleOptionToggle(value: string) {
     const nextPresetIds = new Set(checkedPresetIds)
 
-    if (nextPresetIds.has(value)) nextPresetIds.delete(value)
-    else nextPresetIds.add(value)
+    if (nextPresetIds.has(value)) {
+      nextPresetIds.delete(value)
+    } else {
+      nextPresetIds.add(value)
+    }
 
     onSelectedPresetIdsChange(nextPresetIds)
   }

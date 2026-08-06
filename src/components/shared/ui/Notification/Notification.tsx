@@ -11,7 +11,9 @@ type NotificationProps = {
 }
 
 export function Notification({ children, closeLabel, label, onClose, open }: NotificationProps) {
-  if (!open) return null
+  if (!open) {
+    return null
+  }
 
   return (
     <div className="fixed inset-0 z-30 flex items-center justify-center bg-[var(--color-overlay)] p-4">

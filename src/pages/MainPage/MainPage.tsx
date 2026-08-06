@@ -43,7 +43,9 @@ export function MainPage({ onOpenPresets, onNavigateHome, presets }: MainPagePro
 
   useEffect(() => {
     const previousServerDate = previousServerDateRef.current
-    if (isSameDay(previousServerDate, serverDate)) return
+    if (isSameDay(previousServerDate, serverDate)) {
+      return
+    }
 
     previousServerDateRef.current = serverDate
     setSelectedDate((currentSelectedDate) =>
@@ -81,13 +83,17 @@ export function MainPage({ onOpenPresets, onNavigateHome, presets }: MainPagePro
   }, [hasLoadedSelectedPresetIds, presets])
 
   useEffect(() => {
-    if (!hasLoadedSelectedPresetIds) return
+    if (!hasLoadedSelectedPresetIds) {
+      return
+    }
 
     saveSelectedPresetIds(selectedPresetIds)
   }, [hasLoadedSelectedPresetIds, selectedPresetIds])
 
   useEffect(() => {
-    if (!isCalendarVisible) return
+    if (!isCalendarVisible) {
+      return
+    }
 
     function handlePointerDown(event: MouseEvent) {
       const target = event.target as Node
