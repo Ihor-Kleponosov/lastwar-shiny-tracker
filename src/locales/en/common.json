@@ -118,6 +118,16 @@
     "listTitle": "Created presets",
     "empty": "No presets created yet",
     "add": "Add new preset",
+    "import": "Import presets",
+    "export": {
+      "title": "Export presets",
+      "description": "Select the presets you want to download as a JSON file",
+      "listLabel": "Presets available for export",
+      "selectAll": "Select all",
+      "clearAll": "Clear all",
+      "close": "Close",
+      "action": "Export presets"
+    },
     "edit": "Edit preset {{name}}",
     "delete": "Delete preset {{name}}"
   }

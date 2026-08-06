@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import i18n from '@/i18n'
@@ -7,8 +7,10 @@ import { STORAGE_NOTICE_SHOWN_KEY } from '@/utils/presets'
 import { PresetsPage } from '.'
 
 const { toastError } = vi.hoisted(() => ({ toastError: vi.fn() }))
+const { downloadPresetTransfer } = vi.hoisted(() => ({ downloadPresetTransfer: vi.fn() }))
 
 vi.mock('sonner', () => ({ toast: { error: toastError, success: vi.fn() } }))
+vi.mock('@/utils/presetTransfer', () => ({ downloadPresetTransfer }))
 
 describe('PresetsPage', () => {
   const defaultProps = {
@@ -27,6 +29,7 @@ describe('PresetsPage', () => {
     await i18n.changeLanguage('en')
     localStorage.clear()
     toastError.mockClear()
+    downloadPresetTransfer.mockClear()
   })
 
   it('renders the shared header and provided presets', () => {
@@ -139,6 +142,57 @@ describe('PresetsPage', () => {
 
     expect(screen.getByRole('dialog', { name: 'Add preset' })).toBeInTheDocument()
     expect(screen.getByRole('textbox', { name: 'Preset name' })).toHaveValue('')
+  })
+
+  it('exports selected presets in their existing order and restores focus on dismissal', async () => {
+    const user = userEvent.setup()
+    const presets = [
+      { id: 'first', name: 'First preset', enabledServerIds: [1638] },
+      { id: 'second', name: 'Second preset', enabledServerIds: [1639] },
+    ]
+    renderPage({ presets })
+
+    const trigger = screen.getByRole('button', { name: 'Export presets' })
+    await user.click(trigger)
+
+    const dialog = screen.getByRole('dialog', { name: 'Export presets' })
+    expect(within(dialog).getByRole('button', { name: 'Export presets' })).toBeDisabled()
+    await user.click(screen.getByRole('checkbox', { name: 'Second preset' }))
+    await user.click(screen.getByRole('checkbox', { name: 'First preset' }))
+    await user.click(within(dialog).getByRole('button', { name: 'Export presets' }))
+
+    expect(downloadPresetTransfer).toHaveBeenCalledWith(presets)
+    expect(dialog).not.toBeInTheDocument()
+    expect(trigger).toHaveFocus()
+
+    await user.click(trigger)
+    await user.keyboard('{Escape}')
+    expect(screen.queryByRole('dialog', { name: 'Export presets' })).not.toBeInTheDocument()
+    expect(trigger).toHaveFocus()
+  })
+
+  it('selects and clears all presets in the export dialog', async () => {
+    const user = userEvent.setup()
+    renderPage({
+      presets: [
+        { id: 'first', name: 'First preset', enabledServerIds: [1638] },
+        { id: 'second', name: 'Second preset', enabledServerIds: [1639] },
+      ],
+    })
+
+    await user.click(screen.getByRole('button', { name: 'Export presets' }))
+    await user.click(screen.getByRole('button', { name: 'Select all' }))
+    expect(screen.getByRole('checkbox', { name: 'First preset' })).toBeChecked()
+    expect(screen.getByRole('checkbox', { name: 'Second preset' })).toBeChecked()
+
+    await user.click(screen.getByRole('button', { name: 'Clear all' }))
+    expect(screen.getByRole('checkbox', { name: 'First preset' })).not.toBeChecked()
+    expect(screen.getByRole('checkbox', { name: 'Second preset' })).not.toBeChecked()
+    expect(
+      within(screen.getByRole('dialog', { name: 'Export presets' })).getByRole('button', {
+        name: 'Export presets',
+      }),
+    ).toBeDisabled()
   })
 
   it('shows the storage notice once when the page is first opened', async () => {

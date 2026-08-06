@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { Header } from '@/components/app-shell/Header'
 import { DeletePresetDialog } from '@/components/features/presets/DeletePresetDialog'
+import { PresetExportDialog } from '@/components/features/presets/PresetExportDialog'
 import { PresetList } from '@/components/features/presets/PresetList'
 import { PresetConfigurationModal } from '@/components/features/settings/PresetConfigurationModal'
 import { StorageNoticeContent } from '@/components/features/settings/StorageNoticeContent'
@@ -13,6 +14,7 @@ import { HelpPopover } from '@/components/shared/ui/HelpPopover'
 import { Notification } from '@/components/shared/ui/Notification'
 import type { Preset } from '@/types'
 import { markStorageNoticeShown, MAX_PRESETS, wasStorageNoticeShown } from '@/utils/presets'
+import { downloadPresetTransfer } from '@/utils/presetTransfer'
 import { getConfiguredServerIds } from '@/utils/serverPreferences'
 
 type PresetsPageProps = {
@@ -34,12 +36,16 @@ export function PresetsPage({
   const [editingPreset, setEditingPreset] = useState<Preset | null>(null)
   const [presetPendingDeletion, setPresetPendingDeletion] = useState<Preset | null>(null)
   const [isPresetModalOpen, setIsPresetModalOpen] = useState(false)
+  const [isPresetExportOpen, setIsPresetExportOpen] = useState(false)
   const [isStorageNoticeOpen, setIsStorageNoticeOpen] = useState(false)
   const deleteTriggerRef = useRef<HTMLButtonElement>(null)
   const presetTriggerRef = useRef<HTMLButtonElement>(null)
+  const presetExportTriggerRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
-    if (wasStorageNoticeShown()) return
+    if (wasStorageNoticeShown()) {
+      return
+    }
 
     markStorageNoticeShown()
     setIsStorageNoticeOpen(true)
@@ -71,8 +77,21 @@ export function PresetsPage({
     setPresetPendingDeletion(preset)
   }
 
+  function handleOpenPresetExport(trigger: HTMLButtonElement) {
+    presetExportTriggerRef.current = trigger
+    setIsPresetExportOpen(true)
+  }
+
+  function handleExportPresets(selectedPresetIds: ReadonlySet<string>) {
+    const selectedPresets = presets.filter((preset) => selectedPresetIds.has(preset.id))
+    downloadPresetTransfer(selectedPresets)
+    setIsPresetExportOpen(false)
+  }
+
   function handleDeleteConfirmation() {
-    if (presetPendingDeletion === null) return
+    if (presetPendingDeletion === null) {
+      return
+    }
 
     onDeletePreset(presetPendingDeletion)
     setPresetPendingDeletion(null)
@@ -112,6 +131,7 @@ export function PresetsPage({
             onAdd={handleAddPreset}
             onDelete={handleDeletePreset}
             onEdit={handleEditPreset}
+            onExport={handleOpenPresetExport}
           />
         </section>
         <ActionFooter className="mt-auto">
@@ -137,6 +157,14 @@ export function PresetsPage({
             onSave={handleSavePreset}
             returnFocusRef={presetTriggerRef}
             serverIds={getConfiguredServerIds()}
+          />
+        ) : null}
+        {isPresetExportOpen ? (
+          <PresetExportDialog
+            presets={presets}
+            onClose={() => setIsPresetExportOpen(false)}
+            onExport={handleExportPresets}
+            returnFocusRef={presetExportTriggerRef}
           />
         ) : null}
       </AnimatePresence>
