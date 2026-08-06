@@ -118,6 +118,16 @@
     "listTitle": "Erstellte Voreinstellungen",
     "empty": "Noch keine Voreinstellungen erstellt",
     "add": "Neue Voreinstellung hinzufügen",
+    "import": "Voreinstellungen importieren",
+    "export": {
+      "title": "Voreinstellungen exportieren",
+      "description": "Wählen Sie die Voreinstellungen aus, die Sie als JSON-Datei herunterladen möchten",
+      "listLabel": "Für den Export verfügbare Voreinstellungen",
+      "selectAll": "Alle auswählen",
+      "clearAll": "Auswahl aufheben",
+      "close": "Schließen",
+      "action": "Voreinstellungen exportieren"
+    },
     "edit": "Voreinstellung {{name}} bearbeiten",
     "delete": "Voreinstellung {{name}} löschen"
   }

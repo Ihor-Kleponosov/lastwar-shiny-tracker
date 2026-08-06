@@ -46,7 +46,9 @@ export function useVirtualizedServerGrid({
   })
 
   useLayoutEffect(() => {
-    if (!gridElement) return
+    if (!gridElement) {
+      return
+    }
     const observedGrid = gridElement
 
     function updateLayout() {
@@ -58,7 +60,9 @@ export function useVirtualizedServerGrid({
         currentColumnCount === nextColumnCount ? currentColumnCount : nextColumnCount,
       )
 
-      if (!scrollContainer) return
+      if (!scrollContainer) {
+        return
+      }
 
       const gridTop = observedGrid.getBoundingClientRect().top
       const scrollContainerTop = scrollContainer.getBoundingClientRect().top
@@ -70,11 +74,15 @@ export function useVirtualizedServerGrid({
 
     updateLayout()
 
-    if (typeof ResizeObserver === 'undefined') return
+    if (typeof ResizeObserver === 'undefined') {
+      return
+    }
 
     const resizeObserver = new ResizeObserver(updateLayout)
     resizeObserver.observe(observedGrid)
-    if (scrollContainerRef.current) resizeObserver.observe(scrollContainerRef.current)
+    if (scrollContainerRef.current) {
+      resizeObserver.observe(scrollContainerRef.current)
+    }
 
     return () => resizeObserver.disconnect()
   }, [gridElement, scrollContainerRef])

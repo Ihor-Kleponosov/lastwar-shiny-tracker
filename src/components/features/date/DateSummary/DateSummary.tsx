@@ -56,7 +56,9 @@ export function DateSummary({
     'HH:mm:ss',
   )
   useEffect(() => {
-    if (!isInfoOpen) return
+    if (!isInfoOpen) {
+      return
+    }
 
     function handlePointerDown(event: MouseEvent) {
       if (!infoContainerRef.current?.contains(event.target as Node)) {
@@ -67,7 +69,9 @@ export function DateSummary({
     }
 
     function handleKeyDown(event: KeyboardEvent) {
-      if (event.key !== 'Escape') return
+      if (event.key !== 'Escape') {
+        return
+      }
 
       event.preventDefault()
       shouldSuppressNextInfoFocusRef.current = true

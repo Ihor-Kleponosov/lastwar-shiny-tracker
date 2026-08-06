@@ -68,7 +68,9 @@ class ResizeObserverMock {
   }
 
   static notifyAll() {
-    for (const instance of ResizeObserverMock.instances) instance.notify()
+    for (const instance of ResizeObserverMock.instances) {
+      instance.notify()
+    }
   }
 }
 
@@ -80,8 +82,11 @@ function ServerListConfigurationHarness() {
   function toggleServer(serverId: number) {
     setEnabledServerIds((currentEnabledServerIds) => {
       const nextEnabledServerIds = new Set(currentEnabledServerIds)
-      if (nextEnabledServerIds.has(serverId)) nextEnabledServerIds.delete(serverId)
-      else nextEnabledServerIds.add(serverId)
+      if (nextEnabledServerIds.has(serverId)) {
+        nextEnabledServerIds.delete(serverId)
+      } else {
+        nextEnabledServerIds.add(serverId)
+      }
       return nextEnabledServerIds
     })
   }
@@ -93,8 +98,11 @@ function ServerListConfigurationHarness() {
         currentEnabledServerIds.has(serverId),
       )
       for (const serverId of targetServerIds) {
-        if (areAllTargetServersSelected) nextEnabledServerIds.delete(serverId)
-        else nextEnabledServerIds.add(serverId)
+        if (areAllTargetServersSelected) {
+          nextEnabledServerIds.delete(serverId)
+        } else {
+          nextEnabledServerIds.add(serverId)
+        }
       }
       return nextEnabledServerIds
     })
@@ -103,7 +111,9 @@ function ServerListConfigurationHarness() {
   function clearServers(targetServerIds: readonly number[]) {
     setEnabledServerIds((currentEnabledServerIds) => {
       const nextEnabledServerIds = new Set(currentEnabledServerIds)
-      for (const serverId of targetServerIds) nextEnabledServerIds.delete(serverId)
+      for (const serverId of targetServerIds) {
+        nextEnabledServerIds.delete(serverId)
+      }
       return nextEnabledServerIds
     })
   }

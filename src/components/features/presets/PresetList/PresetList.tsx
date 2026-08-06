@@ -1,4 +1,4 @@
-import { Pencil, Plus, Trash2 } from 'lucide-react'
+import { Download, Pencil, Plus, Trash2, Upload } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { IconButton } from '@/components/shared/ui/IconButton'
 import type { Preset } from '@/types'
@@ -8,9 +8,10 @@ type PresetListProps = {
   onAdd: (trigger: HTMLButtonElement) => void
   onDelete: (preset: Preset, trigger: HTMLButtonElement) => void
   onEdit: (preset: Preset, trigger: HTMLButtonElement) => void
+  onExport: (trigger: HTMLButtonElement) => void
 }
 
-export function PresetList({ presets, onAdd, onDelete, onEdit }: PresetListProps) {
+export function PresetList({ presets, onAdd, onDelete, onEdit, onExport }: PresetListProps) {
   const { t } = useTranslation('common')
 
   return (
@@ -19,13 +20,24 @@ export function PresetList({ presets, onAdd, onDelete, onEdit }: PresetListProps
         <h2 id="preset-list-title" className="text-base font-semibold">
           {t('presets.listTitle')}
         </h2>
-        <IconButton
-          onClick={(event) => onAdd(event.currentTarget)}
-          className="border-[var(--color-accent)] bg-[var(--color-accent)] text-[var(--color-accent-contrast)] shadow-[0_2px_3px_rgb(0_0_0_/_20%)] hover:bg-[var(--color-accent-hover)]"
-          aria-label={t('presets.add')}
-        >
-          <Plus aria-hidden="true" className="size-5" />
-        </IconButton>
+        <div className="flex items-center gap-2">
+          <IconButton
+            onClick={(event) => onExport(event.currentTarget)}
+            aria-label={t('presets.export.action')}
+          >
+            <Upload aria-hidden="true" className="size-5" />
+          </IconButton>
+          <IconButton aria-label={t('presets.import')}>
+            <Download aria-hidden="true" className="size-5" />
+          </IconButton>
+          <IconButton
+            onClick={(event) => onAdd(event.currentTarget)}
+            className="border-[var(--color-accent)] bg-[var(--color-accent)] text-[var(--color-accent-contrast)] shadow-[0_2px_3px_rgb(0_0_0_/_20%)] hover:bg-[var(--color-accent-hover)]"
+            aria-label={t('presets.add')}
+          >
+            <Plus aria-hidden="true" className="size-5" />
+          </IconButton>
+        </div>
       </div>
 
       {presets.length === 0 ? (

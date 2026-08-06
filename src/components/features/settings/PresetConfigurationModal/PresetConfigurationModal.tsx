@@ -38,12 +38,16 @@ function toggleServerSelection(
   let limitReached = false
 
   for (const serverId of targetServerIds) {
-    if (areAllTargetServersSelected) nextEnabledServerIds.delete(serverId)
-    else if (nextEnabledServerIds.has(serverId)) continue
-    else if (nextEnabledServerIds.size >= MAX_ENABLED_SERVERS) {
+    if (areAllTargetServersSelected) {
+      nextEnabledServerIds.delete(serverId)
+    } else if (nextEnabledServerIds.has(serverId)) {
+      continue
+    } else if (nextEnabledServerIds.size >= MAX_ENABLED_SERVERS) {
       limitReached = true
       break
-    } else nextEnabledServerIds.add(serverId)
+    } else {
+      nextEnabledServerIds.add(serverId)
+    }
   }
 
   return { enabledServerIds: nextEnabledServerIds, limitReached }
@@ -88,7 +92,9 @@ export function PresetConfigurationModal({
   const getNameError = useCallback(
     (value: string): string | null => {
       const normalizedName = value.trim().toLowerCase()
-      if (!normalizedName) return null
+      if (!normalizedName) {
+        return null
+      }
 
       const hasDuplicateName = presets.some(
         (currentPreset) =>
@@ -112,7 +118,9 @@ export function PresetConfigurationModal({
   }, [draftName, getNameError])
 
   const handleCloseRequest = useCallback(() => {
-    if (isDiscardConfirmationOpen) return
+    if (isDiscardConfirmationOpen) {
+      return
+    }
 
     if (hasUnsavedChanges) {
       discardConfirmationTriggerRef.current =
@@ -140,7 +148,9 @@ export function PresetConfigurationModal({
 
   const handleToggleServers = useCallback(
     (targetServerIds: readonly ServerId[]) => {
-      if (targetServerIds.length === 0) return
+      if (targetServerIds.length === 0) {
+        return
+      }
 
       const { enabledServerIds, limitReached } = toggleServerSelection(
         draftEnabledServerIds,
@@ -160,14 +170,18 @@ export function PresetConfigurationModal({
   const handleClearServers = useCallback((serverIds: readonly ServerId[]) => {
     setDraftEnabledServerIds((currentEnabledServerIds) => {
       const nextEnabledServerIds = new Set(currentEnabledServerIds)
-      for (const serverId of serverIds) nextEnabledServerIds.delete(serverId)
+      for (const serverId of serverIds) {
+        nextEnabledServerIds.delete(serverId)
+      }
       return nextEnabledServerIds
     })
   }, [])
 
   const handleSave = useCallback(() => {
     const name = draftName.trim()
-    if (!name) return
+    if (!name) {
+      return
+    }
 
     const nextNameError = getNameError(name)
     if (nextNameError) {
@@ -180,8 +194,9 @@ export function PresetConfigurationModal({
       return
     }
 
-    if (!onSave({ ...initialPreset.current, name, enabledServerIds: [...draftEnabledServerIds] }))
+    if (!onSave({ ...initialPreset.current, name, enabledServerIds: [...draftEnabledServerIds] })) {
       return
+    }
     toast.success(t('presets.saved'))
     onClose()
   }, [draftEnabledServerIds, draftName, getNameError, onClose, onSave, prefersReducedMotion, t])

@@ -13,14 +13,20 @@ export function LanguageSwitcher() {
   const languageCode = language.split('-')[0].toUpperCase()
 
   useEffect(() => {
-    if (!isOpen) return
+    if (!isOpen) {
+      return
+    }
 
     function handlePointerDown(event: MouseEvent) {
-      if (!containerRef.current?.contains(event.target as Node)) setIsOpen(false)
+      if (!containerRef.current?.contains(event.target as Node)) {
+        setIsOpen(false)
+      }
     }
 
     function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape') setIsOpen(false)
+      if (event.key === 'Escape') {
+        setIsOpen(false)
+      }
     }
 
     document.addEventListener('mousedown', handlePointerDown)

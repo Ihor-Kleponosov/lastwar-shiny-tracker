@@ -27,7 +27,9 @@ export function Calendar({ selectedDate, serverDate, onSelectDate }: CalendarPro
   }, [selectedDate])
 
   const handleSelect: OnSelectHandler<Date | undefined> = (date) => {
-    if (date) onSelectDate(date)
+    if (date) {
+      onSelectDate(date)
+    }
   }
 
   return (

@@ -118,6 +118,16 @@
     "listTitle": "Préréglages créés",
     "empty": "Aucun préréglage n’a encore été créé",
     "add": "Ajouter un préréglage",
+    "import": "Importer des préréglages",
+    "export": {
+      "title": "Exporter des préréglages",
+      "description": "Sélectionnez les préréglages à télécharger en fichier JSON",
+      "listLabel": "Préréglages disponibles pour l’exportation",
+      "selectAll": "Tout sélectionner",
+      "clearAll": "Tout désélectionner",
+      "close": "Fermer",
+      "action": "Exporter des préréglages"
+    },
     "edit": "Modifier le préréglage {{name}}",
     "delete": "Supprimer le préréglage {{name}}"
   }

@@ -43,13 +43,17 @@ export function useHelpPopoverPosition({
     const observedContainer = containerRef.current
     const observedPopover = popoverRef.current
     const observedTrigger = triggerRef.current
-    if (!observedContainer || !observedPopover || !observedTrigger) return
+    if (!observedContainer || !observedPopover || !observedTrigger) {
+      return
+    }
 
     function updatePosition() {
       const container = containerRef.current
       const popover = popoverRef.current
       const trigger = triggerRef.current
-      if (!container || !popover || !trigger) return
+      if (!container || !popover || !trigger) {
+        return
+      }
 
       const nextPosition = calculateHelpPopoverPosition({
         containerRect: container.getBoundingClientRect(),
@@ -86,7 +90,9 @@ export function useHelpPopoverPosition({
     }
   }, [containerRef, isOpen, maxWidth, popoverRef, triggerRef])
 
-  if (!position) return null
+  if (!position) {
+    return null
+  }
 
   return {
     left: position.left,
