@@ -1,4 +1,4 @@
-import { Download, Pencil, Plus, Trash2, Upload } from 'lucide-react'
+import { Pencil, Plus, Trash2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { IconButton } from '@/components/shared/ui/IconButton'
 import type { Preset } from '@/types'
@@ -8,18 +8,9 @@ type PresetListProps = {
   onAdd: (trigger: HTMLButtonElement) => void
   onDelete: (preset: Preset, trigger: HTMLButtonElement) => void
   onEdit: (preset: Preset, trigger: HTMLButtonElement) => void
-  onExport: (trigger: HTMLButtonElement) => void
-  onImport: (trigger: HTMLButtonElement) => void
 }
 
-export function PresetList({
-  presets,
-  onAdd,
-  onDelete,
-  onEdit,
-  onExport,
-  onImport,
-}: PresetListProps) {
+export function PresetList({ presets, onAdd, onDelete, onEdit }: PresetListProps) {
   const { t } = useTranslation('common')
 
   return (
@@ -29,18 +20,6 @@ export function PresetList({
           {t('presets.listTitle')}
         </h2>
         <div className="flex items-center gap-2">
-          <IconButton
-            onClick={(event) => onExport(event.currentTarget)}
-            aria-label={t('presets.export.action')}
-          >
-            <Download aria-hidden="true" className="size-5" />
-          </IconButton>
-          <IconButton
-            onClick={(event) => onImport(event.currentTarget)}
-            aria-label={t('presets.import')}
-          >
-            <Upload aria-hidden="true" className="size-5" />
-          </IconButton>
           <IconButton
             onClick={(event) => onAdd(event.currentTarget)}
             className="border-[var(--color-accent)] bg-[var(--color-accent)] text-[var(--color-accent-contrast)] shadow-[0_2px_3px_rgb(0_0_0_/_20%)] hover:bg-[var(--color-accent-hover)]"

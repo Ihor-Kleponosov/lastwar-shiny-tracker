@@ -1,4 +1,5 @@
 import { AnimatePresence } from 'motion/react'
+import { Download, Upload } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
@@ -12,6 +13,7 @@ import { StorageNoticeContent } from '@/components/features/settings/StorageNoti
 import { ActionFooter } from '@/components/shared/ui/ActionFooter'
 import { Button } from '@/components/shared/ui/Button'
 import { HelpPopover } from '@/components/shared/ui/HelpPopover'
+import { IconButton } from '@/components/shared/ui/IconButton'
 import { Notification } from '@/components/shared/ui/Notification'
 import type { Preset } from '@/types'
 import { markStorageNoticeShown, MAX_PRESETS, wasStorageNoticeShown } from '@/utils/presets'
@@ -137,12 +139,26 @@ export function PresetsPage({
             >
               {t('presets.pageTitle')}
             </h1>
-            <HelpPopover
-              label={t('settings.serverList.showDescription')}
-              closeLabel={t('settings.serverList.closeDescription')}
-            >
-              <StorageNoticeContent />
-            </HelpPopover>
+            <div className="flex items-center gap-2">
+              <IconButton
+                onClick={(event) => handleOpenPresetExport(event.currentTarget)}
+                aria-label={t('presets.export.action')}
+              >
+                <Download aria-hidden="true" className="size-5" />
+              </IconButton>
+              <IconButton
+                onClick={(event) => handleOpenPresetImport(event.currentTarget)}
+                aria-label={t('presets.import')}
+              >
+                <Upload aria-hidden="true" className="size-5" />
+              </IconButton>
+              <HelpPopover
+                label={t('settings.serverList.showDescription')}
+                closeLabel={t('settings.serverList.closeDescription')}
+              >
+                <StorageNoticeContent />
+              </HelpPopover>
+            </div>
           </div>
           <p className="text-sm text-[var(--color-text-secondary)]">
             {t('presets.pageDescription')}
@@ -152,8 +168,6 @@ export function PresetsPage({
             onAdd={handleAddPreset}
             onDelete={handleDeletePreset}
             onEdit={handleEditPreset}
-            onExport={handleOpenPresetExport}
-            onImport={handleOpenPresetImport}
           />
         </section>
         <ActionFooter className="mt-auto">
