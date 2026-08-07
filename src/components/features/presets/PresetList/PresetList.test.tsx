@@ -18,6 +18,7 @@ describe('PresetList', () => {
         onDelete={vi.fn()}
         onEdit={vi.fn()}
         onExport={vi.fn()}
+        onImport={vi.fn()}
       />,
     )
 
@@ -40,6 +41,7 @@ describe('PresetList', () => {
         onDelete={vi.fn()}
         onEdit={vi.fn()}
         onExport={vi.fn()}
+        onImport={vi.fn()}
       />,
     )
 
@@ -61,6 +63,7 @@ describe('PresetList', () => {
         onDelete={onDelete}
         onEdit={vi.fn()}
         onExport={vi.fn()}
+        onImport={vi.fn()}
       />,
     )
     const deleteButton = screen.getByRole('button', { name: 'Delete preset Weekly servers' })
@@ -69,9 +72,10 @@ describe('PresetList', () => {
     expect(onDelete).toHaveBeenCalledWith(preset, deleteButton)
   })
 
-  it('opens preset export while leaving import as a placeholder', async () => {
+  it('opens preset export and import', async () => {
     const user = userEvent.setup()
     const onExport = vi.fn()
+    const onImport = vi.fn()
     render(
       <PresetList
         presets={[]}
@@ -79,6 +83,7 @@ describe('PresetList', () => {
         onDelete={vi.fn()}
         onEdit={vi.fn()}
         onExport={onExport}
+        onImport={onImport}
       />,
     )
 
@@ -86,5 +91,6 @@ describe('PresetList', () => {
     await user.click(screen.getByRole('button', { name: 'Import presets' }))
 
     expect(onExport).toHaveBeenCalledOnce()
+    expect(onImport).toHaveBeenCalledOnce()
   })
 })

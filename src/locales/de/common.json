@@ -128,6 +128,19 @@
       "close": "Schließen",
       "action": "Voreinstellungen exportieren"
     },
+    "importDialog": {
+      "title": "Voreinstellungen importieren",
+      "description": "Wählen Sie eine JSON-Datei mit Voreinstellungen zum Importieren aus",
+      "fileLabel": "JSON-Datei mit Voreinstellungen",
+      "loading": "Voreinstellungsdatei wird geprüft",
+      "invalidFile": "Diese Datei ist kein gültiger Voreinstellungsexport",
+      "listLabel": "Für den Import verfügbare Voreinstellungen",
+      "action": "Voreinstellungen importieren",
+      "limitReached": "Voreinstellungslimit erreicht. Wählen Sie weniger Voreinstellungen aus oder löschen Sie zuerst vorhandene.",
+      "success_one": "{{count}} Voreinstellung importiert",
+      "success_other": "{{count}} Voreinstellungen importiert",
+      "failure": "Voreinstellungen konnten nicht importiert werden"
+    },
     "edit": "Voreinstellung {{name}} bearbeiten",
     "delete": "Voreinstellung {{name}} löschen"
   }

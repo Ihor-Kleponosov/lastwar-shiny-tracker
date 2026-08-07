@@ -8,6 +8,7 @@ import { defaultPreset } from '@/config'
 import type { Preset } from '@/types'
 import { generateUniqueId } from '@/utils'
 import { loadPresets, MAX_PRESETS, savePresets, saveSelectedPresetIds } from '@/utils/presets'
+import { createImportedPresets } from '@/utils/presetTransfer'
 
 type AppRoute = 'main' | 'presets'
 
@@ -56,6 +57,23 @@ export default function App() {
     return true
   }
 
+  function handleImportPresets(importedPresets: readonly Preset[]): boolean {
+    if (presets.length + importedPresets.length > MAX_PRESETS) {
+      return false
+    }
+
+    const nextPresets = [
+      ...presets,
+      ...createImportedPresets(presets, importedPresets, generateUniqueId),
+    ]
+    if (!savePresets(nextPresets)) {
+      return false
+    }
+
+    setPresets(nextPresets)
+    return true
+  }
+
   if (!isPresetsLoaded) {
     return null
   }
@@ -68,6 +86,7 @@ export default function App() {
         presets={presets}
         onDeletePreset={handleDeletePreset}
         onSavePreset={handleSavePreset}
+        onImportPresets={handleImportPresets}
       />
     ) : (
       <MainPage

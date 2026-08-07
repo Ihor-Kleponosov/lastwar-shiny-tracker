@@ -50,11 +50,13 @@ function normalizePresets(presets: readonly Preset[]): Preset[] {
   }))
 }
 
-export function savePresets(presets: readonly Preset[]): void {
+export function savePresets(presets: readonly Preset[]): boolean {
   try {
     localStorage.setItem(PRESETS_STORAGE_KEY, JSON.stringify(normalizePresets(presets)))
+    return true
   } catch {
     // Storage is optional; the in-memory presets state remains usable.
+    return false
   }
 }
 

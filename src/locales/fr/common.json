@@ -128,6 +128,19 @@
       "close": "Fermer",
       "action": "Exporter des préréglages"
     },
+    "importDialog": {
+      "title": "Importer des préréglages",
+      "description": "Choisissez un fichier JSON de préréglages à importer",
+      "fileLabel": "Fichier JSON de préréglages",
+      "loading": "Validation du fichier de préréglages",
+      "invalidFile": "Ce fichier n’est pas une exportation de préréglages valide",
+      "listLabel": "Préréglages disponibles pour l’importation",
+      "action": "Importer des préréglages",
+      "limitReached": "Limite de préréglages atteinte. Sélectionnez moins de préréglages ou supprimez d’abord des préréglages existants.",
+      "success_one": "{{count}} préréglage importé",
+      "success_other": "{{count}} préréglages importés",
+      "failure": "Les préréglages n’ont pas pu être importés"
+    },
     "edit": "Modifier le préréglage {{name}}",
     "delete": "Supprimer le préréglage {{name}}"
   }
