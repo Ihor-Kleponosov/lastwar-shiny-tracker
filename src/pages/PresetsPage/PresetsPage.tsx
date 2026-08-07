@@ -5,6 +5,7 @@ import { toast } from 'sonner'
 import { Header } from '@/components/app-shell/Header'
 import { DeletePresetDialog } from '@/components/features/presets/DeletePresetDialog'
 import { PresetExportDialog } from '@/components/features/presets/PresetExportDialog'
+import { PresetImportDialog } from '@/components/features/presets/PresetImportDialog'
 import { PresetList } from '@/components/features/presets/PresetList'
 import { PresetConfigurationModal } from '@/components/features/settings/PresetConfigurationModal'
 import { StorageNoticeContent } from '@/components/features/settings/StorageNoticeContent'
@@ -23,6 +24,7 @@ type PresetsPageProps = {
   presets: readonly Preset[]
   onDeletePreset: (preset: Preset) => void
   onSavePreset: (preset: Preset, editingPreset: Preset | null) => boolean
+  onImportPresets: (importedPresets: readonly Preset[]) => boolean
 }
 
 export function PresetsPage({
@@ -31,16 +33,19 @@ export function PresetsPage({
   presets,
   onDeletePreset,
   onSavePreset,
+  onImportPresets,
 }: PresetsPageProps) {
   const { t } = useTranslation('common')
   const [editingPreset, setEditingPreset] = useState<Preset | null>(null)
   const [presetPendingDeletion, setPresetPendingDeletion] = useState<Preset | null>(null)
   const [isPresetModalOpen, setIsPresetModalOpen] = useState(false)
   const [isPresetExportOpen, setIsPresetExportOpen] = useState(false)
+  const [isPresetImportOpen, setIsPresetImportOpen] = useState(false)
   const [isStorageNoticeOpen, setIsStorageNoticeOpen] = useState(false)
   const deleteTriggerRef = useRef<HTMLButtonElement>(null)
   const presetTriggerRef = useRef<HTMLButtonElement>(null)
   const presetExportTriggerRef = useRef<HTMLButtonElement>(null)
+  const presetImportTriggerRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
     if (wasStorageNoticeShown()) {
@@ -88,6 +93,22 @@ export function PresetsPage({
     setIsPresetExportOpen(false)
   }
 
+  function handleOpenPresetImport(trigger: HTMLButtonElement) {
+    presetImportTriggerRef.current = trigger
+    setIsPresetImportOpen(true)
+  }
+
+  function handleImportPresets(importedPresets: readonly Preset[]): boolean {
+    if (!onImportPresets(importedPresets)) {
+      toast.error(t('presets.importDialog.failure'))
+      return false
+    }
+
+    toast.success(t('presets.importDialog.success', { count: importedPresets.length }))
+    setIsPresetImportOpen(false)
+    return true
+  }
+
   function handleDeleteConfirmation() {
     if (presetPendingDeletion === null) {
       return
@@ -132,6 +153,7 @@ export function PresetsPage({
             onDelete={handleDeletePreset}
             onEdit={handleEditPreset}
             onExport={handleOpenPresetExport}
+            onImport={handleOpenPresetImport}
           />
         </section>
         <ActionFooter className="mt-auto">
@@ -165,6 +187,15 @@ export function PresetsPage({
             onClose={() => setIsPresetExportOpen(false)}
             onExport={handleExportPresets}
             returnFocusRef={presetExportTriggerRef}
+          />
+        ) : null}
+        {isPresetImportOpen ? (
+          <PresetImportDialog
+            presets={presets}
+            onClose={() => setIsPresetImportOpen(false)}
+            onImport={handleImportPresets}
+            onLimitReached={() => toast.error(t('presets.importDialog.limitReached'))}
+            returnFocusRef={presetImportTriggerRef}
           />
         ) : null}
       </AnimatePresence>

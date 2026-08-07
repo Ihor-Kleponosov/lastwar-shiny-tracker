@@ -9,9 +9,17 @@ type PresetListProps = {
   onDelete: (preset: Preset, trigger: HTMLButtonElement) => void
   onEdit: (preset: Preset, trigger: HTMLButtonElement) => void
   onExport: (trigger: HTMLButtonElement) => void
+  onImport: (trigger: HTMLButtonElement) => void
 }
 
-export function PresetList({ presets, onAdd, onDelete, onEdit, onExport }: PresetListProps) {
+export function PresetList({
+  presets,
+  onAdd,
+  onDelete,
+  onEdit,
+  onExport,
+  onImport,
+}: PresetListProps) {
   const { t } = useTranslation('common')
 
   return (
@@ -27,7 +35,10 @@ export function PresetList({ presets, onAdd, onDelete, onEdit, onExport }: Prese
           >
             <Upload aria-hidden="true" className="size-5" />
           </IconButton>
-          <IconButton aria-label={t('presets.import')}>
+          <IconButton
+            onClick={(event) => onImport(event.currentTarget)}
+            aria-label={t('presets.import')}
+          >
             <Download aria-hidden="true" className="size-5" />
           </IconButton>
           <IconButton

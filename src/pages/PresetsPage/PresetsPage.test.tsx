@@ -6,11 +6,17 @@ import type { Preset } from '@/types'
 import { STORAGE_NOTICE_SHOWN_KEY } from '@/utils/presets'
 import { PresetsPage } from '.'
 
-const { toastError } = vi.hoisted(() => ({ toastError: vi.fn() }))
+const { toastError, toastSuccess } = vi.hoisted(() => ({
+  toastError: vi.fn(),
+  toastSuccess: vi.fn(),
+}))
 const { downloadPresetTransfer } = vi.hoisted(() => ({ downloadPresetTransfer: vi.fn() }))
 
-vi.mock('sonner', () => ({ toast: { error: toastError, success: vi.fn() } }))
-vi.mock('@/utils/presetTransfer', () => ({ downloadPresetTransfer }))
+vi.mock('sonner', () => ({ toast: { error: toastError, success: toastSuccess } }))
+vi.mock('@/utils/presetTransfer', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@/utils/presetTransfer')>()),
+  downloadPresetTransfer,
+}))
 
 describe('PresetsPage', () => {
   const defaultProps = {
@@ -19,6 +25,7 @@ describe('PresetsPage', () => {
     presets: [] as readonly Preset[],
     onDeletePreset: vi.fn(),
     onSavePreset: vi.fn(() => true),
+    onImportPresets: vi.fn(() => true),
   }
 
   function renderPage(overrides: Partial<typeof defaultProps> = {}) {
@@ -29,6 +36,7 @@ describe('PresetsPage', () => {
     await i18n.changeLanguage('en')
     localStorage.clear()
     toastError.mockClear()
+    toastSuccess.mockClear()
     downloadPresetTransfer.mockClear()
   })
 
@@ -193,6 +201,61 @@ describe('PresetsPage', () => {
         name: 'Export presets',
       }),
     ).toBeDisabled()
+  })
+
+  it('imports only selected presets from a valid export and reports success', async () => {
+    const user = userEvent.setup()
+    const onImportPresets = vi.fn(() => true)
+    renderPage({ onImportPresets })
+
+    await user.click(screen.getByRole('button', { name: 'Import presets' }))
+    const serializedTransfer = JSON.stringify({
+      version: 1,
+      presets: [
+        { id: 'first', name: 'First preset', enabledServerIds: [1638] },
+        { id: 'second', name: 'Second preset', enabledServerIds: [] },
+      ],
+    })
+    const file = new File([serializedTransfer], 'presets.json', { type: 'application/json' })
+    Object.defineProperty(file, 'text', { value: () => Promise.resolve(serializedTransfer) })
+    await user.upload(screen.getByLabelText('Preset JSON file'), file)
+
+    expect(await screen.findByRole('checkbox', { name: 'First preset' })).not.toBeChecked()
+    await user.click(screen.getByRole('button', { name: 'Select all' }))
+    await user.click(screen.getByRole('button', { name: 'Clear all' }))
+    await user.click(screen.getByRole('checkbox', { name: 'Second preset' }))
+    await user.click(
+      within(screen.getByRole('dialog', { name: 'Import presets' })).getByRole('button', {
+        name: 'Import presets',
+      }),
+    )
+
+    expect(onImportPresets).toHaveBeenCalledWith([
+      { id: 'second', name: 'Second preset', enabledServerIds: [] },
+    ])
+    expect(toastSuccess).toHaveBeenCalledWith('Imported 1 preset')
+  })
+
+  it('keeps the import dialog open and reports an error when persistence fails', async () => {
+    const user = userEvent.setup()
+    renderPage({ onImportPresets: vi.fn(() => false) })
+    await user.click(screen.getByRole('button', { name: 'Import presets' }))
+    const serializedTransfer = JSON.stringify({
+      version: 1,
+      presets: [{ id: 'first', name: 'First preset', enabledServerIds: [] }],
+    })
+    const file = new File([serializedTransfer], 'presets.json', { type: 'application/json' })
+    Object.defineProperty(file, 'text', { value: () => Promise.resolve(serializedTransfer) })
+    await user.upload(screen.getByLabelText('Preset JSON file'), file)
+    await user.click(await screen.findByRole('checkbox', { name: 'First preset' }))
+    await user.click(
+      within(screen.getByRole('dialog', { name: 'Import presets' })).getByRole('button', {
+        name: 'Import presets',
+      }),
+    )
+
+    expect(toastError).toHaveBeenCalledWith('Presets could not be imported')
+    expect(screen.getByRole('dialog', { name: 'Import presets' })).toBeInTheDocument()
   })
 
   it('shows the storage notice once when the page is first opened', async () => {

@@ -128,6 +128,19 @@
       "close": "Close",
       "action": "Export presets"
     },
+    "importDialog": {
+      "title": "Import presets",
+      "description": "Choose a preset JSON file to import",
+      "fileLabel": "Preset JSON file",
+      "loading": "Validating preset file",
+      "invalidFile": "This file is not a valid preset export",
+      "listLabel": "Presets available for import",
+      "action": "Import presets",
+      "limitReached": "Preset limit reached. Select fewer presets or delete existing presets first.",
+      "success_one": "Imported {{count}} preset",
+      "success_other": "Imported {{count}} presets",
+      "failure": "Presets could not be imported"
+    },
     "edit": "Edit preset {{name}}",
     "delete": "Delete preset {{name}}"
   }
