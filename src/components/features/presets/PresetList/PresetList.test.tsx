@@ -11,22 +11,11 @@ describe('PresetList', () => {
   })
 
   it('renders an empty state and add button when there are no presets', () => {
-    render(
-      <PresetList
-        presets={[]}
-        onAdd={vi.fn()}
-        onDelete={vi.fn()}
-        onEdit={vi.fn()}
-        onExport={vi.fn()}
-        onImport={vi.fn()}
-      />,
-    )
+    render(<PresetList presets={[]} onAdd={vi.fn()} onDelete={vi.fn()} onEdit={vi.fn()} />)
 
     expect(screen.getByRole('heading', { name: 'Created presets' })).toBeInTheDocument()
     expect(screen.getByText('No presets created yet')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Add new preset' })).toBeEnabled()
-    expect(screen.getByRole('button', { name: 'Export presets' })).toBeEnabled()
-    expect(screen.getByRole('button', { name: 'Import presets' })).toBeEnabled()
   })
 
   it('renders preset names and icon actions', () => {
@@ -34,16 +23,7 @@ describe('PresetList', () => {
       { id: 'preset-1', name: 'Weekly servers', enabledServerIds: [] },
     ]
 
-    render(
-      <PresetList
-        presets={presets}
-        onAdd={vi.fn()}
-        onDelete={vi.fn()}
-        onEdit={vi.fn()}
-        onExport={vi.fn()}
-        onImport={vi.fn()}
-      />,
-    )
+    render(<PresetList presets={presets} onAdd={vi.fn()} onDelete={vi.fn()} onEdit={vi.fn()} />)
 
     expect(screen.getByRole('list')).toBeInTheDocument()
     expect(screen.getByText('Weekly servers')).toBeInTheDocument()
@@ -56,41 +36,10 @@ describe('PresetList', () => {
     const onDelete = vi.fn()
     const preset: Preset = { id: 'preset-1', name: 'Weekly servers', enabledServerIds: [] }
 
-    render(
-      <PresetList
-        presets={[preset]}
-        onAdd={vi.fn()}
-        onDelete={onDelete}
-        onEdit={vi.fn()}
-        onExport={vi.fn()}
-        onImport={vi.fn()}
-      />,
-    )
+    render(<PresetList presets={[preset]} onAdd={vi.fn()} onDelete={onDelete} onEdit={vi.fn()} />)
     const deleteButton = screen.getByRole('button', { name: 'Delete preset Weekly servers' })
     await user.click(deleteButton)
 
     expect(onDelete).toHaveBeenCalledWith(preset, deleteButton)
-  })
-
-  it('opens preset export and import', async () => {
-    const user = userEvent.setup()
-    const onExport = vi.fn()
-    const onImport = vi.fn()
-    render(
-      <PresetList
-        presets={[]}
-        onAdd={vi.fn()}
-        onDelete={vi.fn()}
-        onEdit={vi.fn()}
-        onExport={onExport}
-        onImport={onImport}
-      />,
-    )
-
-    await user.click(screen.getByRole('button', { name: 'Export presets' }))
-    await user.click(screen.getByRole('button', { name: 'Import presets' }))
-
-    expect(onExport).toHaveBeenCalledOnce()
-    expect(onImport).toHaveBeenCalledOnce()
   })
 })
