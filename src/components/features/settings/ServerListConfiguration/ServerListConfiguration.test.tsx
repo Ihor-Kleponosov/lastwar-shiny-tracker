@@ -7,6 +7,10 @@ import i18n from '@/i18n'
 import { getConfiguredServerIds } from '@/utils/serverPreferences'
 import { ServerListConfiguration } from '.'
 
+const { toastSuccess } = vi.hoisted(() => ({ toastSuccess: vi.fn() }))
+
+vi.mock('sonner', () => ({ toast: { success: toastSuccess } }))
+
 const configuredServerIds = getConfiguredServerIds()
 let gridWidth = 400
 let scrollViewportHeight = 300
@@ -146,9 +150,16 @@ async function selectSearchFilter(user: ReturnType<typeof userEvent.setup>) {
   await user.click(screen.getByRole('tab', { name: 'Search' }))
 }
 
+async function completeSearchDebounce() {
+  await act(async () => {
+    await new Promise((resolve) => window.setTimeout(resolve, 1100))
+  })
+}
+
 describe('ServerListConfiguration', () => {
   beforeEach(async () => {
     localStorage.clear()
+    toastSuccess.mockClear()
     await i18n.changeLanguage('en')
     gridWidth = 400
     scrollViewportHeight = 300
@@ -194,6 +205,7 @@ describe('ServerListConfiguration', () => {
     expect(screen.getByRole('button', { name: 'Clear selection' })).toBeDisabled()
     expect(screen.getByRole('tab', { name: 'By range' })).toHaveAttribute('aria-selected', 'true')
     expect(screen.getByRole('button', { name: 'Apply' })).toBeDisabled()
+    expect(toastSuccess).not.toHaveBeenCalled()
   })
 
   it('reflows virtual rows after the available grid width changes', () => {
@@ -264,6 +276,7 @@ describe('ServerListConfiguration', () => {
     renderConfiguration()
     await selectSearchFilter(user)
     await user.type(screen.getByRole('searchbox', { name: 'Search servers' }), '1639')
+    await completeSearchDebounce()
     await user.click(screen.getByRole('radio', { name: 'Show servers grouped' }))
 
     expect(screen.getAllByText('No servers in this group')).toHaveLength(2)
@@ -290,7 +303,7 @@ describe('ServerListConfiguration', () => {
     await user.type(to, '16a80')
     expect(to).toHaveValue('1680')
 
-    await user.click(screen.getByRole('button', { name: 'Apply' }))
+    await user.keyboard('{Enter}')
 
     expect(from).toHaveValue('1680')
     expect(to).toHaveValue('1692')
@@ -312,6 +325,7 @@ describe('ServerListConfiguration', () => {
 
     await selectSearchFilter(user)
     await user.type(screen.getByRole('searchbox', { name: 'Search servers' }), '1638')
+    await completeSearchDebounce()
     expect(getServerCheckboxes()).toHaveLength(1)
 
     await user.click(screen.getByRole('tab', { name: 'By range' }))
@@ -351,6 +365,7 @@ describe('ServerListConfiguration', () => {
 
     await selectSearchFilter(user)
     await user.type(screen.getByRole('searchbox', { name: 'Search servers' }), '1638')
+    await completeSearchDebounce()
 
     const serverCheckbox = screen.getByRole('checkbox', { name: '1638' })
     await user.click(serverCheckbox)
@@ -369,6 +384,7 @@ describe('ServerListConfiguration', () => {
 
     const filter = screen.getByRole('searchbox', { name: 'Search servers' })
     await user.type(filter, '1638')
+    await completeSearchDebounce()
 
     expect(screen.getByRole('checkbox', { name: '1638' })).toBeInTheDocument()
     expect(screen.queryByRole('checkbox', { name: '1639' })).not.toBeInTheDocument()
@@ -378,6 +394,23 @@ describe('ServerListConfiguration', () => {
     expect(getServerCheckboxes().length).toBeLessThan(configuredServerIds.length)
   })
 
+  it('debounces search filtering and shows one results-updated toast', async () => {
+    const user = userEvent.setup()
+
+    renderConfiguration()
+    await selectSearchFilter(user)
+    await user.type(screen.getByRole('searchbox', { name: 'Search servers' }), '1638')
+
+    expect(getServerCheckboxes()).toHaveLength(40)
+    expect(toastSuccess).not.toHaveBeenCalled()
+
+    await completeSearchDebounce()
+
+    expect(getServerCheckboxes()).toHaveLength(1)
+    expect(toastSuccess).toHaveBeenCalledTimes(1)
+    expect(toastSuccess).toHaveBeenCalledWith('Results updated')
+  })
+
   it('keeps the displayed-selection control visible when a filter matches the full list', async () => {
     const user = userEvent.setup()
 
@@ -385,6 +418,7 @@ describe('ServerListConfiguration', () => {
     await selectSearchFilter(user)
 
     await user.type(screen.getByRole('searchbox', { name: 'Search servers' }), '1')
+    await completeSearchDebounce()
 
     expect(screen.getByRole('checkbox', { name: 'All displayed' })).not.toBeChecked()
   })
@@ -396,6 +430,7 @@ describe('ServerListConfiguration', () => {
     await selectSearchFilter(user)
 
     await user.type(screen.getByRole('searchbox', { name: 'Search servers' }), '9999')
+    await completeSearchDebounce()
 
     expect(screen.getByText('No servers found')).toBeInTheDocument()
     expect(getServerCheckboxes()).toHaveLength(0)
@@ -415,6 +450,7 @@ describe('ServerListConfiguration', () => {
 
     const filter = screen.getByRole('searchbox', { name: 'Search servers' })
     await user.type(filter, '1638')
+    await completeSearchDebounce()
 
     const selectDisplayed = screen.getByRole('checkbox', { name: 'All displayed' })
 
@@ -426,6 +462,7 @@ describe('ServerListConfiguration', () => {
     expect(screen.getByRole('checkbox', { name: 'All displayed' })).not.toBeChecked()
 
     await user.type(filter, '1638')
+    await completeSearchDebounce()
     const selectDisplayedAfterRefilter = screen.getByRole('checkbox', { name: 'All displayed' })
 
     await user.click(selectDisplayedAfterRefilter)
@@ -442,12 +479,15 @@ describe('ServerListConfiguration', () => {
     renderConfiguration()
     await selectSearchFilter(user)
     await user.type(screen.getByRole('searchbox', { name: 'Search servers' }), '1638')
+    await completeSearchDebounce()
     await user.click(screen.getByRole('checkbox', { name: 'All displayed' }))
     await user.click(screen.getByRole('button', { name: 'Clear server filter' }))
     await user.type(screen.getByRole('searchbox', { name: 'Search servers' }), '1639')
+    await completeSearchDebounce()
     await user.click(screen.getByRole('checkbox', { name: 'All displayed' }))
     await user.click(screen.getByRole('button', { name: 'Clear server filter' }))
     await user.type(screen.getByRole('searchbox', { name: 'Search servers' }), '1638')
+    await completeSearchDebounce()
 
     await user.click(screen.getByRole('button', { name: 'Clear selection' }))
 
@@ -457,6 +497,7 @@ describe('ServerListConfiguration', () => {
 
     await user.click(screen.getByRole('button', { name: 'Clear server filter' }))
     await user.type(screen.getByRole('searchbox', { name: 'Search servers' }), '1639')
+    await completeSearchDebounce()
     expect(screen.getByRole('checkbox', { name: '1639' })).toBeChecked()
-  })
+  }, 10000)
 })

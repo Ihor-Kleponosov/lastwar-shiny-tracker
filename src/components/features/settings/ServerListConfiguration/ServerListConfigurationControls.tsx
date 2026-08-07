@@ -1,6 +1,6 @@
 import { Search, X } from 'lucide-react'
 import classNames from 'class-names'
-import type { ChangeEvent } from 'react'
+import type { ChangeEvent, FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/shared/ui/Button'
 import { Checkbox } from '@/components/shared/ui/Checkbox'
@@ -12,6 +12,7 @@ type ServerListConfigurationControlsProps = {
   filterMode: 'range' | 'search'
   isRangeApplyDisabled: boolean
   onApplyRange: () => void
+  onClearSearchFilter: () => void
   onClearSelection: () => void
   onFilterModeChange: (mode: 'range' | 'search') => void
   onRangeFromChange: (value: string) => void
@@ -29,6 +30,7 @@ export function ServerListConfigurationControls({
   filterMode,
   isRangeApplyDisabled,
   onApplyRange,
+  onClearSearchFilter,
   onClearSelection,
   onFilterModeChange,
   onRangeFromChange,
@@ -56,6 +58,13 @@ export function ServerListConfigurationControls({
     event: ChangeEvent<HTMLInputElement>,
   ) {
     onChange(event.target.value.replace(/\D/g, ''))
+  }
+
+  function handleRangeSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    if (!isRangeApplyDisabled) {
+      onApplyRange()
+    }
   }
 
   return (
@@ -86,11 +95,12 @@ export function ServerListConfigurationControls({
         ))}
       </div>
       {filterMode === 'range' ? (
-        <div
+        <form
           id="server-filter-panel-range"
           role="tabpanel"
           aria-labelledby="server-filter-tab-range"
           className="grid grid-cols-[1fr_1fr_auto] gap-2"
+          onSubmit={handleRangeSubmit}
         >
           <div className="min-w-0">
             <label htmlFor="server-range-from" className="sr-only">
@@ -122,10 +132,10 @@ export function ServerListConfigurationControls({
               className="min-h-11 w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 text-sm text-[var(--color-text-primary)] outline-none placeholder:text-[var(--color-text-muted)] focus-visible:ring-2 focus-visible:ring-[var(--color-focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-background)]"
             />
           </div>
-          <Button variant="secondary" disabled={isRangeApplyDisabled} onClick={onApplyRange}>
+          <Button type="submit" variant="secondary" disabled={isRangeApplyDisabled}>
             {t('settings.serverList.applyRange')}
           </Button>
-        </div>
+        </form>
       ) : (
         <div
           id="server-filter-panel-search"
@@ -153,7 +163,7 @@ export function ServerListConfigurationControls({
             <button
               type="button"
               aria-label={t('settings.serverList.clearSearch')}
-              onClick={() => onSearchFilterChange('')}
+              onClick={onClearSearchFilter}
               className="absolute top-1/2 right-0 flex size-11 -translate-y-1/2 items-center justify-center rounded-r-lg text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--color-focus)]"
             >
               <X aria-hidden="true" size={18} />

@@ -22,7 +22,7 @@ The configured server groups repeat from the ISO anchor date in `src/config/inde
 
 From the Presets page, Export lets you select saved presets and download a versioned `.lwst` file containing a JSON object with `version: 1` and a `presets` array containing their existing objects without changing their structure. Import validates that same JSON format before allowing you to select presets. Imported presets are always added as new copies with unique IDs and conflict-free names.
 
-Use **Edit Presets** to create or change server lists. Changes are kept as a draft until **Save**; closing a changed draft asks whether to discard it. Search filters server numbers immediately, while range filtering is inclusive and accepts bounds in either order. The server list can be shown as one flat list or separated into the configured A, B, and C rotation groups. PNG export allows choosing any existing preset for each export. When no preset is selected, it exports an empty server list.
+Use **Edit Presets** to create or change server lists. Changes are kept as a draft until **Save**; closing a changed draft asks whether to discard it. Search filters server numbers after a one-second pause, while range filtering is inclusive and accepts bounds in either order. Filter updates show a confirmation toast. The server list can be shown as one flat list or separated into the configured A, B, and C rotation groups. PNG export allows choosing any existing preset for each export. When no preset is selected, it exports an empty server list.
 
 ## Tech stack
 
