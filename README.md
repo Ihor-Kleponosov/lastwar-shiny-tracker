@@ -18,7 +18,7 @@ An installable, offline-capable tracker for Last War shiny-task server rotations
 
 ## How it works
 
-The configured server groups repeat from the ISO anchor date in `src/config/index.ts`. The configured IANA server timezone determines the current calendar day and therefore the current group; daylight-saving changes are applied automatically. The selected date determines the current group. Select one or more presets on the main page to show one active-server list per preset. Presets are saved under the `last-war-shiny-tracker-presets` localStorage key as objects containing `id`, `name`, and `enabledServerIds`; up to 30 can be saved. The Presets page creates and saves an all-servers default preset on first launch when no stored presets exist and shows a dismissible notice. It also displays the local-storage information notice once when the Presets page is first opened, tracked by `last-war-shiny-tracker-storage-notice-shown`. Invalid stored preset data is preserved and reported with an error toast; an existing stored list, including an empty list, is preserved.
+The configured server groups repeat from the ISO anchor date in `src/config/index.ts`. The configured IANA server timezone determines the current calendar day and therefore the current group; daylight-saving changes are applied automatically. The selected date determines the current group. Select one or more presets on the main page to show one active-server list per preset. Presets are saved under the `last-war-shiny-tracker-presets` localStorage key as objects containing `id`, `name`, and `enabledServerIds`; up to 30 can be saved. On first launch, when no stored presets exist, the app asks for a server number and creates a preset using up to 30 configured servers on either side of that number after confirmation. It also displays the local-storage information notice once when the Presets page is first opened, tracked by `last-war-shiny-tracker-storage-notice-shown`. Invalid stored preset data is preserved and reported with an error toast; an existing stored list, including an empty list, is preserved.
 
 From the Presets page, Export lets you select saved presets and download a versioned `.lwst` file containing a JSON object with `version: 1` and a `presets` array containing their existing objects without changing their structure. Import validates that same JSON format before allowing you to select presets. Imported presets are always added as new copies with unique IDs and conflict-free names.
 
@@ -88,7 +88,7 @@ To add a language, register its code and display name in `src/i18n/languages.ts`
 
 Preset server IDs are normalized to configured servers and capped at 100 selections per preset.
 
-Selected preset IDs are persisted under the `last-war-shiny-tracker-selected-preset-ids` localStorage key. When the first-launch default preset is created, it is selected automatically. IDs for presets that no longer exist are discarded, and a missing or invalid selection defaults to an empty list.
+Selected preset IDs are persisted under the `last-war-shiny-tracker-selected-preset-ids` localStorage key. When the first-launch preset is confirmed, it is selected automatically. IDs for presets that no longer exist are discarded, and a missing or invalid selection defaults to an empty list.
 
 ## Offline and deployment
 

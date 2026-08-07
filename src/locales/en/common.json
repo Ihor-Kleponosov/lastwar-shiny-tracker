@@ -102,10 +102,13 @@
     "nameDuplicate": "A preset with this name already exists",
     "saved": "Preset saved",
     "limitReached": "You can't create more than {{count}} presets",
-    "defaultNotice": {
-      "label": "Default preset applied",
-      "close": "Close default preset notification",
-      "message": "No saved presets found, so we applied the default preset. This only happens once to help you get started"
+    "initialSetup": {
+      "title": "Create your first preset",
+      "description": "We'll add up to 30 available servers before and 30 available servers after this server number. If this server is available, it will be included.",
+      "serverNumberLabel": "Your server number",
+      "serverNumberPlaceholder": "Enter server number",
+      "cancel": "Cancel",
+      "confirm": "Create preset"
     },
     "title": "Presets",
     "placeholder": "Select presets",

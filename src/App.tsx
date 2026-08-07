@@ -3,11 +3,16 @@ import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { MainPage } from '@/pages/MainPage'
 import { PresetsPage } from '@/pages/PresetsPage'
-import { Notification } from '@/components/shared/ui/Notification'
-import { defaultPreset } from '@/config'
+import { InitialPresetDialog } from '@/components/features/presets/InitialPresetDialog/InitialPresetDialog'
 import type { Preset } from '@/types'
 import { generateUniqueId } from '@/utils'
-import { loadPresets, MAX_PRESETS, savePresets, saveSelectedPresetIds } from '@/utils/presets'
+import {
+  getServerIdsAround,
+  loadPresets,
+  MAX_PRESETS,
+  savePresets,
+  saveSelectedPresetIds,
+} from '@/utils/presets'
 import { createImportedPresets } from '@/utils/presetTransfer'
 
 type AppRoute = 'main' | 'presets'
@@ -17,18 +22,15 @@ export default function App() {
   const [route, setRoute] = useState<AppRoute>('main')
   const [presets, setPresets] = useState<readonly Preset[]>([])
   const [isPresetsLoaded, setIsPresetsLoaded] = useState(false)
-  const [isDefaultPresetNoticeOpen, setIsDefaultPresetNoticeOpen] = useState(false)
+  const [isInitialPresetDialogOpen, setIsInitialPresetDialogOpen] = useState(false)
+  const [initialPresetId, setInitialPresetId] = useState<string>()
   const navigateToMain = () => setRoute('main')
 
   useEffect(() => {
-    const result = loadPresets(defaultPreset)
-
-    if (result.wasDefaultPresetApplied) {
-      saveSelectedPresetIds([defaultPreset.id])
-    }
+    const result = loadPresets()
 
     setPresets(result.presets)
-    setIsDefaultPresetNoticeOpen(result.wasDefaultPresetApplied)
+    setIsInitialPresetDialogOpen(result.needsInitialPresetSetup)
     setIsPresetsLoaded(true)
 
     if (result.hasInvalidStoredData) {
@@ -55,6 +57,20 @@ export default function App() {
     savePresets(limitedPresets)
     setPresets(limitedPresets)
     return true
+  }
+
+  function handleConfirmInitialPreset(serverNumber: number) {
+    const preset: Preset = {
+      id: generateUniqueId(),
+      name: `Preset for ${serverNumber}`,
+      enabledServerIds: getServerIdsAround(serverNumber),
+    }
+
+    savePresets([preset])
+    saveSelectedPresetIds([preset.id])
+    setPresets([preset])
+    setInitialPresetId(preset.id)
+    setIsInitialPresetDialogOpen(false)
   }
 
   function handleImportPresets(importedPresets: readonly Preset[]): boolean {
@@ -92,6 +108,7 @@ export default function App() {
       <MainPage
         onOpenPresets={() => setRoute('presets')}
         onNavigateHome={navigateToMain}
+        initialPresetId={initialPresetId}
         presets={presets}
       />
     )
@@ -99,16 +116,12 @@ export default function App() {
   return (
     <>
       {page}
-      <Notification
-        closeLabel={t('presets.defaultNotice.close')}
-        label={t('presets.defaultNotice.label')}
-        onClose={() => setIsDefaultPresetNoticeOpen(false)}
-        open={isDefaultPresetNoticeOpen}
-      >
-        <p className="text-sm text-[var(--color-text-secondary)]">
-          {t('presets.defaultNotice.message')}
-        </p>
-      </Notification>
+      {isInitialPresetDialogOpen ? (
+        <InitialPresetDialog
+          onCancel={() => setIsInitialPresetDialogOpen(false)}
+          onConfirm={handleConfirmInitialPreset}
+        />
+      ) : null}
     </>
   )
 }

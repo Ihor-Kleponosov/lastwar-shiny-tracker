@@ -102,10 +102,13 @@
     "nameDuplicate": "Ein Preset mit diesem Namen existiert bereits",
     "saved": "Preset gespeichert",
     "limitReached": "Du kannst nicht mehr als {{count}} Presets erstellen",
-    "defaultNotice": {
-      "label": "Standard-Preset angewendet",
-      "close": "Benachrichtigung zum Standard-Preset schließen",
-      "message": "Es wurden keine gespeicherten Presets gefunden, daher haben wir das Standard-Preset angewendet. Das geschieht nur einmal, um dir den Einstieg zu erleichtern"
+    "initialSetup": {
+      "title": "Erstes Preset erstellen",
+      "description": "Wir fügen bis zu 30 verfügbare Server vor und 30 verfügbare Server nach dieser Servernummer hinzu. Ist dieser Server verfügbar, wird er einbezogen.",
+      "serverNumberLabel": "Deine Servernummer",
+      "serverNumberPlaceholder": "Servernummer eingeben",
+      "cancel": "Abbrechen",
+      "confirm": "Preset erstellen"
     },
     "title": "Voreinstellungen",
     "placeholder": "Presets auswählen",
