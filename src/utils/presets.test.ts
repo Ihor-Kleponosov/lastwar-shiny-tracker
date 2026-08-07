@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   getPresets,
+  getServerIdsAround,
   getSelectedPresetIds,
   loadPresets,
   MAX_PRESETS,
@@ -65,10 +66,10 @@ describe('presets storage', () => {
     const storedPresets = '{invalid JSON'
     localStorage.setItem(PRESETS_STORAGE_KEY, storedPresets)
 
-    expect(loadPresets({ id: 'default', name: 'Default', enabledServerIds: [] })).toEqual({
+    expect(loadPresets()).toEqual({
       presets: [],
       hasInvalidStoredData: true,
-      wasDefaultPresetApplied: false,
+      needsInitialPresetSetup: false,
     })
     expect(localStorage.getItem(PRESETS_STORAGE_KEY)).toBe(storedPresets)
   })
@@ -95,12 +96,18 @@ describe('presets storage', () => {
     expect(getPresets()).toEqual(presets.slice(0, MAX_PRESETS))
   })
 
-  it('reports when it applies the default preset for missing storage', () => {
-    expect(loadPresets({ id: 'default', name: 'Default', enabledServerIds: [] })).toEqual({
-      presets: [{ id: 'default', name: 'Default', enabledServerIds: [] }],
+  it('reports when first-time preset setup is needed without saving a preset', () => {
+    expect(loadPresets()).toEqual({
+      presets: [],
       hasInvalidStoredData: false,
-      wasDefaultPresetApplied: true,
+      needsInitialPresetSetup: true,
     })
+    expect(localStorage.getItem(PRESETS_STORAGE_KEY)).toBeNull()
+  })
+
+  it('selects up to 30 configured servers on each side of a reference server', () => {
+    expect(getServerIdsAround(1687)).toEqual(Array.from({ length: 61 }, (_, index) => 1657 + index))
+    expect(getServerIdsAround(1600)).toEqual(Array.from({ length: 30 }, (_, index) => 1637 + index))
   })
 })
 

@@ -10,7 +10,7 @@ export const MAX_PRESETS = 30
 export type PresetsLoadResult = {
   readonly presets: Preset[]
   readonly hasInvalidStoredData: boolean
-  readonly wasDefaultPresetApplied: boolean
+  readonly needsInitialPresetSetup: boolean
 }
 
 const configuredServerIds = [...new Set(shinyTasksConfiguration.serverGroups.flat())].sort(
@@ -137,26 +137,36 @@ export function getPresets(): Preset[] {
   }
 }
 
-export function loadPresets(defaultPreset: Preset): PresetsLoadResult {
+export function getServerIdsAround(referenceServerId: ServerId): ServerId[] {
+  const serversBefore = configuredServerIds
+    .filter((serverId) => serverId < referenceServerId)
+    .slice(-30)
+  const matchingServer = configuredServerIds.filter((serverId) => serverId === referenceServerId)
+  const serversAfter = configuredServerIds
+    .filter((serverId) => serverId > referenceServerId)
+    .slice(0, 30)
+
+  return [...serversBefore, ...matchingServer, ...serversAfter]
+}
+
+export function loadPresets(): PresetsLoadResult {
   try {
     const storedPresets = localStorage.getItem(PRESETS_STORAGE_KEY)
 
     if (storedPresets === null) {
-      const presets = [defaultPreset]
-      savePresets(presets)
-      return { presets, hasInvalidStoredData: false, wasDefaultPresetApplied: true }
+      return { presets: [], hasInvalidStoredData: false, needsInitialPresetSetup: true }
     }
 
     const parsedPresets: unknown = JSON.parse(storedPresets)
 
     if (!Array.isArray(parsedPresets) || !parsedPresets.every(isPreset)) {
-      return { presets: [], hasInvalidStoredData: true, wasDefaultPresetApplied: false }
+      return { presets: [], hasInvalidStoredData: true, needsInitialPresetSetup: false }
     }
 
     const presets = normalizePresets(parsedPresets)
     savePresets(presets)
-    return { presets, hasInvalidStoredData: false, wasDefaultPresetApplied: false }
+    return { presets, hasInvalidStoredData: false, needsInitialPresetSetup: false }
   } catch {
-    return { presets: [], hasInvalidStoredData: true, wasDefaultPresetApplied: false }
+    return { presets: [], hasInvalidStoredData: true, needsInitialPresetSetup: false }
   }
 }

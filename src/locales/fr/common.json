@@ -102,10 +102,13 @@
     "nameDuplicate": "Un preset portant ce nom existe déjà",
     "saved": "Preset enregistré",
     "limitReached": "Vous ne pouvez pas créer plus de {{count}} presets",
-    "defaultNotice": {
-      "label": "Preset par défaut appliqué",
-      "close": "Fermer la notification du preset par défaut",
-      "message": "Aucun preset enregistré n’a été trouvé ; nous avons donc appliqué le preset par défaut. Cela n’arrive qu’une seule fois pour vous aider à démarrer"
+    "initialSetup": {
+      "title": "Créer votre premier préréglage",
+      "description": "Nous ajouterons jusqu’à 30 serveurs disponibles avant et 30 serveurs disponibles après ce numéro de serveur. Si ce serveur est disponible, il sera inclus.",
+      "serverNumberLabel": "Votre numéro de serveur",
+      "serverNumberPlaceholder": "Saisissez le numéro du serveur",
+      "cancel": "Annuler",
+      "confirm": "Créer le préréglage"
     },
     "title": "Préréglages",
     "placeholder": "Sélectionner des préréglages",

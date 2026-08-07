@@ -12,12 +12,18 @@ import { getSelectedPresetIds, saveSelectedPresetIds } from '@/utils/presets'
 import { getServerDate } from '@/utils/serverTime'
 
 type MainPageProps = {
+  initialPresetId?: string
   onOpenPresets: () => void
   onNavigateHome: () => void
   presets: readonly Preset[]
 }
 
-export function MainPage({ onOpenPresets, onNavigateHome, presets }: MainPageProps) {
+export function MainPage({
+  initialPresetId,
+  onOpenPresets,
+  onNavigateHome,
+  presets,
+}: MainPageProps) {
   const [serverNow, setServerNow] = useState(() => new Date())
   const serverDate = getServerDate(serverNow, shinyTasksConfiguration.serverTimeZone)
   const [selectedDate, setSelectedDate] = useState(() =>
@@ -81,6 +87,14 @@ export function MainPage({ onOpenPresets, onNavigateHome, presets }: MainPagePro
       return nextPresetIds
     })
   }, [hasLoadedSelectedPresetIds, presets])
+
+  useEffect(() => {
+    if (!initialPresetId) {
+      return
+    }
+
+    setSelectedPresetIds((currentPresetIds) => new Set([...currentPresetIds, initialPresetId]))
+  }, [initialPresetId])
 
   useEffect(() => {
     if (!hasLoadedSelectedPresetIds) {

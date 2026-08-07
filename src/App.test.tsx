@@ -77,34 +77,58 @@ describe('App', () => {
     expect(screen.queryByRole('heading', { name: 'Edit Presets' })).not.toBeInTheDocument()
   })
 
-  it('creates and selects the default preset and shows its notice on the main page on first visit', async () => {
+  it('creates and selects a nearby-server preset after first-load confirmation', async () => {
     const user = userEvent.setup()
 
     render(<App />)
 
-    expect(screen.getByRole('status', { name: 'Default preset applied' })).toBeInTheDocument()
-    expect(localStorage.getItem('last-war-shiny-tracker-presets')).toContain('Default preset')
-    expect(localStorage.getItem('last-war-shiny-tracker-selected-preset-ids')).toBe(
-      JSON.stringify(['default-preset']),
-    )
+    expect(screen.getByRole('dialog', { name: 'Create your first preset' })).toBeInTheDocument()
+    const input = screen.getByRole('textbox', { name: 'Your server number' })
+    expect(input).toHaveAttribute('inputmode', 'numeric')
+    expect(input).toHaveAttribute('maxLength', '5')
+    await user.type(input, '1687abc123')
+    expect(input).toHaveValue('16871')
+
+    await user.click(screen.getByRole('button', { name: 'Create preset' }))
+
+    expect(localStorage.getItem('last-war-shiny-tracker-presets')).toContain('Preset for 16871')
+    const selectedPresetIds = JSON.parse(
+      localStorage.getItem('last-war-shiny-tracker-selected-preset-ids') ?? '[]',
+    ) as string[]
+    expect(selectedPresetIds).toHaveLength(1)
 
     await user.click(screen.getByRole('button', { name: 'Presets' }))
 
-    expect(screen.getByRole('option', { name: 'Default preset' })).toHaveAttribute(
+    expect(screen.getByRole('option', { name: 'Preset for 16871' })).toHaveAttribute(
       'aria-selected',
       'true',
     )
   })
 
-  it('preserves an explicitly stored empty preset list without showing the default notice', async () => {
+  it('does not create or save a preset when first-load setup is canceled', async () => {
+    const user = userEvent.setup()
+
+    render(<App />)
+
+    await user.click(screen.getByRole('button', { name: 'Cancel' }))
+
+    expect(localStorage.getItem('last-war-shiny-tracker-presets')).toBeNull()
+    expect(localStorage.getItem('last-war-shiny-tracker-selected-preset-ids')).toBe(
+      JSON.stringify([]),
+    )
+  })
+
+  it('preserves an explicitly stored empty preset list without showing first-load setup', async () => {
     localStorage.setItem('last-war-shiny-tracker-presets', JSON.stringify([]))
 
     render(<App />)
 
-    expect(screen.queryByRole('status', { name: 'Default preset applied' })).not.toBeInTheDocument()
+    expect(
+      screen.queryByRole('dialog', { name: 'Create your first preset' }),
+    ).not.toBeInTheDocument()
     const user = userEvent.setup()
     await user.click(screen.getByRole('button', { name: 'Presets' }))
-    expect(screen.queryByRole('option', { name: 'Default preset' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('option', { name: 'Preset for 1687' })).not.toBeInTheDocument()
   })
 
   it('reports invalid storage without overwriting it', async () => {
