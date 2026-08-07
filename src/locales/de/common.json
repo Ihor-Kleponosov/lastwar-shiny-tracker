@@ -121,7 +121,7 @@
     "import": "Voreinstellungen importieren",
     "export": {
       "title": "Voreinstellungen exportieren",
-      "description": "Wählen Sie die Voreinstellungen aus, die Sie als JSON-Datei herunterladen möchten",
+      "description": "Wählen Sie die Voreinstellungen aus, die Sie als Sicherungsdatei für Voreinstellungen (.lwst) herunterladen möchten",
       "listLabel": "Für den Export verfügbare Voreinstellungen",
       "selectAll": "Alle auswählen",
       "clearAll": "Auswahl aufheben",
@@ -130,8 +130,8 @@
     },
     "importDialog": {
       "title": "Voreinstellungen importieren",
-      "description": "Wählen Sie eine JSON-Datei mit Voreinstellungen zum Importieren aus",
-      "fileLabel": "JSON-Datei mit Voreinstellungen",
+      "description": "Wählen Sie zum Importieren eine Sicherungsdatei für Voreinstellungen (.lwst) aus",
+      "fileLabel": "Sicherungsdatei für Voreinstellungen (.lwst)",
       "loading": "Voreinstellungsdatei wird geprüft",
       "invalidFile": "Diese Datei ist kein gültiger Voreinstellungsexport",
       "listLabel": "Für den Import verfügbare Voreinstellungen",

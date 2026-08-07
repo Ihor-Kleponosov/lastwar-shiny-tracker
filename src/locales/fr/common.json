@@ -121,7 +121,7 @@
     "import": "Importer des préréglages",
     "export": {
       "title": "Exporter des préréglages",
-      "description": "Sélectionnez les préréglages à télécharger en fichier JSON",
+      "description": "Sélectionnez les préréglages à télécharger dans un fichier de sauvegarde des préréglages (.lwst)",
       "listLabel": "Préréglages disponibles pour l’exportation",
       "selectAll": "Tout sélectionner",
       "clearAll": "Tout désélectionner",
@@ -130,8 +130,8 @@
     },
     "importDialog": {
       "title": "Importer des préréglages",
-      "description": "Choisissez un fichier JSON de préréglages à importer",
-      "fileLabel": "Fichier JSON de préréglages",
+      "description": "Choisissez un fichier de sauvegarde des préréglages (.lwst) à importer",
+      "fileLabel": "Fichier de sauvegarde des préréglages (.lwst)",
       "loading": "Validation du fichier de préréglages",
       "invalidFile": "Ce fichier n’est pas une exportation de préréglages valide",
       "listLabel": "Préréglages disponibles pour l’importation",
