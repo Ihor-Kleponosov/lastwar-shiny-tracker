@@ -60,6 +60,7 @@
       "rangeTo": "To",
       "applyRange": "Apply",
       "resetFilter": "Reset filter",
+      "resultsUpdated": "Results updated",
       "showDescription": "About the server list",
       "closeDescription": "Close server-list description",
       "closeStorageNotice": "Close storage information",

@@ -1,4 +1,5 @@
-import { useState, type RefObject } from 'react'
+import { useEffect, useState, type RefObject } from 'react'
+import { toast } from 'sonner'
 import { useTranslation } from 'react-i18next'
 import type { ServerId } from '@/types'
 import { ServerListConfigurationControls } from './ServerListConfigurationControls'
@@ -11,6 +12,8 @@ type AppliedRange = {
   from: number
   to: number
 }
+
+const SEARCH_DEBOUNCE_MS = 1000
 
 type ServerListConfigurationProps = {
   enabledServerIds: ReadonlySet<ServerId>
@@ -31,6 +34,7 @@ export function ServerListConfiguration({
 }: ServerListConfigurationProps) {
   const { t } = useTranslation('common')
   const [filterMode, setFilterMode] = useState<'range' | 'search'>('range')
+  const [searchInput, setSearchInput] = useState('')
   const [searchFilter, setSearchFilter] = useState('')
   const [rangeFrom, setRangeFrom] = useState('')
   const [rangeTo, setRangeTo] = useState('')
@@ -48,12 +52,38 @@ export function ServerListConfiguration({
     return serverId >= appliedRange.from && serverId <= appliedRange.to
   })
 
-  function handleFilterModeChange(mode: 'range' | 'search') {
-    setFilterMode(mode)
+  useEffect(() => {
+    if (searchInput === searchFilter) {
+      return undefined
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setSearchFilter(searchInput)
+      if (filterMode === 'search') {
+        toast.success(t('settings.serverList.resultsUpdated'))
+      }
+    }, SEARCH_DEBOUNCE_MS)
+
+    return () => window.clearTimeout(timeoutId)
+  }, [filterMode, searchFilter, searchInput, t])
+
+  function resetSearchFilter() {
+    setSearchInput('')
     setSearchFilter('')
+  }
+
+  function handleFilterModeChange(mode: 'range' | 'search') {
+    const hasActiveFilter =
+      searchInput.length > 0 || searchFilter.length > 0 || appliedRange !== null
+
+    setFilterMode(mode)
+    resetSearchFilter()
     setRangeFrom('')
     setRangeTo('')
     setAppliedRange(null)
+    if (hasActiveFilter) {
+      toast.success(t('settings.serverList.resultsUpdated'))
+    }
   }
 
   function handleApplyRange() {
@@ -67,13 +97,27 @@ export function ServerListConfiguration({
     setRangeFrom(String(range.from))
     setRangeTo(String(range.to))
     setAppliedRange(range)
+    toast.success(t('settings.serverList.resultsUpdated'))
   }
 
   function handleResetFilter() {
-    setSearchFilter('')
+    const hasActiveFilter =
+      searchInput.length > 0 || searchFilter.length > 0 || appliedRange !== null
+
+    resetSearchFilter()
     setRangeFrom('')
     setRangeTo('')
     setAppliedRange(null)
+    if (hasActiveFilter) {
+      toast.success(t('settings.serverList.resultsUpdated'))
+    }
+  }
+
+  function handleClearSearchFilter() {
+    if (searchFilter.length > 0) {
+      toast.success(t('settings.serverList.resultsUpdated'))
+    }
+    resetSearchFilter()
   }
 
   return (
@@ -81,12 +125,13 @@ export function ServerListConfiguration({
       <ServerListConfigurationControls
         enabledServerIds={enabledServerIds}
         filterMode={filterMode}
-        searchFilter={searchFilter}
+        searchFilter={searchInput}
         rangeFrom={rangeFrom}
         rangeTo={rangeTo}
         isRangeApplyDisabled={!rangeFrom || !rangeTo}
         onFilterModeChange={handleFilterModeChange}
-        onSearchFilterChange={setSearchFilter}
+        onClearSearchFilter={handleClearSearchFilter}
+        onSearchFilterChange={setSearchInput}
         onRangeFromChange={setRangeFrom}
         onRangeToChange={setRangeTo}
         onApplyRange={handleApplyRange}
