@@ -24,20 +24,24 @@ describe('preset transfer', () => {
     expect(createPresetTransfer(presets)).toEqual({ version: 1, presets })
   })
 
-  it('uses a clear, date-based JSON filename', () => {
+  it('uses a clear, date-based LWST filename', () => {
     expect(getPresetTransferFilename(new Date(2026, 7, 20))).toBe(
-      'last-war-shiny-tracker-presets-2026-08-20.json',
+      'last-war-shiny-tracker-presets-2026-08-20.lwst',
     )
   })
 
-  it('downloads JSON through a Blob URL', () => {
+  it('downloads the JSON transfer through a Blob URL with an LWST filename', () => {
     Object.defineProperties(URL, {
       createObjectURL: { configurable: true, value: vi.fn() },
       revokeObjectURL: { configurable: true, value: vi.fn() },
     })
     const createObjectURL = vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:presets')
     const revokeObjectURL = vi.spyOn(URL, 'revokeObjectURL')
-    const click = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => undefined)
+    const click = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(function (
+      this: HTMLAnchorElement,
+    ) {
+      expect(this.download).toBe('last-war-shiny-tracker-presets-2026-08-20.lwst')
+    })
     const createElement = vi.spyOn(document, 'createElement')
 
     downloadPresetTransfer([presets[1]], new Date(2026, 7, 20))

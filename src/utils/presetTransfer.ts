@@ -115,7 +115,7 @@ export function serializePresetsForTransfer(presets: readonly Preset[]): string 
 }
 
 export function getPresetTransferFilename(date: Date): string {
-  return `last-war-shiny-tracker-presets-${format(date, 'yyyy-MM-dd')}.json`
+  return `last-war-shiny-tracker-presets-${format(date, 'yyyy-MM-dd')}.lwst`
 }
 
 export function downloadPresetTransfer(presets: readonly Preset[], date = new Date()): void {

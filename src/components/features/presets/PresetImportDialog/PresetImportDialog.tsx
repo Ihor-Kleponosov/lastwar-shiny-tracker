@@ -123,7 +123,7 @@ export function PresetImportDialog({
         <input
           id="preset-import-file"
           type="file"
-          accept="application/json,.json"
+          accept=".lwst"
           className="mt-2 block w-full text-sm text-[var(--color-text-secondary)] file:mr-3 file:rounded-lg file:border-0 file:bg-[var(--color-surface)] file:px-3 file:py-2 file:text-sm file:font-medium file:text-[var(--color-text-primary)]"
           onChange={handleFileChange}
         />

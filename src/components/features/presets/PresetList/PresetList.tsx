@@ -33,13 +33,13 @@ export function PresetList({
             onClick={(event) => onExport(event.currentTarget)}
             aria-label={t('presets.export.action')}
           >
-            <Upload aria-hidden="true" className="size-5" />
+            <Download aria-hidden="true" className="size-5" />
           </IconButton>
           <IconButton
             onClick={(event) => onImport(event.currentTarget)}
             aria-label={t('presets.import')}
           >
-            <Download aria-hidden="true" className="size-5" />
+            <Upload aria-hidden="true" className="size-5" />
           </IconButton>
           <IconButton
             onClick={(event) => onAdd(event.currentTarget)}

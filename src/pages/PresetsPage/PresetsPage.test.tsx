@@ -216,9 +216,11 @@ describe('PresetsPage', () => {
         { id: 'second', name: 'Second preset', enabledServerIds: [] },
       ],
     })
-    const file = new File([serializedTransfer], 'presets.json', { type: 'application/json' })
+    const file = new File([serializedTransfer], 'presets.lwst', { type: 'application/json' })
     Object.defineProperty(file, 'text', { value: () => Promise.resolve(serializedTransfer) })
-    await user.upload(screen.getByLabelText('Preset JSON file'), file)
+    const importFileInput = screen.getByLabelText('Preset backup file (.lwst)')
+    expect(importFileInput).toHaveAttribute('accept', '.lwst')
+    await user.upload(importFileInput, file)
 
     expect(await screen.findByRole('checkbox', { name: 'First preset' })).not.toBeChecked()
     await user.click(screen.getByRole('button', { name: 'Select all' }))
@@ -244,9 +246,9 @@ describe('PresetsPage', () => {
       version: 1,
       presets: [{ id: 'first', name: 'First preset', enabledServerIds: [] }],
     })
-    const file = new File([serializedTransfer], 'presets.json', { type: 'application/json' })
+    const file = new File([serializedTransfer], 'presets.lwst', { type: 'application/json' })
     Object.defineProperty(file, 'text', { value: () => Promise.resolve(serializedTransfer) })
-    await user.upload(screen.getByLabelText('Preset JSON file'), file)
+    await user.upload(screen.getByLabelText('Preset backup file (.lwst)'), file)
     await user.click(await screen.findByRole('checkbox', { name: 'First preset' }))
     await user.click(
       within(screen.getByRole('dialog', { name: 'Import presets' })).getByRole('button', {
